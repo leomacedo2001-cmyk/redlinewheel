@@ -5,7 +5,7 @@ export function SiteFooter() {
     <footer className="border-t border-border/60 bg-surface mt-24">
       <div className="container-premium py-16 grid gap-12 md:grid-cols-4">
         <div>
-          <div className="text-2xl font-bold">APEX<span className="text-primary">.</span></div>
+          <div className="text-2xl font-bold">REDLINE<span className="text-primary">.</span></div>
           <p className="mt-4 text-sm text-muted-foreground max-w-xs">
             Volantes premium personalizados para uma experiência de condução única.
           </p>
@@ -32,7 +32,7 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-border/60">
         <div className="container-premium py-6 text-xs text-muted-foreground flex justify-between">
-          <span>© {new Date().getFullYear()} APEX Automotive. Todos os direitos reservados.</span>
+          <span>© {new Date().getFullYear()} REDLINE Performance. Todos os direitos reservados.</span>
           <span>Made with precision in Portugal</span>
         </div>
       </div>

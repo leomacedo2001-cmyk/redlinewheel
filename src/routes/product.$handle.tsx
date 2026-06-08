@@ -9,8 +9,8 @@ import { useCartStore } from "@/stores/cartStore";
 export const Route = createFileRoute("/product/$handle")({
   head: ({ params }) => ({
     meta: [
-      { title: `${params.handle} — APEX Automotive` },
-      { name: "description", content: "Volante premium personalizado APEX Automotive." },
+      { title: `${params.handle} — REDLINE Performance` },
+      { name: "description", content: "Volante premium personalizado REDLINE Performance." },
       { property: "og:url", content: `/product/${params.handle}` },
       { property: "og:type", content: "product" },
     ],
@@ -90,7 +90,7 @@ function ProductPage() {
 
         <div className="space-y-6">
           <div>
-            <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">APEX Collection</div>
+            <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">REDLINE Collection</div>
             <h1 className="text-4xl md:text-5xl font-bold">{product.node.title}</h1>
           </div>
           <div className="text-3xl font-bold">
