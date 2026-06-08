@@ -8,42 +8,60 @@ import carbono from "@/assets/product-carbono.jpg";
 import costuras from "@/assets/product-costuras.jpg";
 import ledShift from "@/assets/product-led-shift.jpg";
 import patilhas from "@/assets/product-patilhas.jpg";
+import oemPlus from "@/assets/product-oem-plus.jpg";
+import restauro from "@/assets/product-restauro.jpg";
+import componentesInterior from "@/assets/product-componentes-interior.jpg";
 
 const PRODUCTS = [
   {
-    name: "Volante Personalizado Completo",
+    name: "Volantes Personalizados",
     img: volanteCompleto,
-    desc: "Construído à medida do teu carro. Combina materiais, formas e acabamentos para uma peça verdadeiramente única.",
+    desc: "Construídos à mão, à medida do teu carro. Inspirados nos padrões BMW M, AMG e Audi Sport.",
   },
   {
     name: "Revestimento em Alcântara",
     img: alcantara,
-    desc: "Toque premium e aderência absoluta. O acabamento preferido das versões M, RS e GT.",
+    desc: "Aderência e toque premium. O material de eleição das edições M Performance e RS.",
   },
   {
     name: "Revestimento em Pele Perfurada",
     img: pelePerfurada,
-    desc: "Couro nappa perfurado para ventilação superior e estética desportiva intemporal.",
+    desc: "Couro nappa perfurado para ventilação superior e estética GT intemporal.",
   },
   {
     name: "Acabamentos em Fibra de Carbono",
     img: carbono,
-    desc: "Inserções em carbono real, com tecelagem twill brilhante ou mate. Leveza e detalhe motorsport.",
+    desc: "Carbono real em tecelagem twill ou forged. Leveza e detalhe motorsport ao nível Porsche e Ferrari.",
   },
   {
     name: "Costuras Personalizadas",
     img: costuras,
-    desc: "Escolhe a cor, o ponto e o padrão. Costura à mão por mestres-artesãos.",
+    desc: "Escolhe a cor, o ponto e o padrão. Costura à mão por mestres-artesãos com acabamento OEM+.",
   },
   {
-    name: "Indicador LED de Mudança de Caixa",
+    name: "Indicadores LED de Mudança de Caixa",
     img: ledShift,
-    desc: "Barra sequencial de LEDs integrada no aro. Resposta imediata para condução em pista.",
+    desc: "Barra sequencial de LEDs integrada no aro. Resposta imediata, inspirada nos cockpits de competição.",
   },
   {
-    name: "Patilhas de Velocidade Personalizadas",
+    name: "Patilhas de Velocidade Premium",
     img: patilhas,
-    desc: "Patilhas em alumínio CNC anodizado. Maior alcance, melhor ergonomia, troca instantânea.",
+    desc: "Patilhas em alumínio CNC anodizado. Maior alcance e ergonomia digna de um AMG GT.",
+  },
+  {
+    name: "Personalização OEM+",
+    img: oemPlus,
+    desc: "Upgrades que parecem de fábrica — só que melhores. Iluminação ambiente, inserções e detalhes integrados.",
+  },
+  {
+    name: "Restauro e Upgrade de Volantes",
+    img: restauro,
+    desc: "Devolvemos a vida ao teu volante original com materiais premium e acabamento de relojoaria.",
+  },
+  {
+    name: "Componentes Premium para Interior",
+    img: componentesInterior,
+    desc: "Apoios de braço, manípulos de caixa, foles em pele e trims em carbono. Cada detalhe importa.",
   },
 ];
 
