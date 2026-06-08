@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, Wrench, Truck, Star } from "lucide-react";
-import { ProductGrid } from "@/components/ProductGrid";
+import { FeaturedWheels } from "@/components/FeaturedWheels";
 import heroImg from "@/assets/hero-steering.jpg";
 import wheelImg from "@/assets/wheel-showcase.jpg";
 import { CustomProductsSection } from "@/components/CustomProductsSection";
@@ -79,7 +79,7 @@ function Home() {
             Ver todos <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </div>
-        <ProductGrid first={8} />
+        <FeaturedWheels />
       </section>
 
       <CustomProductsSection />
