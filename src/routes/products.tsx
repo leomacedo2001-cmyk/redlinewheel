@@ -5,7 +5,7 @@ export const Route = createFileRoute("/products")({
   head: () => ({
     meta: [
       { title: "Produtos — REDLINE Performance" },
-      { name: "description", content: "Toda a coleção de volantes premium e acessórios automóveis APEX. Compatível com as principais marcas." },
+      { name: "description", content: "Toda a coleção de volantes premium e acessórios automóveis REDLINE. Compatível com as principais marcas." },
       { property: "og:title", content: "Produtos — REDLINE Performance" },
       { property: "og:description", content: "Volantes personalizados, acessórios e peças premium para o teu automóvel." },
       { property: "og:url", content: "/products" },

@@ -7,7 +7,7 @@ export function SiteHeader() {
       <div className="container-premium flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
           <span className="text-xl font-bold tracking-tight">
-            APEX<span className="text-primary">.</span>
+            REDLINE<span className="text-primary">.</span>
           </span>
           <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground hidden sm:inline">Automotive</span>
         </Link>
