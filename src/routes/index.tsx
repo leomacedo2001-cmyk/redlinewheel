@@ -8,9 +8,9 @@ import wheelImg from "@/assets/wheel-showcase.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "APEX Automotive — Volantes Premium Personalizados" },
+      { title: "REDLINE Performance — Volantes Premium Personalizados" },
       { name: "description", content: "Transforma o interior do teu automóvel com volantes premium personalizados. Compatível com BMW, Audi, Porsche, Mercedes e mais." },
-      { property: "og:title", content: "APEX Automotive — Volantes Premium" },
+      { property: "og:title", content: "REDLINE Performance — Volantes Premium" },
       { property: "og:description", content: "Volantes desportivos personalizados para uma experiência de condução única." },
       { property: "og:url", content: "/" },
     ],
@@ -85,7 +85,7 @@ function Home() {
       <section className="bg-surface py-24">
         <div className="container-premium">
           <div className="text-center mb-16">
-            <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">A Diferença APEX</div>
+            <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">A Diferença REDLINE</div>
             <h2 className="text-4xl md:text-5xl font-bold">Construído para entusiastas.</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-px bg-border">
@@ -110,7 +110,7 @@ function Home() {
           <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">Engenharia</div>
           <h2 className="text-4xl md:text-5xl font-bold mb-6">Cada detalhe<br />importa.</h2>
           <p className="text-muted-foreground mb-8 leading-relaxed">
-            Do design ao acabamento final, cada volante APEX é o resultado de centenas de horas de trabalho manual.
+            Do design ao acabamento final, cada volante REDLINE é o resultado de centenas de horas de trabalho manual.
             Combinamos materiais premium com tecnologia de ponta para criar peças únicas que elevam qualquer interior.
           </p>
           <div className="grid grid-cols-2 gap-6">

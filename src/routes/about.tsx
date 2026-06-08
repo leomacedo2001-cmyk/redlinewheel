@@ -3,9 +3,9 @@ import { createFileRoute } from "@tanstack/react-router";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "Sobre Nós — APEX Automotive" },
-      { name: "description", content: "A APEX Automotive nasceu da paixão pelo setor automóvel. Construímos volantes premium personalizados em Portugal." },
-      { property: "og:title", content: "Sobre Nós — APEX Automotive" },
+      { title: "Sobre Nós — REDLINE Performance" },
+      { name: "description", content: "A REDLINE Performance nasceu da paixão pelo setor automóvel. Construímos volantes premium personalizados em Portugal." },
+      { property: "og:title", content: "Sobre Nós — REDLINE Performance" },
       { property: "og:description", content: "A nossa história, missão e paixão pelo setor automóvel." },
       { property: "og:url", content: "/about" },
     ],
@@ -22,7 +22,7 @@ function AboutPage() {
 
       <div className="prose prose-invert max-w-none space-y-6 text-muted-foreground text-lg leading-relaxed">
         <p>
-          A APEX Automotive nasceu de uma obsessão: a perfeição na experiência de condução. Acreditamos que o volante é o ponto de contacto mais íntimo entre condutor e máquina — e merece ser tratado como tal.
+          A REDLINE Performance nasceu de uma obsessão: a perfeição na experiência de condução. Acreditamos que o volante é o ponto de contacto mais íntimo entre condutor e máquina — e merece ser tratado como tal.
         </p>
         <p>
           Desde 2020 desenhamos e construímos à mão volantes personalizados para entusiastas em toda a Europa. Trabalhamos com BMW, Mercedes-AMG, Audi RS, Porsche, Cupra, Tesla e muitas outras marcas, oferecendo personalização total em materiais, cores e acabamentos.

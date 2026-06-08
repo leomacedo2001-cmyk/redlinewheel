@@ -4,9 +4,9 @@ import { ProductGrid } from "@/components/ProductGrid";
 export const Route = createFileRoute("/products")({
   head: () => ({
     meta: [
-      { title: "Produtos — APEX Automotive" },
-      { name: "description", content: "Toda a coleção de volantes premium e acessórios automóveis APEX. Compatível com as principais marcas." },
-      { property: "og:title", content: "Produtos — APEX Automotive" },
+      { title: "Produtos — REDLINE Performance" },
+      { name: "description", content: "Toda a coleção de volantes premium e acessórios automóveis REDLINE. Compatível com as principais marcas." },
+      { property: "og:title", content: "Produtos — REDLINE Performance" },
       { property: "og:description", content: "Volantes personalizados, acessórios e peças premium para o teu automóvel." },
       { property: "og:url", content: "/products" },
     ],
