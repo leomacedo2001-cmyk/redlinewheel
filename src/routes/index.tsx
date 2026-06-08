@@ -4,6 +4,7 @@ import { ArrowRight, Shield, Wrench, Truck, Star } from "lucide-react";
 import { ProductGrid } from "@/components/ProductGrid";
 import heroImg from "@/assets/hero-steering.jpg";
 import wheelImg from "@/assets/wheel-showcase.jpg";
+import { CustomProductsSection } from "@/components/CustomProductsSection";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -80,6 +81,8 @@ function Home() {
         </div>
         <ProductGrid first={8} />
       </section>
+
+      <CustomProductsSection />
 
       {/* BENEFITS */}
       <section className="bg-surface py-24">
