@@ -8,7 +8,7 @@ import costuras from "@/assets/product-costuras.jpg";
 import ledShift from "@/assets/product-led-shift.jpg";
 import patilhas from "@/assets/product-patilhas.jpg";
 import oemPlus from "@/assets/product-oem-plus.jpg";
-import restauro from "@/assets/product-restauro.jpg";
+
 import componentesInterior from "@/assets/product-componentes-interior.jpg";
 
 type Category = {
@@ -26,7 +26,7 @@ const CATEGORIES: Record<string, Category> = {
     tagline: "Aderência e toque premium",
     intro: "Alcântara genuíno aplicado à mão nas zonas de pegada para máxima aderência e estética motorsport. Material de eleição das edições M Performance, RS e AMG.",
     hero: alcantara,
-    gallery: [alcantara, restauro, oemPlus],
+    gallery: [alcantara, costuras, oemPlus],
     highlights: ["Aderência superior em condução desportiva", "Toque premium e respirável", "Disponível em várias tonalidades", "Combinável com pele ou carbono"],
   },
   "pele-perfurada": {
@@ -50,7 +50,7 @@ const CATEGORIES: Record<string, Category> = {
     tagline: "Cor, ponto e padrão",
     intro: "Escolhe a cor, o ponto e o padrão. Costura à mão por mestres-artesãos com acabamento OEM+ indistinguível de fábrica.",
     hero: costuras,
-    gallery: [costuras, oemPlus, restauro],
+    gallery: [costuras, oemPlus, alcantara],
     highlights: ["Mais de 30 cores disponíveis", "Ponto duplo, cruzado ou tom-sobre-tom", "Costura à mão em zonas críticas", "Combinações tricolor M ou personalizadas"],
   },
   "led-shift": {
@@ -74,16 +74,8 @@ const CATEGORIES: Record<string, Category> = {
     tagline: "Parecem de fábrica — só que melhores",
     intro: "Upgrades que parecem de fábrica — só que melhores. Iluminação ambiente, inserções e detalhes integrados sem comprometer a garantia.",
     hero: oemPlus,
-    gallery: [oemPlus, componentesInterior, restauro],
+    gallery: [oemPlus, componentesInterior, alcantara],
     highlights: ["Acabamento indistinguível do original", "Sem cortes destrutivos", "Compatível com airbag e sensores", "Documentação técnica fornecida"],
-  },
-  restauro: {
-    title: "Restauro e Upgrade de Volantes",
-    tagline: "Acabamento de relojoaria",
-    intro: "Devolvemos a vida ao teu volante original com materiais premium e acabamento de relojoaria. Total reaproveitamento do esqueleto OEM.",
-    hero: restauro,
-    gallery: [restauro, costuras, alcantara],
-    highlights: ["Restauro completo do esqueleto", "Materiais premium à escolha", "Mantém compatibilidade OEM", "Garantia de 2 anos"],
   },
   "componentes-interior": {
     title: "Componentes Premium para Interior",

@@ -8,7 +8,7 @@ import volanteCompleto from "@/assets/product-volante-completo.jpg";
 import ledShift from "@/assets/product-led-shift.jpg";
 import pelePerfurada from "@/assets/product-pele-perfurada.jpg";
 import alcantara from "@/assets/product-alcantara.jpg";
-import restauro from "@/assets/product-restauro.jpg";
+
 
 const WHEELS = [
   { name: "Volante Full Carbon Performance", img: carbono, tag: "Carbon Forged", desc: "Aro integralmente em fibra de carbono twill com detalhes em alcântara. Leveza absoluta, rigidez de competição." },
@@ -18,7 +18,7 @@ const WHEELS = [
   { name: "Volante RS Performance Edition", img: pelePerfurada, tag: "RS Edition", desc: "Pele perfurada nas pegas e alcântara na coroa, inspirado nas séries RS. Costuras vermelhas de assinatura." },
   { name: "Volante AMG Inspired Performance", img: alcantara, tag: "AMG Inspired", desc: "Aro achatado em baixo, alcântara integral e faixa de centro discreta. A linguagem AMG, à tua medida." },
   { name: "Volante M Performance Custom", img: hero, tag: "M Performance", desc: "Tricolor M na faixa central, carbono nas barras e alcântara nas zonas de pegada. Pura herança M." },
-  { name: "Volante Signature Redline Performance", img: restauro, tag: "Signature", desc: "A nossa peça de assinatura. Carbono forged, alcântara, costuras vermelhas e logótipo Redline gravado." },
+  { name: "Volante Signature Redline Performance", img: volanteCompleto, tag: "Signature", desc: "A nossa peça de assinatura. Carbono forged, alcântara, costuras vermelhas e logótipo Redline gravado." },
 ];
 
 export function FeaturedWheels() {
