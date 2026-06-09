@@ -9,7 +9,7 @@ import costuras from "@/assets/product-costuras.jpg";
 import ledShift from "@/assets/product-led-shift.jpg";
 import patilhas from "@/assets/product-patilhas.jpg";
 import oemPlus from "@/assets/product-oem-plus.jpg";
-import restauro from "@/assets/product-restauro.jpg";
+
 import componentesInterior from "@/assets/product-componentes-interior.jpg";
 
 const CATEGORIES = [
@@ -54,12 +54,6 @@ const CATEGORIES = [
     name: "Personalização OEM+",
     img: oemPlus,
     desc: "Upgrades que parecem de fábrica — só que melhores. Iluminação ambiente, inserções e detalhes integrados.",
-  },
-  {
-    slug: "restauro",
-    name: "Restauro e Upgrade de Volantes",
-    img: restauro,
-    desc: "Devolvemos a vida ao teu volante original com materiais premium e acabamento de relojoaria.",
   },
   {
     slug: "componentes-interior",
