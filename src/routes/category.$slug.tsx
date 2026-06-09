@@ -139,7 +139,7 @@ function CategoryPage() {
           <h1 className="text-5xl md:text-6xl font-bold mb-6">{cat.title}</h1>
           <p className="text-lg text-muted-foreground mb-8 leading-relaxed">{cat.intro}</p>
           <ul className="space-y-3 mb-10">
-            {cat.highlights.map((h) => (
+            {cat.highlights.map((h: string) => (
               <li key={h} className="flex gap-3 text-sm">
                 <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
                 <span>{h}</span>
@@ -163,7 +163,7 @@ function CategoryPage() {
       <section>
         <h2 className="text-xs uppercase tracking-[0.3em] text-primary mb-4">Galeria</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {cat.gallery.map((g, i) => (
+          {cat.gallery.map((g: string, i: number) => (
             <div key={i} className="aspect-square overflow-hidden bg-surface border border-border/60">
               <img src={g} alt={`${cat.title} ${i + 1}`} width={1024} height={1024} loading="lazy" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
             </div>
