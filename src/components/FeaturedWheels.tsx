@@ -1,30 +1,28 @@
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import hero from "@/assets/hero-steering.jpg";
-import wheel from "@/assets/wheel-showcase.jpg";
-import carbono from "@/assets/product-carbono.jpg";
-import volanteCompleto from "@/assets/product-volante-completo.jpg";
-import ledShift from "@/assets/product-led-shift.jpg";
-import pelePerfurada from "@/assets/product-pele-perfurada.jpg";
-import alcantara from "@/assets/product-alcantara.jpg";
 
-
-const WHEELS = [
-  { name: "Volante Full Carbon Performance", img: carbono, tag: "Carbon Forged", desc: "Aro integralmente em fibra de carbono twill com detalhes em alcântara. Leveza absoluta, rigidez de competição." },
-  { name: "Volante Alcântara + Carbono Forged", img: volanteCompleto, tag: "Performance", desc: "Combinação de alcântara premium nas pegas e carbono forged no aro inferior. Aderência e estética motorsport." },
-  { name: "Volante LED Race Display", img: ledShift, tag: "Race", desc: "Barra sequencial de LEDs RGB integrada no aro superior. Indicação de mudança e telemetria visual." },
-  { name: "Volante GT Style Custom", img: wheel, tag: "GT Style", desc: "Linha GT com pele nappa, faixa central a 12h e costuras tom-sobre-tom. Conforto premium para longas distâncias." },
-  { name: "Volante RS Performance Edition", img: pelePerfurada, tag: "RS Edition", desc: "Pele perfurada nas pegas e alcântara na coroa, inspirado nas séries RS. Costuras vermelhas de assinatura." },
-  { name: "Volante AMG Inspired Performance", img: alcantara, tag: "AMG Inspired", desc: "Aro achatado em baixo, alcântara integral e faixa de centro discreta. A linguagem AMG, à tua medida." },
-  { name: "Volante M Performance Custom", img: hero, tag: "M Performance", desc: "Tricolor M na faixa central, carbono nas barras e alcântara nas zonas de pegada. Pura herança M." },
-  { name: "Volante Signature Redline Performance", img: volanteCompleto, tag: "Signature", desc: "A nossa peça de assinatura. Carbono forged, alcântara, costuras vermelhas e logótipo Redline gravado." },
-];
+// Adicionar novos volantes em destaque aqui quando necessário
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const WHEELS: any[] = [];
 
 export function FeaturedWheels() {
+  if (WHEELS.length === 0) {
+    return (
+      <div className="text-center py-20 border border-border/60 bg-surface/30">
+        <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">
+          Em breve
+        </div>
+        <p className="text-muted-foreground max-w-md mx-auto">
+          Novos produtos em destaque serão adicionados em breve. Fica atento às novidades da REDLINE Performance.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      {WHEELS.map((w) => (
+      {WHEELS.map((w: { name: string; img: string; tag: string; desc: string }) => (
         <article
           key={w.name}
           className="group bg-surface border border-border/60 hover:border-primary/50 transition-all duration-300 flex flex-col"
