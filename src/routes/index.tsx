@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, Wrench, Truck, Star } from "lucide-react";
+import { FeaturedWheels } from "@/components/FeaturedWheels";
 
 import heroImg from "@/assets/hero-steering.jpg";
 import wheelImg from "@/assets/wheel-showcase.jpg";
@@ -68,6 +69,19 @@ function Home() {
         </div>
       </section>
 
+      {/* FEATURED PRODUCTS */}
+      <section className="container-premium py-24">
+        <div className="flex items-end justify-between mb-12">
+          <div>
+            <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">Coleção</div>
+            <h2 className="text-4xl md:text-5xl font-bold">Produtos em Destaque</h2>
+          </div>
+          <Link to="/products" className="hidden md:inline-flex items-center text-sm font-medium hover:text-primary transition-colors">
+            Ver todos <ArrowRight className="ml-2 h-4 w-4" />
+          </Link>
+        </div>
+        <FeaturedWheels />
+      </section>
 
       <CustomProductsSection />
 
