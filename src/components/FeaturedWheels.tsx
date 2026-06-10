@@ -2,12 +2,44 @@ import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
-// Adicionar novos volantes em destaque aqui quando necessário
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const WHEELS: any[] = [];
+/**
+ * Produtos em Destaque
+ * ---------------------------------------------------------------
+ * Para adicionar/editar produtos manualmente, edita o array WHEELS.
+ *
+ * Campos:
+ *  - order:   número usado para ordenação (menor = aparece primeiro)
+ *  - enabled: false para desativar o produto sem remover o código
+ *  - name / tag / desc / img: conteúdo apresentado no card
+ *
+ * Exemplo:
+ *  {
+ *    order: 1,
+ *    enabled: true,
+ *    name: "Volante M Performance Carbono",
+ *    tag: "BMW",
+ *    desc: "Alcantara + carbono forjado, costura tricolor.",
+ *    img: "/caminho/para/imagem.jpg",
+ *  },
+ */
+
+type Wheel = {
+  order: number;
+  enabled: boolean;
+  name: string;
+  tag: string;
+  desc: string;
+  img: string;
+};
+
+const WHEELS: Wheel[] = [
+  // Adicionar produtos aqui
+];
 
 export function FeaturedWheels() {
-  if (WHEELS.length === 0) {
+  const visible = WHEELS.filter((w) => w.enabled).sort((a, b) => a.order - b.order);
+
+  if (visible.length === 0) {
     return (
       <div className="text-center py-20 border border-border/60 bg-surface/30">
         <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">
@@ -22,7 +54,7 @@ export function FeaturedWheels() {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      {WHEELS.map((w: { name: string; img: string; tag: string; desc: string }) => (
+      {visible.map((w) => (
         <article
           key={w.name}
           className="group bg-surface border border-border/60 hover:border-primary/50 transition-all duration-300 flex flex-col"
