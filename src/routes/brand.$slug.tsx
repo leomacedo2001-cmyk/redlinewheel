@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { getBrand, BRANDS } from "@/lib/brands";
+import { getBrand, BRANDS, type BrandModel } from "@/lib/brands";
 
 export const Route = createFileRoute("/brand/$slug")({
   loader: ({ params }) => {
