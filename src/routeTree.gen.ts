@@ -17,6 +17,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductHandleRouteImport } from './routes/product.$handle'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
+import { Route as BrandSlugRouteImport } from './routes/brand.$slug'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -58,6 +59,11 @@ const CategorySlugRoute = CategorySlugRouteImport.update({
   path: '/category/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BrandSlugRoute = BrandSlugRouteImport.update({
+  id: '/brand/$slug',
+  path: '/brand/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -66,6 +72,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/products': typeof ProductsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/brand/$slug': typeof BrandSlugRoute
   '/category/$slug': typeof CategorySlugRoute
   '/product/$handle': typeof ProductHandleRoute
 }
@@ -76,6 +83,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/products': typeof ProductsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/brand/$slug': typeof BrandSlugRoute
   '/category/$slug': typeof CategorySlugRoute
   '/product/$handle': typeof ProductHandleRoute
 }
@@ -87,6 +95,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/products': typeof ProductsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/brand/$slug': typeof BrandSlugRoute
   '/category/$slug': typeof CategorySlugRoute
   '/product/$handle': typeof ProductHandleRoute
 }
@@ -99,6 +108,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/products'
     | '/sitemap.xml'
+    | '/brand/$slug'
     | '/category/$slug'
     | '/product/$handle'
   fileRoutesByTo: FileRoutesByTo
@@ -109,6 +119,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/products'
     | '/sitemap.xml'
+    | '/brand/$slug'
     | '/category/$slug'
     | '/product/$handle'
   id:
@@ -119,6 +130,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/products'
     | '/sitemap.xml'
+    | '/brand/$slug'
     | '/category/$slug'
     | '/product/$handle'
   fileRoutesById: FileRoutesById
@@ -130,6 +142,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   ProductsRoute: typeof ProductsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  BrandSlugRoute: typeof BrandSlugRoute
   CategorySlugRoute: typeof CategorySlugRoute
   ProductHandleRoute: typeof ProductHandleRoute
 }
@@ -192,6 +205,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CategorySlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/brand/$slug': {
+      id: '/brand/$slug'
+      path: '/brand/$slug'
+      fullPath: '/brand/$slug'
+      preLoaderRoute: typeof BrandSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -202,6 +222,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   ProductsRoute: ProductsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  BrandSlugRoute: BrandSlugRoute,
   CategorySlugRoute: CategorySlugRoute,
   ProductHandleRoute: ProductHandleRoute,
 }
