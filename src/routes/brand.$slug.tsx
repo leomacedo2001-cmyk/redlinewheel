@@ -75,10 +75,14 @@ function BrandPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {brand.models.map((mo: BrandModel) => (
             <article
-              key={mo.name}
+              key={mo.slug}
               className="group bg-surface border border-border/60 hover:border-primary/50 transition-all duration-300 overflow-hidden flex flex-col"
             >
-              <div className="aspect-[4/3] overflow-hidden bg-background">
+              <Link
+                to="/brand/$slug/model/$model"
+                params={{ slug: brand.slug, model: mo.slug }}
+                className="aspect-[4/3] overflow-hidden bg-background block"
+              >
                 <img
                   src={mo.img}
                   alt={`${brand.name} ${mo.name}`}
@@ -87,17 +91,24 @@ function BrandPage() {
                   loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
-              </div>
+              </Link>
               <div className="p-5 flex-1 flex flex-col">
+                {mo.chassis && (
+                  <div className="text-[10px] uppercase tracking-[0.2em] text-primary mb-1">{mo.chassis}</div>
+                )}
                 <h3 className="text-lg font-bold mb-1">{mo.name}</h3>
-                <p className="text-sm text-muted-foreground mb-5 flex-1">{mo.description}</p>
+                <p className="text-sm text-muted-foreground mb-4 flex-1">{mo.description}</p>
+                {mo.price && (
+                  <div className="text-base font-semibold mb-3">
+                    {mo.price.currency} {mo.price.amount.toFixed(2)}
+                  </div>
+                )}
                 <Button
                   asChild
-                  variant="outline"
-                  className="rounded-none h-10 uppercase tracking-wider text-[11px] w-full border-border/60 hover:border-primary hover:text-primary"
+                  className="rounded-none h-10 uppercase tracking-wider text-[11px] w-full bg-primary hover:bg-primary/90"
                 >
-                  <Link to="/contact">
-                    Pedir Informações <ArrowRight className="ml-2 h-3.5 w-3.5" />
+                  <Link to="/brand/$slug/model/$model" params={{ slug: brand.slug, model: mo.slug }}>
+                    Comprar <ArrowRight className="ml-2 h-3.5 w-3.5" />
                   </Link>
                 </Button>
               </div>
