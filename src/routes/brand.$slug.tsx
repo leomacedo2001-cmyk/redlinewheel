@@ -73,7 +73,7 @@ function BrandPage() {
         </header>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {brand.models.map((mo) => (
+          {brand.models.map((mo: BrandModel) => (
             <article
               key={mo.name}
               className="group bg-surface border border-border/60 hover:border-primary/50 transition-all duration-300 overflow-hidden flex flex-col"
