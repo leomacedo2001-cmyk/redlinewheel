@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Minus, Plus, ShoppingCart, Zap, Truck, ShieldCheck, CreditCard, Check } from "lucide-react";
-import { getBrandModel } from "@/lib/brands";
+import { getBrandModel, type BrandModelSpec } from "@/lib/brands";
 
 export const Route = createFileRoute("/brand/$slug/model/$model")({
   loader: ({ params }) => {
@@ -60,7 +60,7 @@ function ModelPage() {
           </div>
           {gallery.length > 1 && (
             <div className="grid grid-cols-4 gap-2">
-              {gallery.map((g, i) => (
+              {gallery.map((g: string, i: number) => (
                 <button
                   key={i}
                   onClick={() => setActiveImg(i)}
@@ -106,7 +106,7 @@ function ModelPage() {
           <div>
             <div className="text-[10px] uppercase tracking-[0.3em] text-primary mb-3">Compatibilidades</div>
             <div className="flex flex-wrap gap-1.5">
-              {model.compatibilities.map((c) => (
+              {model.compatibilities.map((c: string) => (
                 <span key={c} className="text-[11px] px-2 py-1 bg-surface border border-border/60 text-muted-foreground">
                   {c}
                 </span>
@@ -177,7 +177,7 @@ function ModelPage() {
             <h2 className="text-2xl md:text-3xl font-bold">Especificações Técnicas</h2>
           </header>
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-10">
-            {model.specs.map((s) => (
+            {model.specs.map((s: BrandModelSpec) => (
               <div key={s.label} className="flex justify-between py-3 border-b border-border/40 text-sm">
                 <dt className="text-muted-foreground uppercase tracking-wider text-xs">{s.label}</dt>
                 <dd className="font-medium">{s.value}</dd>
