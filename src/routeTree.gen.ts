@@ -18,6 +18,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductHandleRouteImport } from './routes/product.$handle'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as BrandSlugRouteImport } from './routes/brand.$slug'
+import { Route as BrandSlugModelModelRouteImport } from './routes/brand.$slug.model.$model'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -64,6 +65,11 @@ const BrandSlugRoute = BrandSlugRouteImport.update({
   path: '/brand/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BrandSlugModelModelRoute = BrandSlugModelModelRouteImport.update({
+  id: '/model/$model',
+  path: '/model/$model',
+  getParentRoute: () => BrandSlugRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -72,9 +78,10 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/products': typeof ProductsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/brand/$slug': typeof BrandSlugRoute
+  '/brand/$slug': typeof BrandSlugRouteWithChildren
   '/category/$slug': typeof CategorySlugRoute
   '/product/$handle': typeof ProductHandleRoute
+  '/brand/$slug/model/$model': typeof BrandSlugModelModelRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -83,9 +90,10 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/products': typeof ProductsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/brand/$slug': typeof BrandSlugRoute
+  '/brand/$slug': typeof BrandSlugRouteWithChildren
   '/category/$slug': typeof CategorySlugRoute
   '/product/$handle': typeof ProductHandleRoute
+  '/brand/$slug/model/$model': typeof BrandSlugModelModelRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -95,9 +103,10 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/products': typeof ProductsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/brand/$slug': typeof BrandSlugRoute
+  '/brand/$slug': typeof BrandSlugRouteWithChildren
   '/category/$slug': typeof CategorySlugRoute
   '/product/$handle': typeof ProductHandleRoute
+  '/brand/$slug/model/$model': typeof BrandSlugModelModelRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -111,6 +120,7 @@ export interface FileRouteTypes {
     | '/brand/$slug'
     | '/category/$slug'
     | '/product/$handle'
+    | '/brand/$slug/model/$model'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -122,6 +132,7 @@ export interface FileRouteTypes {
     | '/brand/$slug'
     | '/category/$slug'
     | '/product/$handle'
+    | '/brand/$slug/model/$model'
   id:
     | '__root__'
     | '/'
@@ -133,6 +144,7 @@ export interface FileRouteTypes {
     | '/brand/$slug'
     | '/category/$slug'
     | '/product/$handle'
+    | '/brand/$slug/model/$model'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -142,7 +154,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   ProductsRoute: typeof ProductsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  BrandSlugRoute: typeof BrandSlugRoute
+  BrandSlugRoute: typeof BrandSlugRouteWithChildren
   CategorySlugRoute: typeof CategorySlugRoute
   ProductHandleRoute: typeof ProductHandleRoute
 }
@@ -212,8 +224,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BrandSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/brand/$slug/model/$model': {
+      id: '/brand/$slug/model/$model'
+      path: '/model/$model'
+      fullPath: '/brand/$slug/model/$model'
+      preLoaderRoute: typeof BrandSlugModelModelRouteImport
+      parentRoute: typeof BrandSlugRoute
+    }
   }
 }
+
+interface BrandSlugRouteChildren {
+  BrandSlugModelModelRoute: typeof BrandSlugModelModelRoute
+}
+
+const BrandSlugRouteChildren: BrandSlugRouteChildren = {
+  BrandSlugModelModelRoute: BrandSlugModelModelRoute,
+}
+
+const BrandSlugRouteWithChildren = BrandSlugRoute._addFileChildren(
+  BrandSlugRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -222,7 +253,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   ProductsRoute: ProductsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  BrandSlugRoute: BrandSlugRoute,
+  BrandSlugRoute: BrandSlugRouteWithChildren,
   CategorySlugRoute: CategorySlugRoute,
   ProductHandleRoute: ProductHandleRoute,
 }

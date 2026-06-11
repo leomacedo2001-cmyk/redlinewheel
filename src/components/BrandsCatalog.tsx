@@ -32,7 +32,7 @@ export function BrandsCatalog() {
               <div className="flex flex-wrap gap-1.5">
                 {b.models.slice(0, 8).map((mo) => (
                   <span
-                    key={mo.name}
+                    key={mo.slug}
                     className="text-[11px] px-2 py-1 bg-background border border-border/60 text-muted-foreground"
                   >
                     {mo.name}
@@ -48,7 +48,7 @@ export function BrandsCatalog() {
 
             <Button asChild className="bg-primary hover:bg-primary/90 rounded-none h-11 uppercase tracking-wider text-xs w-full">
               <Link to="/brand/$slug" params={{ slug: b.slug }}>
-                Ver Mais <ArrowRight className="ml-2 h-3.5 w-3.5" />
+                Descobrir Gama <ArrowRight className="ml-2 h-3.5 w-3.5" />
               </Link>
             </Button>
           </div>
