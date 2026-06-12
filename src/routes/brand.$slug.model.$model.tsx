@@ -146,7 +146,7 @@ function ModelPage() {
           </div>
           {gallery.length > 1 && (
             <div className="grid grid-cols-4 gap-2">
-              {gallery.map((g, i) => (
+              {gallery.map((g: string, i: number) => (
                 <button
                   key={i}
                   onClick={() => setActiveImg(i)}
