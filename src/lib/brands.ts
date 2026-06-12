@@ -22,7 +22,17 @@ export type BrandModel = {
   sku?: string;
   price?: { amount: number; currency: string };
   status?: "Disponível" | "Sob Encomenda" | "Em Breve";
+  /**
+   * Handle do produto no Shopify. Se omitido, é usado `${brand.slug}-${model.slug}`.
+   * Cria o produto no Shopify Admin com esse handle para ativar carrinho/checkout.
+   */
+  shopifyHandle?: string;
 };
+
+/** Resolve o handle Shopify para um modelo (default: `${brandSlug}-${modelSlug}`). */
+export function resolveShopifyHandle(brandSlug: string, model: BrandModel): string {
+  return model.shopifyHandle ?? `${brandSlug}-${model.slug}`;
+}
 
 export type Brand = {
   slug: string;
