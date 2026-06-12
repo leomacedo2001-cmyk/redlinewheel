@@ -1,8 +1,24 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Minus, Plus, ShoppingCart, Zap, Truck, ShieldCheck, CreditCard, Check } from "lucide-react";
-import { getBrandModel, type BrandModelSpec } from "@/lib/brands";
+import {
+  ArrowLeft,
+  Minus,
+  Plus,
+  ShoppingCart,
+  Zap,
+  Truck,
+  ShieldCheck,
+  CreditCard,
+  Check,
+  Loader2,
+  AlertCircle,
+} from "lucide-react";
+import { getBrandModel, resolveShopifyHandle, type BrandModelSpec } from "@/lib/brands";
+import { fetchProductByHandle } from "@/lib/shopify";
+import { useCartStore } from "@/stores/cartStore";
 
 export const Route = createFileRoute("/brand/$slug/model/$model")({
   loader: ({ params }) => {
@@ -38,9 +54,79 @@ export const Route = createFileRoute("/brand/$slug/model/$model")({
 
 function ModelPage() {
   const { brand, model } = Route.useLoaderData();
-  const gallery = model.gallery && model.gallery.length > 0 ? model.gallery : [model.img];
+  const shopifyHandle = resolveShopifyHandle(brand.slug, model);
+
+  const productQuery = useQuery({
+    queryKey: ["shopify-product", shopifyHandle],
+    queryFn: () => fetchProductByHandle(shopifyHandle),
+    staleTime: 60_000,
+  });
+
+  const shopifyProduct = productQuery.data ?? null;
+  const variants = shopifyProduct?.node.variants.edges.map((e) => e.node) ?? [];
+  const shopifyImages = shopifyProduct?.node.images.edges.map((e) => e.node) ?? [];
+
+  const [variantId, setVariantId] = useState<string | null>(null);
+  const selectedVariant = useMemo(
+    () => variants.find((v) => v.id === variantId) ?? variants[0] ?? null,
+    [variants, variantId]
+  );
+
+  const gallery =
+    shopifyImages.length > 0
+      ? shopifyImages.map((i) => i.url)
+      : model.gallery && model.gallery.length > 0
+        ? model.gallery
+        : [model.img];
   const [activeImg, setActiveImg] = useState(0);
   const [qty, setQty] = useState(1);
+
+  const addItem = useCartStore((s) => s.addItem);
+  const getCheckoutUrl = useCartStore((s) => s.getCheckoutUrl);
+  const isCartLoading = useCartStore((s) => s.isLoading);
+
+  const priceDisplay = selectedVariant
+    ? `${selectedVariant.price.currencyCode} ${parseFloat(selectedVariant.price.amount).toFixed(2)}`
+    : model.price
+      ? `${model.price.currency} ${model.price.amount.toFixed(2)}`
+      : null;
+
+  const handleAddToCart = async () => {
+    if (!shopifyProduct || !selectedVariant) {
+      toast.error("Produto indisponível", { description: "Este volante ainda não está publicado na loja." });
+      return;
+    }
+    await addItem({
+      product: shopifyProduct,
+      variantId: selectedVariant.id,
+      variantTitle: selectedVariant.title,
+      price: selectedVariant.price,
+      quantity: qty,
+      selectedOptions: selectedVariant.selectedOptions ?? [],
+    });
+    toast.success("Adicionado ao carrinho", { description: `${brand.name} ${model.name} × ${qty}` });
+  };
+
+  const handleBuyNow = async () => {
+    if (!shopifyProduct || !selectedVariant) {
+      toast.error("Produto indisponível", { description: "Este volante ainda não está publicado na loja." });
+      return;
+    }
+    await addItem({
+      product: shopifyProduct,
+      variantId: selectedVariant.id,
+      variantTitle: selectedVariant.title,
+      price: selectedVariant.price,
+      quantity: qty,
+      selectedOptions: selectedVariant.selectedOptions ?? [],
+    });
+    const url = getCheckoutUrl();
+    if (url) window.open(url, "_blank");
+  };
+
+  const productMissing = !productQuery.isLoading && !shopifyProduct;
+  const variantUnavailable = !!selectedVariant && !selectedVariant.availableForSale;
+  const canBuy = !!shopifyProduct && !!selectedVariant && selectedVariant.availableForSale;
 
   return (
     <div className="container-premium py-10 md:py-16">
@@ -81,26 +167,72 @@ function ModelPage() {
             <div className="text-xs uppercase tracking-[0.3em] text-primary mb-2">
               {brand.name} {model.chassis ? `· ${model.chassis}` : ""}
             </div>
-            <h1 className="text-3xl md:text-5xl font-bold leading-tight">{model.name}</h1>
+            <h1 className="text-3xl md:text-5xl font-bold leading-tight">{shopifyProduct?.node.title ?? model.name}</h1>
             {model.sku && (
               <div className="text-xs uppercase tracking-wider text-muted-foreground mt-3">Ref. {model.sku}</div>
             )}
           </div>
 
-          {model.price && (
-            <div className="text-3xl font-bold">
-              {model.price.currency} {model.price.amount.toFixed(2)}
+          {priceDisplay && <div className="text-3xl font-bold">{priceDisplay}</div>}
+
+          {productQuery.isLoading && (
+            <div className="inline-flex items-center gap-2 text-xs text-muted-foreground">
+              <Loader2 className="h-3.5 w-3.5 animate-spin" /> A carregar disponibilidade...
             </div>
           )}
 
-          {model.status && (
+          {productMissing && (
+            <div className="flex items-start gap-3 p-4 bg-surface border border-amber-500/30 text-sm">
+              <AlertCircle className="h-4 w-4 text-amber-500 mt-0.5 flex-shrink-0" />
+              <div className="space-y-1">
+                <div className="font-semibold">Produto sob consulta</div>
+                <div className="text-muted-foreground text-xs">
+                  Este modelo ainda não está disponível para compra online. Contacta-nos para encomendar.
+                </div>
+              </div>
+            </div>
+          )}
+
+          {model.status && !productMissing && (
             <div className="inline-flex items-center gap-2 text-xs uppercase tracking-wider px-3 py-1.5 bg-surface border border-border/60">
-              <span className={`h-2 w-2 rounded-full ${model.status === "Disponível" ? "bg-emerald-500" : "bg-amber-500"}`} />
-              {model.status}
+              <span
+                className={`h-2 w-2 rounded-full ${
+                  variantUnavailable ? "bg-red-500" : model.status === "Disponível" ? "bg-emerald-500" : "bg-amber-500"
+                }`}
+              />
+              {variantUnavailable ? "Esgotado" : model.status}
             </div>
           )}
 
-          <p className="text-muted-foreground leading-relaxed">{model.longDescription ?? model.description}</p>
+          <p className="text-muted-foreground leading-relaxed">
+            {shopifyProduct?.node.description || model.longDescription || model.description}
+          </p>
+
+          {/* Variant selector */}
+          {variants.length > 1 && (
+            <div>
+              <div className="text-[10px] uppercase tracking-[0.3em] text-primary mb-3">Variante</div>
+              <div className="flex flex-wrap gap-2">
+                {variants.map((v) => {
+                  const isActive = (selectedVariant?.id ?? variants[0]?.id) === v.id;
+                  return (
+                    <button
+                      key={v.id}
+                      onClick={() => setVariantId(v.id)}
+                      disabled={!v.availableForSale}
+                      className={`text-xs px-3 py-2 border transition-colors ${
+                        isActive
+                          ? "border-primary text-primary bg-primary/5"
+                          : "border-border/60 text-muted-foreground hover:border-primary/50"
+                      } ${!v.availableForSale ? "line-through opacity-50 cursor-not-allowed" : ""}`}
+                    >
+                      {v.title}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Compatibilities */}
           <div>
@@ -130,16 +262,34 @@ function ModelPage() {
 
           {/* Actions */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-            <Button asChild variant="outline" className="rounded-none h-12 uppercase tracking-wider text-xs border-border/60 hover:border-primary hover:text-primary">
-              <Link to="/contact">
-                <ShoppingCart className="h-4 w-4 mr-2" /> Adicionar ao Carrinho
-              </Link>
-            </Button>
-            <Button asChild className="rounded-none h-12 uppercase tracking-wider text-xs bg-primary hover:bg-primary/90">
-              <Link to="/contact">
-                <Zap className="h-4 w-4 mr-2" /> Comprar Agora
-              </Link>
-            </Button>
+            {canBuy ? (
+              <>
+                <Button
+                  onClick={handleAddToCart}
+                  disabled={isCartLoading}
+                  variant="outline"
+                  className="rounded-none h-12 uppercase tracking-wider text-xs border-border/60 hover:border-primary hover:text-primary"
+                >
+                  {isCartLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <ShoppingCart className="h-4 w-4 mr-2" />}
+                  Adicionar ao Carrinho
+                </Button>
+                <Button
+                  onClick={handleBuyNow}
+                  disabled={isCartLoading}
+                  className="rounded-none h-12 uppercase tracking-wider text-xs bg-primary hover:bg-primary/90"
+                >
+                  {isCartLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Zap className="h-4 w-4 mr-2" />}
+                  Comprar Agora
+                </Button>
+              </>
+            ) : (
+              <Button
+                asChild
+                className="rounded-none h-12 uppercase tracking-wider text-xs bg-primary hover:bg-primary/90 sm:col-span-2"
+              >
+                <Link to="/contact">Pedir Orçamento</Link>
+              </Button>
+            )}
           </div>
 
           {/* Trust badges */}
