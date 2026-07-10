@@ -7,6 +7,23 @@ import pelePerfurada from "@/assets/product-pele-perfurada.jpg";
 import oemPlus from "@/assets/product-oem-plus.jpg";
 import alcantara from "@/assets/product-alcantara.jpg";
 
+// BMW G80 (G-Series) — Carbono Forjado com flocos magenta + Alcântara
+import bmwG80_1 from "@/assets/bmw-g80-forged-1.jpg.asset.json";
+import bmwG80_2 from "@/assets/bmw-g80-forged-2.jpg.asset.json";
+import bmwG80_3 from "@/assets/bmw-g80-forged-3.jpg.asset.json";
+import bmwG80_4 from "@/assets/bmw-g80-forged-4.jpg.asset.json";
+import bmwG80_5 from "@/assets/bmw-g80-forged-5.jpg.asset.json";
+import bmwG80_6 from "@/assets/bmw-g80-forged-6.jpg.asset.json";
+
+// BMW F80 (F-Series) — Carbono + Pele Perfurada com detalhe vermelho
+import bmwF80_1 from "@/assets/bmw-f80-carbon-1.jpg.asset.json";
+import bmwF80_2 from "@/assets/bmw-f80-carbon-2.jpg.asset.json";
+import bmwF80_3 from "@/assets/bmw-f80-carbon-3.jpg.asset.json";
+import bmwF80_4 from "@/assets/bmw-f80-carbon-4.jpg.asset.json";
+
+const G80_GALLERY = [bmwG80_1.url, bmwG80_2.url, bmwG80_3.url, bmwG80_4.url, bmwG80_5.url, bmwG80_6.url];
+const F80_GALLERY = [bmwF80_1.url, bmwF80_2.url, bmwF80_3.url, bmwF80_4.url];
+
 export type BrandModelSpec = { label: string; value: string };
 
 export type BrandModel = {
