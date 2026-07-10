@@ -7,6 +7,23 @@ import pelePerfurada from "@/assets/product-pele-perfurada.jpg";
 import oemPlus from "@/assets/product-oem-plus.jpg";
 import alcantara from "@/assets/product-alcantara.jpg";
 
+// BMW G80 (G-Series) — Carbono Forjado com flocos magenta + Alcântara
+import bmwG80_1 from "@/assets/bmw-g80-forged-1.jpg.asset.json";
+import bmwG80_2 from "@/assets/bmw-g80-forged-2.jpg.asset.json";
+import bmwG80_3 from "@/assets/bmw-g80-forged-3.jpg.asset.json";
+import bmwG80_4 from "@/assets/bmw-g80-forged-4.jpg.asset.json";
+import bmwG80_5 from "@/assets/bmw-g80-forged-5.jpg.asset.json";
+import bmwG80_6 from "@/assets/bmw-g80-forged-6.jpg.asset.json";
+
+// BMW F80 (F-Series) — Carbono + Pele Perfurada com detalhe vermelho
+import bmwF80_1 from "@/assets/bmw-f80-carbon-1.jpg.asset.json";
+import bmwF80_2 from "@/assets/bmw-f80-carbon-2.jpg.asset.json";
+import bmwF80_3 from "@/assets/bmw-f80-carbon-3.jpg.asset.json";
+import bmwF80_4 from "@/assets/bmw-f80-carbon-4.jpg.asset.json";
+
+const G80_GALLERY = [bmwG80_1.url, bmwG80_2.url, bmwG80_3.url, bmwG80_4.url, bmwG80_5.url, bmwG80_6.url];
+const F80_GALLERY = [bmwF80_1.url, bmwF80_2.url, bmwF80_3.url, bmwF80_4.url];
+
 export type BrandModelSpec = { label: string; value: string };
 
 export type BrandModel = {
@@ -118,12 +135,17 @@ export const BRANDS: Brand[] = [
         name: "BMW F30 / F31 / F32 / F33 / F36",
         chassis: "F3x / F8x",
         description: "Volante para Série 3 e Série 4 F-Series. Compatível com M3 F80 e M4 F82.",
-        img: oemPlus,
-        gallery: [oemPlus, carbono, ledShift, hero],
+        longDescription:
+          "Volante BMW F-Series em carbono fosco com pele perfurada premium, detalhe central vermelho M Performance e patilhas de mudança em carbono vermelho. Costuras tricolor M (azul/violeta/vermelho). Compatível com airbag original.",
+        img: F80_GALLERY[0],
+        gallery: F80_GALLERY,
         compatibilities: ["320i", "320d", "330i", "335i", "340i", "M3 F80", "M4 F82", "M2 F87"],
         specs: [
           { label: "Geração", value: "F30/F32 (2012–2019)" },
           { label: "Diâmetro", value: "370 mm" },
+          { label: "Material", value: "Carbono + Pele Perfurada" },
+          { label: "Patilhas", value: "Carbono Vermelho" },
+          { label: "Costura", value: "Tricolor M" },
           { label: "LED Shift", value: "Opcional" },
         ],
         sku: "RL-BMW-F30",
@@ -152,14 +174,19 @@ export const BRANDS: Brand[] = [
         name: "BMW G20 / G21",
         chassis: "G2x",
         description: "Volante para Série 3 actual (2019+) e M3 G80.",
-        img: ledShift,
-        gallery: [ledShift, carbono, alcantara, hero],
-        compatibilities: ["320i", "320d", "330i", "330e", "340i", "M3 G80", "M3 Touring G81"],
+        longDescription:
+          "Volante BMW G-Series em carbono forjado com flocos magenta exclusivos, aros em Alcântara premium com costuras amarelas em zig-zag, patilhas de mudança em carbono e botões M1/M2 vermelhos. Display bar superior integrado. Marca 12h em amarelo racing.",
+        img: G80_GALLERY[0],
+        gallery: G80_GALLERY,
+        compatibilities: ["320i", "320d", "330i", "330e", "340i", "M3 G80", "M3 Touring G81", "M4 G82"],
         specs: [
           { label: "Geração", value: "G20/G21 (2019+)" },
           { label: "Diâmetro", value: "370 mm" },
+          { label: "Material", value: "Carbono Forjado + Alcântara" },
+          { label: "Flocos", value: "Magenta Exclusivo" },
           { label: "LED Shift", value: "Integrado" },
-          { label: "Patilhas", value: "Alumínio CNC" },
+          { label: "Patilhas", value: "Carbono" },
+          { label: "Costura", value: "Amarela Racing" },
         ],
         sku: "RL-BMW-G20",
         price: { amount: 899, currency: "EUR" },
