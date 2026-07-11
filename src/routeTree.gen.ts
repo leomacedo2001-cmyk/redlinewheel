@@ -72,9 +72,9 @@ const BrandSlugIndexRoute = BrandSlugIndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const BrandSlugModelModelRoute = BrandSlugModelModelRouteImport.update({
-  id: '/model/$model',
-  path: '/model/$model',
-  getParentRoute: () => BrandSlugRoute,
+  id: '/brand/$slug/model/$model',
+  path: '/brand/$slug/model/$model',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -170,6 +170,7 @@ export interface RootRouteChildren {
   CategorySlugRoute: typeof CategorySlugRoute
   ProductHandleRoute: typeof ProductHandleRoute
   BrandSlugIndexRoute: typeof BrandSlugIndexRoute
+  BrandSlugModelModelRoute: typeof BrandSlugModelModelRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -246,10 +247,10 @@ declare module '@tanstack/react-router' {
     }
     '/brand/$slug/model/$model': {
       id: '/brand/$slug/model/$model'
-      path: '/model/$model'
+      path: '/brand/$slug/model/$model'
       fullPath: '/brand/$slug/model/$model'
       preLoaderRoute: typeof BrandSlugModelModelRouteImport
-      parentRoute: typeof BrandSlugRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -265,17 +266,8 @@ const rootRouteChildren: RootRouteChildren = {
   CategorySlugRoute: CategorySlugRoute,
   ProductHandleRoute: ProductHandleRoute,
   BrandSlugIndexRoute: BrandSlugIndexRoute,
+  BrandSlugModelModelRoute: BrandSlugModelModelRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
