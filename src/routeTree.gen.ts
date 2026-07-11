@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ProductsRouteImport } from './routes/products'
+import { Route as FavoritosRouteImport } from './routes/favoritos'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ConfiguratorRouteImport } from './routes/configurator'
 import { Route as AboutRouteImport } from './routes/about'
@@ -28,6 +29,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const ProductsRoute = ProductsRouteImport.update({
   id: '/products',
   path: '/products',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FavoritosRoute = FavoritosRouteImport.update({
+  id: '/favoritos',
+  path: '/favoritos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -76,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/configurator': typeof ConfiguratorRoute
   '/contact': typeof ContactRoute
+  '/favoritos': typeof FavoritosRoute
   '/products': typeof ProductsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/brand/$slug': typeof BrandSlugRouteWithChildren
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/configurator': typeof ConfiguratorRoute
   '/contact': typeof ContactRoute
+  '/favoritos': typeof FavoritosRoute
   '/products': typeof ProductsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/brand/$slug': typeof BrandSlugRouteWithChildren
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/configurator': typeof ConfiguratorRoute
   '/contact': typeof ContactRoute
+  '/favoritos': typeof FavoritosRoute
   '/products': typeof ProductsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/brand/$slug': typeof BrandSlugRouteWithChildren
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/configurator'
     | '/contact'
+    | '/favoritos'
     | '/products'
     | '/sitemap.xml'
     | '/brand/$slug'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/configurator'
     | '/contact'
+    | '/favoritos'
     | '/products'
     | '/sitemap.xml'
     | '/brand/$slug'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/configurator'
     | '/contact'
+    | '/favoritos'
     | '/products'
     | '/sitemap.xml'
     | '/brand/$slug'
@@ -152,6 +164,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   ConfiguratorRoute: typeof ConfiguratorRoute
   ContactRoute: typeof ContactRoute
+  FavoritosRoute: typeof FavoritosRoute
   ProductsRoute: typeof ProductsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   BrandSlugRoute: typeof BrandSlugRouteWithChildren
@@ -173,6 +186,13 @@ declare module '@tanstack/react-router' {
       path: '/products'
       fullPath: '/products'
       preLoaderRoute: typeof ProductsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/favoritos': {
+      id: '/favoritos'
+      path: '/favoritos'
+      fullPath: '/favoritos'
+      preLoaderRoute: typeof FavoritosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -251,6 +271,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   ConfiguratorRoute: ConfiguratorRoute,
   ContactRoute: ContactRoute,
+  FavoritosRoute: FavoritosRoute,
   ProductsRoute: ProductsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   BrandSlugRoute: BrandSlugRouteWithChildren,
