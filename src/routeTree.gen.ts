@@ -18,7 +18,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductHandleRouteImport } from './routes/product.$handle'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
-import { Route as BrandSlugRouteImport } from './routes/brand.$slug'
+import { Route as BrandSlugIndexRouteImport } from './routes/brand.$slug.index'
 import { Route as BrandSlugModelModelRouteImport } from './routes/brand.$slug.model.$model'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -66,15 +66,15 @@ const CategorySlugRoute = CategorySlugRouteImport.update({
   path: '/category/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BrandSlugRoute = BrandSlugRouteImport.update({
-  id: '/brand/$slug',
-  path: '/brand/$slug',
+const BrandSlugIndexRoute = BrandSlugIndexRouteImport.update({
+  id: '/brand/$slug/',
+  path: '/brand/$slug/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BrandSlugModelModelRoute = BrandSlugModelModelRouteImport.update({
-  id: '/model/$model',
-  path: '/model/$model',
-  getParentRoute: () => BrandSlugRoute,
+  id: '/brand/$slug/model/$model',
+  path: '/brand/$slug/model/$model',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -85,9 +85,9 @@ export interface FileRoutesByFullPath {
   '/favoritos': typeof FavoritosRoute
   '/products': typeof ProductsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/brand/$slug': typeof BrandSlugRouteWithChildren
   '/category/$slug': typeof CategorySlugRoute
   '/product/$handle': typeof ProductHandleRoute
+  '/brand/$slug/': typeof BrandSlugIndexRoute
   '/brand/$slug/model/$model': typeof BrandSlugModelModelRoute
 }
 export interface FileRoutesByTo {
@@ -98,9 +98,9 @@ export interface FileRoutesByTo {
   '/favoritos': typeof FavoritosRoute
   '/products': typeof ProductsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/brand/$slug': typeof BrandSlugRouteWithChildren
   '/category/$slug': typeof CategorySlugRoute
   '/product/$handle': typeof ProductHandleRoute
+  '/brand/$slug': typeof BrandSlugIndexRoute
   '/brand/$slug/model/$model': typeof BrandSlugModelModelRoute
 }
 export interface FileRoutesById {
@@ -112,9 +112,9 @@ export interface FileRoutesById {
   '/favoritos': typeof FavoritosRoute
   '/products': typeof ProductsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/brand/$slug': typeof BrandSlugRouteWithChildren
   '/category/$slug': typeof CategorySlugRoute
   '/product/$handle': typeof ProductHandleRoute
+  '/brand/$slug/': typeof BrandSlugIndexRoute
   '/brand/$slug/model/$model': typeof BrandSlugModelModelRoute
 }
 export interface FileRouteTypes {
@@ -127,9 +127,9 @@ export interface FileRouteTypes {
     | '/favoritos'
     | '/products'
     | '/sitemap.xml'
-    | '/brand/$slug'
     | '/category/$slug'
     | '/product/$handle'
+    | '/brand/$slug/'
     | '/brand/$slug/model/$model'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -140,9 +140,9 @@ export interface FileRouteTypes {
     | '/favoritos'
     | '/products'
     | '/sitemap.xml'
-    | '/brand/$slug'
     | '/category/$slug'
     | '/product/$handle'
+    | '/brand/$slug'
     | '/brand/$slug/model/$model'
   id:
     | '__root__'
@@ -153,9 +153,9 @@ export interface FileRouteTypes {
     | '/favoritos'
     | '/products'
     | '/sitemap.xml'
-    | '/brand/$slug'
     | '/category/$slug'
     | '/product/$handle'
+    | '/brand/$slug/'
     | '/brand/$slug/model/$model'
   fileRoutesById: FileRoutesById
 }
@@ -167,9 +167,10 @@ export interface RootRouteChildren {
   FavoritosRoute: typeof FavoritosRoute
   ProductsRoute: typeof ProductsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  BrandSlugRoute: typeof BrandSlugRouteWithChildren
   CategorySlugRoute: typeof CategorySlugRoute
   ProductHandleRoute: typeof ProductHandleRoute
+  BrandSlugIndexRoute: typeof BrandSlugIndexRoute
+  BrandSlugModelModelRoute: typeof BrandSlugModelModelRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -237,34 +238,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CategorySlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/brand/$slug': {
-      id: '/brand/$slug'
+    '/brand/$slug/': {
+      id: '/brand/$slug/'
       path: '/brand/$slug'
-      fullPath: '/brand/$slug'
-      preLoaderRoute: typeof BrandSlugRouteImport
+      fullPath: '/brand/$slug/'
+      preLoaderRoute: typeof BrandSlugIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/brand/$slug/model/$model': {
       id: '/brand/$slug/model/$model'
-      path: '/model/$model'
+      path: '/brand/$slug/model/$model'
       fullPath: '/brand/$slug/model/$model'
       preLoaderRoute: typeof BrandSlugModelModelRouteImport
-      parentRoute: typeof BrandSlugRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
-
-interface BrandSlugRouteChildren {
-  BrandSlugModelModelRoute: typeof BrandSlugModelModelRoute
-}
-
-const BrandSlugRouteChildren: BrandSlugRouteChildren = {
-  BrandSlugModelModelRoute: BrandSlugModelModelRoute,
-}
-
-const BrandSlugRouteWithChildren = BrandSlugRoute._addFileChildren(
-  BrandSlugRouteChildren,
-)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -274,9 +263,10 @@ const rootRouteChildren: RootRouteChildren = {
   FavoritosRoute: FavoritosRoute,
   ProductsRoute: ProductsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  BrandSlugRoute: BrandSlugRouteWithChildren,
   CategorySlugRoute: CategorySlugRoute,
   ProductHandleRoute: ProductHandleRoute,
+  BrandSlugIndexRoute: BrandSlugIndexRoute,
+  BrandSlugModelModelRoute: BrandSlugModelModelRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

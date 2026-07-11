@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { getBrand, BRANDS, type BrandModel } from "@/lib/brands";
 
-export const Route = createFileRoute("/brand/$slug")({
+export const Route = createFileRoute("/brand/$slug/")({
   loader: ({ params }) => {
     const brand = getBrand(params.slug);
     if (!brand) throw notFound();
