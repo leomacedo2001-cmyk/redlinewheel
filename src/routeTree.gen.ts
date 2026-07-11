@@ -11,13 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ProductsRouteImport } from './routes/products'
+import { Route as FavoritosRouteImport } from './routes/favoritos'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ConfiguratorRouteImport } from './routes/configurator'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductHandleRouteImport } from './routes/product.$handle'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
-import { Route as BrandSlugRouteImport } from './routes/brand.$slug'
+import { Route as BrandSlugIndexRouteImport } from './routes/brand.$slug.index'
 import { Route as BrandSlugModelModelRouteImport } from './routes/brand.$slug.model.$model'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -28,6 +29,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const ProductsRoute = ProductsRouteImport.update({
   id: '/products',
   path: '/products',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FavoritosRoute = FavoritosRouteImport.update({
+  id: '/favoritos',
+  path: '/favoritos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -60,15 +66,15 @@ const CategorySlugRoute = CategorySlugRouteImport.update({
   path: '/category/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BrandSlugRoute = BrandSlugRouteImport.update({
-  id: '/brand/$slug',
-  path: '/brand/$slug',
+const BrandSlugIndexRoute = BrandSlugIndexRouteImport.update({
+  id: '/brand/$slug/',
+  path: '/brand/$slug/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BrandSlugModelModelRoute = BrandSlugModelModelRouteImport.update({
-  id: '/model/$model',
-  path: '/model/$model',
-  getParentRoute: () => BrandSlugRoute,
+  id: '/brand/$slug/model/$model',
+  path: '/brand/$slug/model/$model',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -76,11 +82,12 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/configurator': typeof ConfiguratorRoute
   '/contact': typeof ContactRoute
+  '/favoritos': typeof FavoritosRoute
   '/products': typeof ProductsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/brand/$slug': typeof BrandSlugRouteWithChildren
   '/category/$slug': typeof CategorySlugRoute
   '/product/$handle': typeof ProductHandleRoute
+  '/brand/$slug/': typeof BrandSlugIndexRoute
   '/brand/$slug/model/$model': typeof BrandSlugModelModelRoute
 }
 export interface FileRoutesByTo {
@@ -88,11 +95,12 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/configurator': typeof ConfiguratorRoute
   '/contact': typeof ContactRoute
+  '/favoritos': typeof FavoritosRoute
   '/products': typeof ProductsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/brand/$slug': typeof BrandSlugRouteWithChildren
   '/category/$slug': typeof CategorySlugRoute
   '/product/$handle': typeof ProductHandleRoute
+  '/brand/$slug': typeof BrandSlugIndexRoute
   '/brand/$slug/model/$model': typeof BrandSlugModelModelRoute
 }
 export interface FileRoutesById {
@@ -101,11 +109,12 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/configurator': typeof ConfiguratorRoute
   '/contact': typeof ContactRoute
+  '/favoritos': typeof FavoritosRoute
   '/products': typeof ProductsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/brand/$slug': typeof BrandSlugRouteWithChildren
   '/category/$slug': typeof CategorySlugRoute
   '/product/$handle': typeof ProductHandleRoute
+  '/brand/$slug/': typeof BrandSlugIndexRoute
   '/brand/$slug/model/$model': typeof BrandSlugModelModelRoute
 }
 export interface FileRouteTypes {
@@ -115,11 +124,12 @@ export interface FileRouteTypes {
     | '/about'
     | '/configurator'
     | '/contact'
+    | '/favoritos'
     | '/products'
     | '/sitemap.xml'
-    | '/brand/$slug'
     | '/category/$slug'
     | '/product/$handle'
+    | '/brand/$slug/'
     | '/brand/$slug/model/$model'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -127,11 +137,12 @@ export interface FileRouteTypes {
     | '/about'
     | '/configurator'
     | '/contact'
+    | '/favoritos'
     | '/products'
     | '/sitemap.xml'
-    | '/brand/$slug'
     | '/category/$slug'
     | '/product/$handle'
+    | '/brand/$slug'
     | '/brand/$slug/model/$model'
   id:
     | '__root__'
@@ -139,11 +150,12 @@ export interface FileRouteTypes {
     | '/about'
     | '/configurator'
     | '/contact'
+    | '/favoritos'
     | '/products'
     | '/sitemap.xml'
-    | '/brand/$slug'
     | '/category/$slug'
     | '/product/$handle'
+    | '/brand/$slug/'
     | '/brand/$slug/model/$model'
   fileRoutesById: FileRoutesById
 }
@@ -152,11 +164,13 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   ConfiguratorRoute: typeof ConfiguratorRoute
   ContactRoute: typeof ContactRoute
+  FavoritosRoute: typeof FavoritosRoute
   ProductsRoute: typeof ProductsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  BrandSlugRoute: typeof BrandSlugRouteWithChildren
   CategorySlugRoute: typeof CategorySlugRoute
   ProductHandleRoute: typeof ProductHandleRoute
+  BrandSlugIndexRoute: typeof BrandSlugIndexRoute
+  BrandSlugModelModelRoute: typeof BrandSlugModelModelRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -173,6 +187,13 @@ declare module '@tanstack/react-router' {
       path: '/products'
       fullPath: '/products'
       preLoaderRoute: typeof ProductsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/favoritos': {
+      id: '/favoritos'
+      path: '/favoritos'
+      fullPath: '/favoritos'
+      preLoaderRoute: typeof FavoritosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -217,56 +238,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CategorySlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/brand/$slug': {
-      id: '/brand/$slug'
+    '/brand/$slug/': {
+      id: '/brand/$slug/'
       path: '/brand/$slug'
-      fullPath: '/brand/$slug'
-      preLoaderRoute: typeof BrandSlugRouteImport
+      fullPath: '/brand/$slug/'
+      preLoaderRoute: typeof BrandSlugIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/brand/$slug/model/$model': {
       id: '/brand/$slug/model/$model'
-      path: '/model/$model'
+      path: '/brand/$slug/model/$model'
       fullPath: '/brand/$slug/model/$model'
       preLoaderRoute: typeof BrandSlugModelModelRouteImport
-      parentRoute: typeof BrandSlugRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
-
-interface BrandSlugRouteChildren {
-  BrandSlugModelModelRoute: typeof BrandSlugModelModelRoute
-}
-
-const BrandSlugRouteChildren: BrandSlugRouteChildren = {
-  BrandSlugModelModelRoute: BrandSlugModelModelRoute,
-}
-
-const BrandSlugRouteWithChildren = BrandSlugRoute._addFileChildren(
-  BrandSlugRouteChildren,
-)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ConfiguratorRoute: ConfiguratorRoute,
   ContactRoute: ContactRoute,
+  FavoritosRoute: FavoritosRoute,
   ProductsRoute: ProductsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  BrandSlugRoute: BrandSlugRouteWithChildren,
   CategorySlugRoute: CategorySlugRoute,
   ProductHandleRoute: ProductHandleRoute,
+  BrandSlugIndexRoute: BrandSlugIndexRoute,
+  BrandSlugModelModelRoute: BrandSlugModelModelRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
