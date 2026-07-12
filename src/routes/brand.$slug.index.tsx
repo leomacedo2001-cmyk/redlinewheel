@@ -50,7 +50,7 @@ function BrandPage() {
   }, [brand.models]);
 
   const filtered = useMemo(() => {
-    let list = brand.models.filter((m) => {
+    let list = brand.models.filter((m: BrandModel) => {
       const q = query.trim().toLowerCase();
       if (q && !`${m.name} ${m.chassis ?? ""} ${m.description}`.toLowerCase().includes(q)) return false;
       if (chassisFilter !== "all" && m.chassis !== chassisFilter) return false;
