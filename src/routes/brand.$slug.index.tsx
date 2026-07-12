@@ -45,7 +45,7 @@ function BrandPage() {
 
   const chassisOptions = useMemo(() => {
     const set = new Set<string>();
-    brand.models.forEach((m) => m.chassis && set.add(m.chassis));
+    brand.models.forEach((m: BrandModel) => m.chassis && set.add(m.chassis));
     return Array.from(set);
   }, [brand.models]);
 
