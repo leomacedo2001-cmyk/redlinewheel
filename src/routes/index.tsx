@@ -21,7 +21,7 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const BRANDS = ["BMW", "Mercedes-Benz", "Audi", "Porsche", "Volkswagen", "Seat", "Cupra", "Tesla", "Toyota", "Nissan", "Ford"];
+import { BRANDS } from "@/lib/brands";
 
 function Home() {
   return (
@@ -61,11 +61,19 @@ function Home() {
       <section className="border-y border-border/60 bg-surface/50 py-8">
         <div className="container-premium">
           <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4 text-center">Compatível com</div>
-          <div className="flex flex-wrap justify-center gap-x-10 gap-y-3">
+          <nav aria-label="Marcas disponíveis" className="flex flex-wrap justify-center gap-x-8 gap-y-3">
             {BRANDS.map((b) => (
-              <span key={b} className="text-sm font-medium text-muted-foreground/80 hover:text-foreground transition-colors">{b}</span>
+              <Link
+                key={b.slug}
+                to="/brand/$slug"
+                params={{ slug: b.slug }}
+                activeProps={{ className: "text-primary" }}
+                className="text-sm font-medium text-muted-foreground/80 hover:text-primary focus:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 transition-colors uppercase tracking-wider"
+              >
+                {b.name}
+              </Link>
             ))}
-          </div>
+          </nav>
         </div>
       </section>
 

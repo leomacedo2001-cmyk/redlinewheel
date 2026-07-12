@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { fetchFeaturedWheels } from "@/lib/shopify";
 
