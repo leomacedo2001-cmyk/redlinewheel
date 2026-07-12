@@ -136,6 +136,13 @@ function BrandPage() {
           </select>
         </div>
 
+        {filtered.length === 0 ? (
+          <div className="text-center py-16 border border-border/60 bg-surface/30">
+            <p className="text-muted-foreground">Nenhum modelo encontrado com os filtros atuais.</p>
+          </div>
+        ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filtered.map((mo: BrandModel) => (
             <article
               key={mo.slug}
               className="group bg-surface border border-border/60 hover:border-primary/50 transition-all duration-300 overflow-hidden flex flex-col"
