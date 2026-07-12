@@ -130,8 +130,8 @@ export const BRANDS: Brand[] = [
         name: "BMW F20 / F21",
         chassis: "F2x",
         description: "Volante para Série 1 segunda geração (2011–2019).",
-        img: carbono,
-        gallery: [carbono, ledShift, alcantara, hero],
+        img: bmwF30Blue.url,
+        gallery: [bmwF30Blue.url, bmwF30Alc.url, carbono, alcantara],
         compatibilities: ["116i", "118i", "120i", "120d", "125i", "M135i", "M140i"],
         specs: [
           { label: "Geração", value: "F20/F21 (2011–2019)" },
@@ -150,7 +150,7 @@ export const BRANDS: Brand[] = [
         longDescription:
           "Volante BMW F-Series em carbono fosco com pele perfurada premium, detalhe central vermelho M Performance e patilhas de mudança em carbono vermelho. Costuras tricolor M (azul/violeta/vermelho). Compatível com airbag original.",
         img: F80_GALLERY[0],
-        gallery: F80_GALLERY,
+        gallery: [...F80_GALLERY, bmwF30Alc.url, bmwF30Blue.url],
         compatibilities: ["320i", "320d", "330i", "335i", "340i", "M3 F80", "M4 F82", "M2 F87"],
         specs: [
           { label: "Geração", value: "F30/F32 (2012–2019)" },
@@ -189,7 +189,7 @@ export const BRANDS: Brand[] = [
         longDescription:
           "Volante BMW G-Series em carbono forjado com flocos magenta exclusivos, aros em Alcântara premium com costuras amarelas em zig-zag, patilhas de mudança em carbono e botões M1/M2 vermelhos. Display bar superior integrado. Marca 12h em amarelo racing.",
         img: G80_GALLERY[0],
-        gallery: G80_GALLERY,
+        gallery: [...G80_GALLERY, bmwG20Blue.url],
         compatibilities: ["320i", "320d", "330i", "330e", "340i", "M3 G80", "M3 Touring G81", "M4 G82"],
         specs: [
           { label: "Geração", value: "G20/G21 (2019+)" },
