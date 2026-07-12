@@ -21,6 +21,18 @@ import bmwF80_2 from "@/assets/bmw-f80-carbon-2.jpg.asset.json";
 import bmwF80_3 from "@/assets/bmw-f80-carbon-3.jpg.asset.json";
 import bmwF80_4 from "@/assets/bmw-f80-carbon-4.jpg.asset.json";
 
+// Novas fotografias reais dos volantes
+import bmwF30Alc from "@/assets/bmw-f30-alcantara-1.jpg.asset.json";
+import bmwF30Blue from "@/assets/bmw-f30-mperf-blue-1.jpg.asset.json";
+import bmwG20Blue from "@/assets/bmw-g20-blue-carbon-1.jpg.asset.json";
+import audi8yCarbon from "@/assets/audi-8y-carbon-1.jpg.asset.json";
+import audiB8Blue from "@/assets/audi-b8-rs-blue-1.jpg.asset.json";
+import porsche991 from "@/assets/porsche-991-carbon-1.jpg.asset.json";
+import mbW205Yellow from "@/assets/mercedes-w205-amg-yellow-1.jpg.asset.json";
+import mbW213Edition1 from "@/assets/mercedes-w213-amg-edition1-1.jpg.asset.json";
+import mbW213Red from "@/assets/mercedes-w213-amg-red-1.jpg.asset.json";
+import mbW213Forged from "@/assets/mercedes-w213-amg-forged-red-1.jpg.asset.json";
+
 const G80_GALLERY = [bmwG80_1.url, bmwG80_2.url, bmwG80_3.url, bmwG80_4.url, bmwG80_5.url, bmwG80_6.url];
 const F80_GALLERY = [bmwF80_1.url, bmwF80_2.url, bmwF80_3.url, bmwF80_4.url];
 
