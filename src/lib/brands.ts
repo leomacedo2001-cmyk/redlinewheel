@@ -21,6 +21,18 @@ import bmwF80_2 from "@/assets/bmw-f80-carbon-2.jpg.asset.json";
 import bmwF80_3 from "@/assets/bmw-f80-carbon-3.jpg.asset.json";
 import bmwF80_4 from "@/assets/bmw-f80-carbon-4.jpg.asset.json";
 
+// Novas fotografias reais dos volantes
+import bmwF30Alc from "@/assets/bmw-f30-alcantara-1.jpg.asset.json";
+import bmwF30Blue from "@/assets/bmw-f30-mperf-blue-1.jpg.asset.json";
+import bmwG20Blue from "@/assets/bmw-g20-blue-carbon-1.jpg.asset.json";
+import audi8yCarbon from "@/assets/audi-8y-carbon-1.jpg.asset.json";
+import audiB8Blue from "@/assets/audi-b8-rs-blue-1.jpg.asset.json";
+import porsche991 from "@/assets/porsche-991-carbon-1.jpg.asset.json";
+import mbW205Yellow from "@/assets/mercedes-w205-amg-yellow-1.jpg.asset.json";
+import mbW213Edition1 from "@/assets/mercedes-w213-amg-edition1-1.jpg.asset.json";
+import mbW213Red from "@/assets/mercedes-w213-amg-red-1.jpg.asset.json";
+import mbW213Forged from "@/assets/mercedes-w213-amg-forged-red-1.jpg.asset.json";
+
 const G80_GALLERY = [bmwG80_1.url, bmwG80_2.url, bmwG80_3.url, bmwG80_4.url, bmwG80_5.url, bmwG80_6.url];
 const F80_GALLERY = [bmwF80_1.url, bmwF80_2.url, bmwF80_3.url, bmwF80_4.url];
 
@@ -118,8 +130,8 @@ export const BRANDS: Brand[] = [
         name: "BMW F20 / F21",
         chassis: "F2x",
         description: "Volante para Série 1 segunda geração (2011–2019).",
-        img: carbono,
-        gallery: [carbono, ledShift, alcantara, hero],
+        img: bmwF30Blue.url,
+        gallery: [bmwF30Blue.url, bmwF30Alc.url, carbono, alcantara],
         compatibilities: ["116i", "118i", "120i", "120d", "125i", "M135i", "M140i"],
         specs: [
           { label: "Geração", value: "F20/F21 (2011–2019)" },
@@ -138,7 +150,7 @@ export const BRANDS: Brand[] = [
         longDescription:
           "Volante BMW F-Series em carbono fosco com pele perfurada premium, detalhe central vermelho M Performance e patilhas de mudança em carbono vermelho. Costuras tricolor M (azul/violeta/vermelho). Compatível com airbag original.",
         img: F80_GALLERY[0],
-        gallery: F80_GALLERY,
+        gallery: [...F80_GALLERY, bmwF30Alc.url, bmwF30Blue.url],
         compatibilities: ["320i", "320d", "330i", "335i", "340i", "M3 F80", "M4 F82", "M2 F87"],
         specs: [
           { label: "Geração", value: "F30/F32 (2012–2019)" },
@@ -177,7 +189,7 @@ export const BRANDS: Brand[] = [
         longDescription:
           "Volante BMW G-Series em carbono forjado com flocos magenta exclusivos, aros em Alcântara premium com costuras amarelas em zig-zag, patilhas de mudança em carbono e botões M1/M2 vermelhos. Display bar superior integrado. Marca 12h em amarelo racing.",
         img: G80_GALLERY[0],
-        gallery: G80_GALLERY,
+        gallery: [...G80_GALLERY, bmwG20Blue.url],
         compatibilities: ["320i", "320d", "330i", "330e", "340i", "M3 G80", "M3 Touring G81", "M4 G82"],
         specs: [
           { label: "Geração", value: "G20/G21 (2019+)" },
@@ -269,7 +281,8 @@ export const BRANDS: Brand[] = [
         name: "Mercedes W205",
         chassis: "W205 / S205 / C205 / A205",
         description: "Classe C (2014–2021) e gama AMG C43/C63 W205.",
-        img: pelePerfurada,
+        img: mbW205Yellow.url,
+        gallery: [mbW205Yellow.url, pelePerfurada, carbono, alcantara],
         compatibilities: ["C180", "C200", "C220d", "C300", "C43 AMG", "C63 AMG W205"],
         specs: [{ label: "Geração", value: "W205 (2014–2021)" }, { label: "Patilhas", value: "Alumínio" }],
         sku: "RL-MB-W205",
@@ -281,7 +294,8 @@ export const BRANDS: Brand[] = [
         name: "Mercedes W213",
         chassis: "W213 / S213",
         description: "Classe E (2016+) e E63 AMG S.",
-        img: oemPlus,
+        img: mbW213Edition1.url,
+        gallery: [mbW213Edition1.url, mbW213Red.url, mbW213Forged.url, oemPlus],
         compatibilities: ["E200", "E220d", "E300", "E350", "E43 AMG", "E63 AMG S"],
         specs: [{ label: "Geração", value: "W213 (2016+)" }],
         sku: "RL-MB-W213",
@@ -339,7 +353,8 @@ export const BRANDS: Brand[] = [
         name: "Audi 8Y",
         chassis: "8Y",
         description: "A3 / S3 / RS3 actual (2020+).",
-        img: carbono,
+        img: audi8yCarbon.url,
+        gallery: [audi8yCarbon.url, carbono, pelePerfurada, hero],
         compatibilities: ["A3 8Y", "S3 8Y", "RS3 8Y"],
         specs: [{ label: "Geração", value: "8Y (2020+)" }, { label: "LED Shift", value: "Opcional" }],
         sku: "RL-AUDI-8Y",
@@ -351,7 +366,8 @@ export const BRANDS: Brand[] = [
         name: "Audi B8 / B8.5",
         chassis: "B8",
         description: "A4 / S4 / RS4 / A5 / S5 / RS5 (2007–2016).",
-        img: oemPlus,
+        img: audiB8Blue.url,
+        gallery: [audiB8Blue.url, pelePerfurada, oemPlus, hero],
         compatibilities: ["A4 B8", "S4 B8", "RS4 B8", "A5 B8", "S5 B8", "RS5 B8"],
         specs: [{ label: "Geração", value: "B8 (2007–2016)" }],
         sku: "RL-AUDI-B8",
@@ -441,7 +457,8 @@ export const BRANDS: Brand[] = [
         name: "Porsche 991",
         chassis: "991.1 / 991.2",
         description: "911 (2012–2019) incluindo GT3 e Turbo S.",
-        img: alcantara,
+        img: porsche991.url,
+        gallery: [porsche991.url, alcantara, carbono, hero],
         compatibilities: ["911 Carrera", "911 Turbo", "911 GT3", "911 GT3 RS"],
         sku: "RL-POR-991",
         price: { amount: 1190, currency: "EUR" },

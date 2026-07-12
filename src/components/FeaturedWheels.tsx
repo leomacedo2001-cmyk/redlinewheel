@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { fetchFeaturedWheels } from "@/lib/shopify";
 
@@ -46,11 +45,14 @@ export function FeaturedWheels() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       {wheels.map((w) => (
-        <article
+        <Link
           key={w.id}
-          className="group bg-surface border border-border/60 hover:border-primary/50 transition-all duration-300 flex flex-col"
+          to="/product/$handle"
+          params={{ handle: w.handle }}
+          className="group bg-surface border border-border/60 hover:border-primary/50 transition-all duration-300 flex flex-col focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          aria-label={`Ver detalhes de ${w.title}`}
         >
-          <Link to="/product/$handle" params={{ handle: w.handle }} className="aspect-square overflow-hidden bg-background relative block">
+          <div className="aspect-square overflow-hidden bg-background relative">
             {w.image && (
               <img
                 src={w.image}
@@ -66,19 +68,17 @@ export function FeaturedWheels() {
                 {w.vendor}
               </div>
             )}
-          </Link>
+          </div>
           <div className="p-5 flex flex-col flex-1 gap-4">
             <div className="flex-1">
-              <h3 className="font-bold text-base leading-tight mb-2">{w.title}</h3>
+              <h3 className="font-bold text-base leading-tight mb-2 group-hover:text-primary transition-colors">{w.title}</h3>
               <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">{w.description}</p>
             </div>
-            <Button asChild size="sm" className="bg-primary hover:bg-primary/90 rounded-none h-10 uppercase tracking-wider text-[11px] w-full">
-              <Link to="/contact">
-                Pedir Orçamento <ArrowRight className="ml-2 h-3.5 w-3.5" />
-              </Link>
-            </Button>
+            <span className="inline-flex items-center justify-center bg-primary group-hover:bg-primary/90 rounded-none h-10 uppercase tracking-wider text-[11px] w-full text-primary-foreground font-medium">
+              Ver Produto <ArrowRight className="ml-2 h-3.5 w-3.5" />
+            </span>
           </div>
-        </article>
+        </Link>
       ))}
     </div>
   );
