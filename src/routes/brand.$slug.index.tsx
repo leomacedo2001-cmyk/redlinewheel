@@ -184,7 +184,9 @@ function BrandPage() {
             </article>
           ))}
         </div>
+        )}
       </section>
+
 
       {/* Other brands */}
       <section className="container-premium pb-20">
