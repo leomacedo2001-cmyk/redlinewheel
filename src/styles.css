@@ -113,3 +113,13 @@
 @utility animate-fade-up {
   animation: fade-up 0.8s ease-out both;
 }
+
+@keyframes marquee-x {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+@utility animate-marquee-x {
+  animation: marquee-x 40s linear infinite;
+  will-change: transform;
+}
