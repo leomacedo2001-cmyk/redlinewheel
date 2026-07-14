@@ -2,15 +2,23 @@ import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import volanteCompleto from "@/assets/product-volante-completo.jpg";
-import alcantara from "@/assets/product-alcantara.jpg";
-import pelePerfurada from "@/assets/product-pele-perfurada.jpg";
-import carbono from "@/assets/product-carbono.jpg";
-import costuras from "@/assets/product-costuras.jpg";
-import ledShift from "@/assets/product-led-shift.jpg";
-import patilhas from "@/assets/product-patilhas.jpg";
-import oemPlus from "@/assets/product-oem-plus.jpg";
+import alcantaraAsset from "@/assets/custom-alcantara.jpg.asset.json";
+import pelePerfuradaAsset from "@/assets/custom-pele-perfurada.jpg.asset.json";
+import carbonoAsset from "@/assets/custom-carbono.jpg.asset.json";
+import costurasAsset from "@/assets/custom-costuras.jpg.asset.json";
+import ledShiftAsset from "@/assets/custom-led-shift.jpg.asset.json";
+import patilhasAsset from "@/assets/custom-patilhas.jpg.asset.json";
+import oemPlusAsset from "@/assets/custom-oem-plus.jpg.asset.json";
+import componentesInteriorAsset from "@/assets/custom-componentes.jpg.asset.json";
 
-import componentesInterior from "@/assets/product-componentes-interior.jpg";
+const alcantara = alcantaraAsset.url;
+const pelePerfurada = pelePerfuradaAsset.url;
+const carbono = carbonoAsset.url;
+const costuras = costurasAsset.url;
+const ledShift = ledShiftAsset.url;
+const patilhas = patilhasAsset.url;
+const oemPlus = oemPlusAsset.url;
+const componentesInterior = componentesInteriorAsset.url;
 
 const CATEGORIES = [
   {
