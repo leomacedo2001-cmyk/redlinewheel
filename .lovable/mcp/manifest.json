@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "sdk_version": "0.22.2",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://kdykuunfzhdfbwambbqv.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "redline-performance-mcp",
+      "version": "0.1.0",
+      "title": "REDLINE Performance"
+    },
+    "tools": [
+      {
+        "name": "list_brands",
+        "title": "List brands",
+        "description": "List all car brands available in the REDLINE Performance catalog with their slug, name, tagline and number of models.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_products",
+        "title": "List products",
+        "description": "List steering wheel products in the REDLINE Performance catalog. Optionally filter by brand slug (bmw, mercedes, audi, porsche, etc.). Returns product name, description, price and URL.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "brandSlug": {
+              "description": "Optional brand slug to filter by (e.g. 'bmw', 'audi', 'mercedes', 'porsche').",
+              "type": "string"
+            },
+            "limit": {
+              "description": "Maximum number of products to return.",
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_product",
+        "title": "Get product details",
+        "description": "Get full details for a specific steering wheel product, including specs, compatibilities, gallery URLs and price.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "brandSlug": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Brand slug (e.g. 'bmw')."
+            },
+            "modelSlug": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Model slug (e.g. 'g-series-forged-magenta')."
+            }
+          },
+          "required": [
+            "brandSlug",
+            "modelSlug"
+          ]
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
