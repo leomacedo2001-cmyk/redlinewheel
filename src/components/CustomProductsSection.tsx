@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
-import volanteCompleto from "@/assets/product-volante-completo.jpg";
+import volanteCompleto from "@/assets/configurator-showcase.jpg";
 import alcantaraAsset from "@/assets/custom-alcantara.jpg.asset.json";
 import pelePerfuradaAsset from "@/assets/custom-pele-perfurada.jpg.asset.json";
 import carbonoAsset from "@/assets/custom-carbono.jpg.asset.json";
@@ -91,7 +91,7 @@ export function CustomProductsSection() {
             <div className="aspect-square md:aspect-auto overflow-hidden bg-background relative">
               <img
                 src={volanteCompleto}
-                alt="Volantes Personalizados"
+                alt="Volante desportivo em fibra de carbono e pele perfurada, interior Audi RS"
                 loading="lazy"
                 width={1024}
                 height={1024}
