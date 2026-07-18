@@ -2,23 +2,13 @@ import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import volanteCompleto from "@/assets/configurator-showcase.jpg";
-import alcantaraAsset from "@/assets/custom-alcantara.jpg.asset.json";
-import pelePerfuradaAsset from "@/assets/custom-pele-perfurada.jpg.asset.json";
-import carbonoAsset from "@/assets/custom-carbono.jpg.asset.json";
-import costurasAsset from "@/assets/custom-costuras.jpg.asset.json";
-import ledShiftAsset from "@/assets/custom-led-shift.jpg.asset.json";
-import patilhasAsset from "@/assets/custom-patilhas.jpg.asset.json";
-import oemPlusAsset from "@/assets/custom-oem-plus.jpg.asset.json";
-import componentesInteriorAsset from "@/assets/custom-componentes.jpg.asset.json";
-
-const alcantara = alcantaraAsset.url;
-const pelePerfurada = pelePerfuradaAsset.url;
-const carbono = carbonoAsset.url;
-const costuras = costurasAsset.url;
-const ledShift = ledShiftAsset.url;
-const patilhas = patilhasAsset.url;
-const oemPlus = oemPlusAsset.url;
-const componentesInterior = componentesInteriorAsset.url;
+import alcantara from "@/assets/custom-alcantara-catalog.jpg";
+import pelePerfurada from "@/assets/custom-pele-perfurada-catalog.jpg";
+import carbono from "@/assets/custom-carbono-catalog.jpg";
+import costuras from "@/assets/custom-costuras-catalog.jpg";
+import ledShift from "@/assets/custom-led-shift-catalog.jpg";
+import patilhas from "@/assets/custom-patilhas-catalog.jpg";
+import oemPlus from "@/assets/custom-oem-plus-catalog.jpg";
 
 const CATEGORIES = [
   {
@@ -62,12 +52,6 @@ const CATEGORIES = [
     name: "Personalização OEM+",
     img: oemPlus,
     desc: "Upgrades que parecem de fábrica — só que melhores. Iluminação ambiente, inserções e detalhes integrados.",
-  },
-  {
-    slug: "componentes-interior",
-    name: "Componentes Premium para Interior",
-    img: componentesInterior,
-    desc: "Apoios de braço, manípulos de caixa, foles em pele e trims em carbono. Cada detalhe importa.",
   },
 ];
 

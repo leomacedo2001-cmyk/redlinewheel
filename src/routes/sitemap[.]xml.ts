@@ -13,7 +13,6 @@ const CATEGORY_SLUGS = [
   "led-shift",
   "patilhas",
   "oem-plus",
-  "componentes-interior",
 ];
 
 export const Route = createFileRoute("/sitemap.xml")({

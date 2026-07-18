@@ -15,7 +15,6 @@ import componentesInterior from "@/assets/product-componentes-interior.jpg";
 // acima continuam a servir de apoio na galeria de cada categoria.
 import customAlcantara from "@/assets/custom-alcantara.jpg.asset.json";
 import customCarbono from "@/assets/custom-carbono.jpg.asset.json";
-import customComponentes from "@/assets/custom-componentes.jpg.asset.json";
 import customCosturas from "@/assets/custom-costuras.jpg.asset.json";
 import customLedShift from "@/assets/custom-led-shift.jpg.asset.json";
 import customOemPlus from "@/assets/custom-oem-plus.jpg.asset.json";
@@ -87,14 +86,6 @@ const CATEGORIES: Record<string, Category> = {
     hero: customOemPlus.url,
     gallery: [customOemPlus.url, oemPlus, componentesInterior],
     highlights: ["Acabamento indistinguível do original", "Sem cortes destrutivos", "Compatível com airbag e sensores", "Documentação técnica fornecida"],
-  },
-  "componentes-interior": {
-    title: "Componentes Premium para Interior",
-    tagline: "Cada detalhe importa",
-    intro: "Apoios de braço, manípulos de caixa, foles em pele e trims em carbono. A condizer com o teu volante personalizado.",
-    hero: customComponentes.url,
-    gallery: [customComponentes.url, componentesInterior, oemPlus],
-    highlights: ["Conjuntos coordenados", "Pele e Alcântara à medida", "Carbono e alumínio para trims", "Encomenda como kit ou individual"],
   },
 };
 
