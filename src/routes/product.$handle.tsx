@@ -68,7 +68,7 @@ function ProductPage() {
         <div>
           <div className="aspect-square bg-surface overflow-hidden mb-4">
             {images[activeImage] ? (
-              <img src={images[activeImage].node.url} alt={images[activeImage].node.altText ?? product.node.title} className="w-full h-full object-cover" />
+              <img src={images[activeImage].node.url} alt={images[activeImage].node.altText ?? product.node.title} loading="eager" fetchPriority="high" className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-muted-foreground">Sem imagem</div>
             )}
@@ -81,7 +81,7 @@ function ProductPage() {
                   onClick={() => setActiveImage(i)}
                   className={`aspect-square bg-surface overflow-hidden border-2 transition-colors ${i === activeImage ? "border-primary" : "border-transparent"}`}
                 >
-                  <img src={img.node.url} alt="" className="w-full h-full object-cover" />
+                  <img src={img.node.url} alt="" loading="lazy" className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>

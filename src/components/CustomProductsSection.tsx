@@ -92,6 +92,7 @@ export function CustomProductsSection() {
               <img
                 src={volanteCompleto}
                 alt="Volantes Personalizados"
+                loading="lazy"
                 width={1024}
                 height={1024}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
@@ -136,9 +137,9 @@ export function CustomProductsSection() {
                 <img
                   src={c.img}
                   alt={c.name}
+                  loading="lazy"
                   width={1024}
                   height={1024}
-                  loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
               </div>

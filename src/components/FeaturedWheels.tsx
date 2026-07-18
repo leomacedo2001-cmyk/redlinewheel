@@ -53,9 +53,9 @@ function Card({ brand, model }: FeaturedItem) {
         <img
           src={model.img}
           alt={model.name}
+          loading="lazy"
           width={1024}
           height={1024}
-          loading="lazy"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
         />
         <div className="absolute top-3 left-3 bg-background/80 backdrop-blur px-2.5 py-1 text-[10px] uppercase tracking-[0.2em] text-primary border border-primary/40">

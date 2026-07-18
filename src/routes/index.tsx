@@ -28,7 +28,7 @@ function Home() {
     <>
       {/* HERO */}
       <section className="relative min-h-[92vh] flex items-end overflow-hidden">
-        <img src={heroImg} alt="Volante desportivo premium em carbono" width={1920} height={1080} className="absolute inset-0 w-full h-full object-cover" />
+        <img src={heroImg} alt="Volante desportivo premium em carbono" width={1920} height={1080} loading="eager" fetchPriority="high" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0" style={{ background: "var(--gradient-hero)" }} />
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/40 to-transparent" />
 

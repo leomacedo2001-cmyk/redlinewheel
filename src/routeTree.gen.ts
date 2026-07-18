@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ProductsRouteImport } from './routes/products'
+import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as FavoritosRouteImport } from './routes/favoritos'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -35,6 +36,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const ProductsRoute = ProductsRouteImport.update({
   id: '/products',
   path: '/products',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacidadeRoute = PrivacidadeRouteImport.update({
+  id: '/privacidade',
+  path: '/privacidade',
   getParentRoute: () => rootRouteImport,
 } as any)
 const McpRoute = McpRouteImport.update({
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/favoritos': typeof FavoritosRoute
   '/mcp': typeof McpRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/products': typeof ProductsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
@@ -143,6 +150,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/favoritos': typeof FavoritosRoute
   '/mcp': typeof McpRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/products': typeof ProductsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
@@ -163,6 +171,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/favoritos': typeof FavoritosRoute
   '/mcp': typeof McpRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/products': typeof ProductsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
@@ -184,6 +193,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/favoritos'
     | '/mcp'
+    | '/privacidade'
     | '/products'
     | '/sitemap.xml'
     | '/.mcp/list-tools'
@@ -203,6 +213,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/favoritos'
     | '/mcp'
+    | '/privacidade'
     | '/products'
     | '/sitemap.xml'
     | '/.mcp/list-tools'
@@ -222,6 +233,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/favoritos'
     | '/mcp'
+    | '/privacidade'
     | '/products'
     | '/sitemap.xml'
     | '/.mcp/list-tools'
@@ -242,6 +254,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   FavoritosRoute: typeof FavoritosRoute
   McpRoute: typeof McpRoute
+  PrivacidadeRoute: typeof PrivacidadeRoute
   ProductsRoute: typeof ProductsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
@@ -268,6 +281,13 @@ declare module '@tanstack/react-router' {
       path: '/products'
       fullPath: '/products'
       preLoaderRoute: typeof ProductsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacidade': {
+      id: '/privacidade'
+      path: '/privacidade'
+      fullPath: '/privacidade'
+      preLoaderRoute: typeof PrivacidadeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mcp': {
@@ -386,6 +406,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   FavoritosRoute: FavoritosRoute,
   McpRoute: McpRoute,
+  PrivacidadeRoute: PrivacidadeRoute,
   ProductsRoute: ProductsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,

@@ -51,7 +51,7 @@ export function StickyBuyBar({
         >
           <div className="container-premium h-16 flex items-center gap-4">
             {image && (
-              <img src={image} alt="" className="h-10 w-10 object-cover bg-surface" />
+              <img src={image} alt="" loading="lazy" className="h-10 w-10 object-cover bg-surface" />
             )}
             <div className="flex-1 min-w-0">
               <div className="text-sm font-semibold truncate">{title}</div>

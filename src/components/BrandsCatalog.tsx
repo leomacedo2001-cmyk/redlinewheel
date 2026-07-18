@@ -15,9 +15,9 @@ export function BrandsCatalog() {
             <img
               src={b.img}
               alt={`Volantes personalizados para ${b.name}`}
+              loading="lazy"
               width={1024}
               height={1024}
-              loading="lazy"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />

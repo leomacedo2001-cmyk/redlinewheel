@@ -69,6 +69,8 @@ function BrandPage() {
         <img
           src={brand.img}
           alt={`${brand.name} — REDLINE Performance`}
+          loading="eager"
+          fetchPriority="high"
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
@@ -155,9 +157,9 @@ function BrandPage() {
                 <img
                   src={mo.img}
                   alt={`${brand.name} ${mo.name}`}
+                  loading="lazy"
                   width={800}
                   height={600}
-                  loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
               </Link>

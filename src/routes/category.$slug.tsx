@@ -148,7 +148,7 @@ function CategoryPage() {
           </div>
         </div>
         <div className="aspect-square overflow-hidden bg-surface border border-border/60">
-          <img src={cat.hero} alt={cat.title} width={1024} height={1024} className="w-full h-full object-cover" />
+          <img src={cat.hero} alt={cat.title} width={1024} height={1024} loading="eager" fetchPriority="high" className="w-full h-full object-cover" />
         </div>
       </div>
 
