@@ -116,10 +116,14 @@
 
 @keyframes marquee-x {
   from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-50%, 0, 0); }
+  to { transform: translate3d(calc(-1 * var(--marquee-distance, 0px)), 0, 0); }
 }
 
 @utility animate-marquee-x {
-  animation: marquee-x 40s linear infinite;
+  animation-name: marquee-x;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
   will-change: transform;
+  backface-visibility: hidden;
+  contain: layout style paint;
 }

@@ -1,12 +1,19 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { BRANDS, type Brand, type BrandModel } from "@/lib/brands";
 
 /**
- * Produtos em Destaque — marquee contínuo, fluido e elegante.
- * Movimento constante da direita para a esquerda, com aceleração linear.
- * Pausa suavemente ao passar o rato (desktop).
+ * Produtos em Destaque — vitrine em movimento contínuo, estilo "marquee" premium.
+ *
+ * Nota técnica sobre o loop infinito:
+ * A lista de itens é duplicada (para dar a sensação de infinito) e o track desloca-se
+ * em translateX. Em vez de usar "-50%" (que, com gaps entre cartões, NÃO corresponde
+ * exatamente à largura de um conjunto de itens — a diferença é a causa mais comum de
+ * "saltos" visíveis em marquees), medimos com ResizeObserver a distância real em pixels
+ * entre o início do 1º cartão e o início do cartão duplicado equivalente. Isso garante
+ * uma junção matematicamente exata, invisível, independentemente do nº de itens, do
+ * gap ou do breakpoint responsivo.
  */
 
 const FEATURED_SLUGS: string[] = [
@@ -24,6 +31,10 @@ const FEATURED_SLUGS: string[] = [
   "991-carbon-signature",
 ];
 
+// Velocidade constante e lenta (pixels por segundo). Ajusta este valor para
+// acelerar/abrandar — a duração é sempre recalculada a partir da largura real.
+const MARQUEE_SPEED_PX_PER_SEC = 34;
+
 type FeaturedItem = { brand: Brand; model: BrandModel };
 
 function collectFeatured(): FeaturedItem[] {
@@ -33,9 +44,7 @@ function collectFeatured(): FeaturedItem[] {
       map.set(model.slug, { brand, model });
     }
   }
-  return FEATURED_SLUGS
-    .map((slug) => map.get(slug))
-    .filter((x): x is FeaturedItem => Boolean(x));
+  return FEATURED_SLUGS.map((slug) => map.get(slug)).filter((x): x is FeaturedItem => Boolean(x));
 }
 
 function Card({ brand, model }: FeaturedItem) {
@@ -53,7 +62,8 @@ function Card({ brand, model }: FeaturedItem) {
         <img
           src={model.img}
           alt={model.name}
-          loading="lazy"
+          loading="eager"
+          decoding="async"
           width={1024}
           height={1024}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
@@ -94,6 +104,28 @@ function Card({ brand, model }: FeaturedItem) {
 
 export function FeaturedWheels() {
   const items = useMemo(collectFeatured, []);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const seamRef = useRef<HTMLDivElement>(null); // marca o início do conjunto duplicado
+  const [distance, setDistance] = useState<number | null>(null);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    const seam = seamRef.current;
+    if (!track || !seam) return;
+
+    function measure() {
+      if (!track || !seam) return;
+      const trackLeft = track.getBoundingClientRect().left;
+      const seamLeft = seam.getBoundingClientRect().left;
+      const measured = seamLeft - trackLeft;
+      if (measured > 0) setDistance(measured);
+    }
+
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(track);
+    return () => ro.disconnect();
+  }, [items.length]);
 
   if (items.length === 0) {
     return (
@@ -103,29 +135,40 @@ export function FeaturedWheels() {
     );
   }
 
-  // Duplicar a lista para permitir loop contínuo sem saltos.
+  // Duplicar a lista para permitir loop contínuo; a distância exata de translação
+  // é medida em runtime (ver useEffect acima), não assumida a partir do nº de itens.
   const loop = [...items, ...items];
-  // Duração proporcional ao número de itens (movimento lento e elegante).
-  const durationSec = items.length * 6;
+  const durationSec = distance ? distance / MARQUEE_SPEED_PX_PER_SEC : undefined;
 
   return (
     <div
       className="relative overflow-hidden group/marquee"
       style={{
-        maskImage:
-          "linear-gradient(to right, transparent, black 4%, black 96%, transparent)",
-        WebkitMaskImage:
-          "linear-gradient(to right, transparent, black 4%, black 96%, transparent)",
+        maskImage: "linear-gradient(to right, transparent, black 4%, black 96%, transparent)",
+        WebkitMaskImage: "linear-gradient(to right, transparent, black 4%, black 96%, transparent)",
       }}
       aria-label="Produtos em destaque"
     >
       <div
-        className="flex gap-6 w-max animate-marquee-x group-hover/marquee:[animation-play-state:paused]"
-        style={{ animationDuration: `${durationSec}s` }}
+        ref={trackRef}
+        className={
+          distance
+            ? "flex gap-6 w-max animate-marquee-x group-hover/marquee:[animation-play-state:paused] opacity-100 transition-opacity duration-500"
+            : "flex gap-6 w-max opacity-0"
+        }
+        style={
+          distance
+            ? ({
+                "--marquee-distance": `${distance}px`,
+                animationDuration: `${durationSec}s`,
+              } as React.CSSProperties)
+            : undefined
+        }
       >
         {loop.map(({ brand, model }, i) => (
           <div
             key={`${brand.slug}-${model.slug}-${i}`}
+            ref={i === items.length ? seamRef : undefined}
             className="shrink-0 basis-[280px] sm:basis-[320px] lg:basis-[340px]"
           >
             <Card brand={brand} model={model} />
@@ -135,3 +178,4 @@ export function FeaturedWheels() {
     </div>
   );
 }
+

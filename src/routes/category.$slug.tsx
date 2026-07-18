@@ -8,8 +8,19 @@ import costuras from "@/assets/product-costuras.jpg";
 import ledShift from "@/assets/product-led-shift.jpg";
 import patilhas from "@/assets/product-patilhas.jpg";
 import oemPlus from "@/assets/product-oem-plus.jpg";
-
 import componentesInterior from "@/assets/product-componentes-interior.jpg";
+
+// Fotografias dedicadas a cada categoria (uma foto por categoria, nome correspondente
+// à personalização exata). Usadas como imagem hero de destaque; as fotos "product-*"
+// acima continuam a servir de apoio na galeria de cada categoria.
+import customAlcantara from "@/assets/custom-alcantara.jpg.asset.json";
+import customCarbono from "@/assets/custom-carbono.jpg.asset.json";
+import customComponentes from "@/assets/custom-componentes.jpg.asset.json";
+import customCosturas from "@/assets/custom-costuras.jpg.asset.json";
+import customLedShift from "@/assets/custom-led-shift.jpg.asset.json";
+import customOemPlus from "@/assets/custom-oem-plus.jpg.asset.json";
+import customPatilhas from "@/assets/custom-patilhas.jpg.asset.json";
+import customPelePerfurada from "@/assets/custom-pele-perfurada.jpg.asset.json";
 
 type Category = {
   title: string;
@@ -25,64 +36,64 @@ const CATEGORIES: Record<string, Category> = {
     title: "Revestimento em Alcântara",
     tagline: "Aderência e toque premium",
     intro: "Alcântara genuíno aplicado à mão nas zonas de pegada para máxima aderência e estética motorsport. Material de eleição das edições M Performance, RS e AMG.",
-    hero: alcantara,
-    gallery: [alcantara, costuras, oemPlus],
+    hero: customAlcantara.url,
+    gallery: [customAlcantara.url, alcantara, costuras],
     highlights: ["Aderência superior em condução desportiva", "Toque premium e respirável", "Disponível em várias tonalidades", "Combinável com pele ou carbono"],
   },
   "pele-perfurada": {
     title: "Pele Perfurada",
     tagline: "GT intemporal",
     intro: "Couro nappa perfurado a laser para ventilação superior. Costura à mão por mestres-artesãos com acabamento OEM+.",
-    hero: pelePerfurada,
-    gallery: [pelePerfurada, costuras, oemPlus],
+    hero: customPelePerfurada.url,
+    gallery: [customPelePerfurada.url, pelePerfurada, costuras],
     highlights: ["Couro nappa europeu de primeira", "Perfuração a laser uniforme", "Costuras à medida", "Durabilidade de longo prazo"],
   },
   carbono: {
     title: "Fibra de Carbono",
     tagline: "Twill e Forged",
     intro: "Carbono real em tecelagem twill 2x2 ou forged. Leveza e detalhe motorsport ao nível Porsche e Ferrari.",
-    hero: carbono,
-    gallery: [carbono, oemPlus, componentesInterior],
+    hero: customCarbono.url,
+    gallery: [customCarbono.url, carbono, oemPlus],
     highlights: ["Carbono pré-impregnado de aviação", "Acabamento UV-stable brilhante ou mate", "Twill 2x2 ou forged disponíveis", "Aplicável em aro, inserções e trim"],
   },
   costuras: {
     title: "Costuras Personalizadas",
     tagline: "Cor, ponto e padrão",
     intro: "Escolhe a cor, o ponto e o padrão. Costura à mão por mestres-artesãos com acabamento OEM+ indistinguível de fábrica.",
-    hero: costuras,
-    gallery: [costuras, oemPlus, alcantara],
+    hero: customCosturas.url,
+    gallery: [customCosturas.url, costuras, oemPlus],
     highlights: ["Mais de 30 cores disponíveis", "Ponto duplo, cruzado ou tom-sobre-tom", "Costura à mão em zonas críticas", "Combinações tricolor M ou personalizadas"],
   },
   "led-shift": {
     title: "Indicadores LED de Mudança",
     tagline: "Cockpit de competição",
     intro: "Barra sequencial de LEDs RGB integrada no aro superior. Resposta imediata, inspirada nos cockpits de competição WRC e GT.",
-    hero: ledShift,
-    gallery: [ledShift, carbono, oemPlus],
+    hero: customLedShift.url,
+    gallery: [customLedShift.url, ledShift, carbono],
     highlights: ["LEDs RGB programáveis", "Integração OBD2 / CAN-bus", "Cores e thresholds personalizáveis", "Plug & play em modelos compatíveis"],
   },
   patilhas: {
     title: "Patilhas de Velocidade",
     tagline: "Alumínio CNC anodizado",
     intro: "Patilhas em alumínio CNC anodizado. Maior alcance e ergonomia digna de um AMG GT ou Porsche GT3.",
-    hero: patilhas,
-    gallery: [patilhas, carbono, oemPlus],
+    hero: customPatilhas.url,
+    gallery: [customPatilhas.url, patilhas, carbono],
     highlights: ["Alumínio aeronáutico CNC", "Anodização em várias cores", "Encaixe direto sem cortes", "Compatibilidade ampla VAG / BMW / MB"],
   },
   "oem-plus": {
     title: "Personalização OEM+",
     tagline: "Parecem de fábrica — só que melhores",
     intro: "Upgrades que parecem de fábrica — só que melhores. Iluminação ambiente, inserções e detalhes integrados sem comprometer a garantia.",
-    hero: oemPlus,
-    gallery: [oemPlus, componentesInterior, alcantara],
+    hero: customOemPlus.url,
+    gallery: [customOemPlus.url, oemPlus, componentesInterior],
     highlights: ["Acabamento indistinguível do original", "Sem cortes destrutivos", "Compatível com airbag e sensores", "Documentação técnica fornecida"],
   },
   "componentes-interior": {
     title: "Componentes Premium para Interior",
     tagline: "Cada detalhe importa",
     intro: "Apoios de braço, manípulos de caixa, foles em pele e trims em carbono. A condizer com o teu volante personalizado.",
-    hero: componentesInterior,
-    gallery: [componentesInterior, oemPlus, costuras],
+    hero: customComponentes.url,
+    gallery: [customComponentes.url, componentesInterior, oemPlus],
     highlights: ["Conjuntos coordenados", "Pele e Alcântara à medida", "Carbono e alumínio para trims", "Encomenda como kit ou individual"],
   },
 };
