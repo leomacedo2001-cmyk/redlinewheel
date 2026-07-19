@@ -11,6 +11,7 @@ import patilhas from "@/assets/custom-patilhas-catalog.jpg";
 import oemPlus from "@/assets/custom-oem-plus-catalog.jpg";
 
 import { CATEGORY_PAGES } from "@/lib/categoryPages";
+import { PersonalizationCarousel } from "@/components/carousel/PersonalizationCarousel";
 
 const CATEGORIES = [
   {
@@ -120,43 +121,12 @@ export function CustomProductsSection() {
         <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-6">
           Catálogo de personalizações
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {CATEGORIES.map((c) => (
-            <article
-              key={c.slug}
-              className="group bg-surface border border-border/60 hover:border-primary/50 transition-all duration-300 flex flex-col"
-            >
-              <div className="aspect-square overflow-hidden bg-background">
-                <img
-                  src={c.img}
-                  alt={c.name}
-                  loading="lazy"
-                  width={1024}
-                  height={1024}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-              </div>
-              <div className="p-6 flex flex-col flex-1 gap-4">
-                <div className="flex-1">
-                  <h3 className="font-bold text-lg leading-tight mb-2">{c.name}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{c.desc}</p>
-                </div>
-                <Button
-                  asChild
-                  variant="outline"
-                  className="rounded-none h-12 uppercase tracking-wider text-xs w-full hover:bg-primary hover:text-primary-foreground hover:border-primary"
-                >
-                  <Link
-                    to="/produtos/$slug"
-                    params={{ slug: CATEGORY_PAGES[c.slug]?.urlSlug ?? c.slug }}
-                  >
-                    Ver Mais <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
-            </article>
-          ))}
-        </div>
+        <PersonalizationCarousel
+          categories={CATEGORIES.map((c) => ({
+            ...c,
+            urlSlug: CATEGORY_PAGES[c.slug]?.urlSlug ?? c.slug,
+          }))}
+        />
       </div>
     </section>
   );
