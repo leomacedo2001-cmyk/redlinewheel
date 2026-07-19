@@ -4,7 +4,7 @@ import { ArrowRight, Shield, Wrench, Truck, Star } from "lucide-react";
 import { FeaturedWheels } from "@/components/FeaturedWheels";
 
 import heroImg from "@/assets/hero-steering.jpg";
-import wheelImg from "@/assets/wheel-showcase.jpg";
+import engineeringImg from "@/assets/engineering-showcase.jpg";
 import { CustomProductsSection } from "@/components/CustomProductsSection";
 
 export const Route = createFileRoute("/")({
@@ -137,7 +137,7 @@ function Home() {
           </div>
         </div>
         <div className="relative aspect-square bg-surface overflow-hidden">
-          <img src={wheelImg} alt="Volante personalizado" width={1024} height={1024} loading="lazy" className="w-full h-full object-cover" />
+          <img src={engineeringImg} alt="Volante personalizado" width={1024} height={1024} loading="lazy" className="w-full h-full object-cover" />
         </div>
       </section>
 
