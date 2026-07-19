@@ -58,8 +58,7 @@ export const Route = createFileRoute("/produtos/$slug")({
       scripts: schema
         ? [
             {
-              tag: "script" as const,
-              attrs: { type: "application/ld+json" },
+              type: "application/ld+json",
               children: JSON.stringify(schema),
             },
           ]
