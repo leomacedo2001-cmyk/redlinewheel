@@ -1,19 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { BRANDS } from "@/lib/brands";
+import { CATEGORY_PAGES } from "@/lib/categoryPages";
 
 const BASE_URL = "https://redlinewheel.lovable.app";
-
-// Categorias de acabamento/personalização (ver src/routes/category.$slug.tsx)
-const CATEGORY_SLUGS = [
-  "alcantara",
-  "pele-perfurada",
-  "carbono",
-  "costuras",
-  "led-shift",
-  "patilhas",
-  "oem-plus",
-];
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
@@ -28,8 +18,8 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/privacidade", priority: "0.3", changefreq: "yearly" },
         ];
 
-        const categoryEntries = CATEGORY_SLUGS.map((slug) => ({
-          path: `/category/${slug}`,
+        const categoryEntries = Object.values(CATEGORY_PAGES).map((cat) => ({
+          path: `/produtos/${cat.urlSlug}`,
           priority: "0.7",
           changefreq: "monthly",
         }));

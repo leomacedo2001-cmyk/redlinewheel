@@ -10,6 +10,8 @@ import ledShift from "@/assets/custom-led-shift-catalog.jpg";
 import patilhas from "@/assets/custom-patilhas-catalog.jpg";
 import oemPlus from "@/assets/custom-oem-plus-catalog.jpg";
 
+import { CATEGORY_PAGES } from "@/lib/categoryPages";
+
 const CATEGORIES = [
   {
     slug: "alcantara",
@@ -61,10 +63,13 @@ export function CustomProductsSection() {
       <div className="container-premium">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
           <div>
-            <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">Personalização</div>
+            <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">
+              Personalização
+            </div>
             <h2 className="text-4xl md:text-5xl font-bold">Configura o teu volante.</h2>
             <p className="text-muted-foreground mt-4 max-w-xl">
-              O nosso serviço principal é o volante feito à tua medida. Pede orçamento através do configurador — respondemos em menos de 24h.
+              O nosso serviço principal é o volante feito à tua medida. Pede orçamento através do
+              configurador — respondemos em menos de 24h.
             </p>
           </div>
         </div>
@@ -86,11 +91,13 @@ export function CustomProductsSection() {
               </div>
             </div>
             <div className="p-8 md:p-12 flex flex-col justify-center">
-              <div className="text-[10px] uppercase tracking-[0.3em] text-primary mb-3">Personalização Total</div>
+              <div className="text-[10px] uppercase tracking-[0.3em] text-primary mb-3">
+                Personalização Total
+              </div>
               <h3 className="text-3xl md:text-4xl font-bold mb-4">Volantes Personalizados</h3>
               <p className="text-muted-foreground leading-relaxed mb-6">
-                Construídos à mão, à medida do teu carro. Escolhe materiais, costuras, carbono, LED, patilhas e mais.
-                Inspirados nos padrões BMW M, AMG, Audi Sport, Porsche e Ferrari.
+                Construídos à mão, à medida do teu carro. Escolhe materiais, costuras, carbono, LED,
+                patilhas e mais. Inspirados nos padrões BMW M, AMG, Audi Sport, Porsche e Ferrari.
               </p>
               <ul className="text-sm text-muted-foreground space-y-2 mb-8">
                 <li>• Configurador online com mais de 40 opções</li>
@@ -110,7 +117,9 @@ export function CustomProductsSection() {
         </article>
 
         {/* Catálogo informativo */}
-        <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-6">Catálogo de personalizações</div>
+        <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-6">
+          Catálogo de personalizações
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {CATEGORIES.map((c) => (
             <article
@@ -137,7 +146,10 @@ export function CustomProductsSection() {
                   variant="outline"
                   className="rounded-none h-12 uppercase tracking-wider text-xs w-full hover:bg-primary hover:text-primary-foreground hover:border-primary"
                 >
-                  <Link to="/category/$slug" params={{ slug: c.slug }}>
+                  <Link
+                    to="/produtos/$slug"
+                    params={{ slug: CATEGORY_PAGES[c.slug]?.urlSlug ?? c.slug }}
+                  >
                     Ver Mais <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
