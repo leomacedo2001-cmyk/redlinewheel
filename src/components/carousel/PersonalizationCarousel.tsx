@@ -82,7 +82,7 @@ export function PersonalizationCarousel({ categories }: PersonalizationCarouselP
   return (
     <div ref={containerRef}>
       <div
-        className="relative h-[560px] sm:h-[600px] md:h-[640px]"
+        className="relative h-[560px] sm:h-[600px] md:h-[640px] overflow-hidden"
         style={{ perspective: "1800px" }}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
