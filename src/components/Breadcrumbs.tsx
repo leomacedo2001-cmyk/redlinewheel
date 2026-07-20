@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import type { ComponentProps } from "react";
 import { ChevronRight } from "lucide-react";
 
 export interface Crumb {
@@ -16,8 +17,11 @@ export function Breadcrumbs({ items }: { items: Crumb[] }) {
           return (
             <li key={i} className="flex items-center gap-1.5">
               {c.to && !isLast ? (
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                <Link to={c.to as any} params={c.params as any} className="hover:text-primary transition-colors">
+                <Link
+                  to={c.to as ComponentProps<typeof Link>["to"]}
+                  params={c.params as ComponentProps<typeof Link>["params"]}
+                  className="hover:text-primary transition-colors"
+                >
                   {c.label}
                 </Link>
               ) : (
