@@ -13,6 +13,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as McpRouteImport } from './routes/mcp'
+import { Route as FiltrosRouteImport } from './routes/filtros'
 import { Route as FavoritosRouteImport } from './routes/favoritos'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ConfiguratorRouteImport } from './routes/configurator'
@@ -21,6 +22,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProdutosSlugRouteImport } from './routes/produtos.$slug'
 import { Route as ProductHandleRouteImport } from './routes/product.$handle'
+import { Route as CSlugRouteImport } from './routes/c.$slug'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as BrandSlugIndexRouteImport } from './routes/brand.$slug.index'
@@ -46,6 +48,11 @@ const PrivacidadeRoute = PrivacidadeRouteImport.update({
 const McpRoute = McpRouteImport.update({
   id: '/mcp',
   path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FiltrosRoute = FiltrosRouteImport.update({
+  id: '/filtros',
+  path: '/filtros',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FavoritosRoute = FavoritosRouteImport.update({
@@ -86,6 +93,11 @@ const ProdutosSlugRoute = ProdutosSlugRouteImport.update({
 const ProductHandleRoute = ProductHandleRouteImport.update({
   id: '/product/$handle',
   path: '/product/$handle',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CSlugRoute = CSlugRouteImport.update({
+  id: '/c/$slug',
+  path: '/c/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const Char91DotwellKnownChar93OauthProtectedResourceRoute =
@@ -129,12 +141,14 @@ export interface FileRoutesByFullPath {
   '/configurator': typeof ConfiguratorRoute
   '/contact': typeof ContactRoute
   '/favoritos': typeof FavoritosRoute
+  '/filtros': typeof FiltrosRoute
   '/mcp': typeof McpRoute
   '/privacidade': typeof PrivacidadeRoute
   '/products': typeof ProductsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/c/$slug': typeof CSlugRoute
   '/product/$handle': typeof ProductHandleRoute
   '/produtos/$slug': typeof ProdutosSlugRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -149,12 +163,14 @@ export interface FileRoutesByTo {
   '/configurator': typeof ConfiguratorRoute
   '/contact': typeof ContactRoute
   '/favoritos': typeof FavoritosRoute
+  '/filtros': typeof FiltrosRoute
   '/mcp': typeof McpRoute
   '/privacidade': typeof PrivacidadeRoute
   '/products': typeof ProductsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/c/$slug': typeof CSlugRoute
   '/product/$handle': typeof ProductHandleRoute
   '/produtos/$slug': typeof ProdutosSlugRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -170,12 +186,14 @@ export interface FileRoutesById {
   '/configurator': typeof ConfiguratorRoute
   '/contact': typeof ContactRoute
   '/favoritos': typeof FavoritosRoute
+  '/filtros': typeof FiltrosRoute
   '/mcp': typeof McpRoute
   '/privacidade': typeof PrivacidadeRoute
   '/products': typeof ProductsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/c/$slug': typeof CSlugRoute
   '/product/$handle': typeof ProductHandleRoute
   '/produtos/$slug': typeof ProdutosSlugRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -192,12 +210,14 @@ export interface FileRouteTypes {
     | '/configurator'
     | '/contact'
     | '/favoritos'
+    | '/filtros'
     | '/mcp'
     | '/privacidade'
     | '/products'
     | '/sitemap.xml'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/c/$slug'
     | '/product/$handle'
     | '/produtos/$slug'
     | '/.lovable/oauth/consent'
@@ -212,12 +232,14 @@ export interface FileRouteTypes {
     | '/configurator'
     | '/contact'
     | '/favoritos'
+    | '/filtros'
     | '/mcp'
     | '/privacidade'
     | '/products'
     | '/sitemap.xml'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/c/$slug'
     | '/product/$handle'
     | '/produtos/$slug'
     | '/.lovable/oauth/consent'
@@ -232,12 +254,14 @@ export interface FileRouteTypes {
     | '/configurator'
     | '/contact'
     | '/favoritos'
+    | '/filtros'
     | '/mcp'
     | '/privacidade'
     | '/products'
     | '/sitemap.xml'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/c/$slug'
     | '/product/$handle'
     | '/produtos/$slug'
     | '/.lovable/oauth/consent'
@@ -253,12 +277,14 @@ export interface RootRouteChildren {
   ConfiguratorRoute: typeof ConfiguratorRoute
   ContactRoute: typeof ContactRoute
   FavoritosRoute: typeof FavoritosRoute
+  FiltrosRoute: typeof FiltrosRoute
   McpRoute: typeof McpRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   ProductsRoute: typeof ProductsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  CSlugRoute: typeof CSlugRoute
   ProductHandleRoute: typeof ProductHandleRoute
   ProdutosSlugRoute: typeof ProdutosSlugRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
@@ -295,6 +321,13 @@ declare module '@tanstack/react-router' {
       path: '/mcp'
       fullPath: '/mcp'
       preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/filtros': {
+      id: '/filtros'
+      path: '/filtros'
+      fullPath: '/filtros'
+      preLoaderRoute: typeof FiltrosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/favoritos': {
@@ -353,6 +386,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductHandleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/c/$slug': {
+      id: '/c/$slug'
+      path: '/c/$slug'
+      fullPath: '/c/$slug'
+      preLoaderRoute: typeof CSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/.well-known/oauth-protected-resource': {
       id: '/.well-known/oauth-protected-resource'
       path: '/.well-known/oauth-protected-resource'
@@ -405,6 +445,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConfiguratorRoute: ConfiguratorRoute,
   ContactRoute: ContactRoute,
   FavoritosRoute: FavoritosRoute,
+  FiltrosRoute: FiltrosRoute,
   McpRoute: McpRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   ProductsRoute: ProductsRoute,
@@ -412,6 +453,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  CSlugRoute: CSlugRoute,
   ProductHandleRoute: ProductHandleRoute,
   ProdutosSlugRoute: ProdutosSlugRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,

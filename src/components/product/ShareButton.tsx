@@ -11,9 +11,11 @@ interface Props {
 export function ShareButton({ title, text, className }: Props) {
   const onClick = async () => {
     const url = typeof window !== "undefined" ? window.location.href : "";
-    if (typeof navigator.share === "function") {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const nav = navigator as any;
+    if (nav?.share) {
       try {
-        await navigator.share({ title, text, url });
+        await nav.share({ title, text, url });
         return;
       } catch {
         // user canceled or failed → fall through to copy

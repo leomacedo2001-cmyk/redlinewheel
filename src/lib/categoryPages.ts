@@ -1,4 +1,5 @@
-import { BRANDS, type Brand, type BrandModel } from "@/lib/brands";
+import { type Brand, type BrandModel } from "@/lib/brands";
+import { curatedCategoryCollections, getProductsForCollection } from "@/lib/collections";
 
 // Fotos "hero" dedicadas (uma por categoria, já usadas no cartão do catálogo na home)
 import customAlcantara from "@/assets/custom-alcantara-catalog.jpg";
@@ -414,17 +415,16 @@ export const CATEGORY_PAGES: Record<string, CategoryPage> = {
   },
 };
 
-/** Resolve os modelos (brand + model) relacionados com uma categoria, a partir dos slugs configurados. */
+/**
+ * Resolve os produtos relacionados com uma categoria — CALCULADO automaticamente
+ * a partir dos atributos de cada produto (fonte única de verdade em attributes.ts),
+ * e já não a partir de listas manuais. Isto elimina omissões e classificações
+ * incorretas: qualquer produto com o atributo correspondente aparece aqui.
+ */
 export function getRelatedModels(category: CategoryPage): { brand: Brand; model: BrandModel }[] {
-  const map = new Map<string, { brand: Brand; model: BrandModel }>();
-  for (const brand of BRANDS) {
-    for (const model of brand.models) {
-      map.set(model.slug, { brand, model });
-    }
-  }
-  return category.relatedModelSlugs
-    .map((slug) => map.get(slug))
-    .filter((x): x is { brand: Brand; model: BrandModel } => Boolean(x));
+  const col = curatedCategoryCollections.find((c) => c.urlSlug === category.urlSlug);
+  if (!col) return [];
+  return getProductsForCollection(col);
 }
 
 /** Mapa inverso: urlSlug (usado em /produtos/:slug) -> chave interna em CATEGORY_PAGES */

@@ -1,3 +1,4 @@
+import type { ProductAttributes } from "@/lib/attributes";
 import hero from "@/assets/hero-steering.jpg";
 import wheel from "@/assets/wheel-showcase.jpg";
 import carbono from "@/assets/product-carbono.jpg";
@@ -33,6 +34,18 @@ import mbW213Edition1 from "@/assets/mercedes-w213-amg-edition1-1.jpg.asset.json
 import mbW213Red from "@/assets/mercedes-w213-amg-red-1.jpg.asset.json";
 import mbW213Forged from "@/assets/mercedes-w213-amg-forged-red-1.jpg.asset.json";
 
+// Produtos novos (Fase 2) — imagens editadas/estúdio processadas para src/assets
+import bmwGBlackCarbon from "@/assets/bmw-g-black-carbon-1.jpg";
+import bmwGBlueForged from "@/assets/bmw-g-blue-forged-1.jpg";
+import bmwGBlackOrange from "@/assets/bmw-g-black-orange-1.jpg";
+import audiR8Carbon from "@/assets/audi-r8-carbon-1.jpg";
+import audiR8Blue from "@/assets/audi-r8-blue-1.jpg";
+import mbAmgRedForged from "@/assets/mercedes-amg-red-forged-1.jpg";
+import audiGreenForged from "@/assets/audi-green-forged-round-1.jpg";
+import audiGreenCamo from "@/assets/audi-green-camo-1.jpg";
+import vwForged from "@/assets/vw-forged-carbon-1.jpg";
+import audiRsSuede from "@/assets/audi-rs-suede-red-1.jpg";
+
 const G80_GALLERY = [bmwG80_1.url, bmwG80_2.url, bmwG80_3.url, bmwG80_4.url, bmwG80_5.url, bmwG80_6.url];
 const F80_GALLERY = [bmwF80_1.url, bmwF80_2.url, bmwF80_3.url, bmwF80_4.url];
 
@@ -51,6 +64,14 @@ export type BrandModel = {
   sku?: string;
   price?: { amount: number; currency: string };
   status?: "Disponível" | "Sob Encomenda" | "Em Breve";
+  /**
+   * Atributos derivados da análise das imagens. São a FONTE ÚNICA DE VERDADE
+   * da classificação: as categorias/filtros/páginas são calculados a partir
+   * daqui (ver src/lib/attributes.ts e src/lib/collections.ts). Preencher só
+   * em produtos finalizados e fotografados — os modelos-base (configuráveis)
+   * ficam sem atributos e não aparecem nas páginas de filtro.
+   */
+  attributes?: ProductAttributes;
   /**
    * Handle do produto no Shopify. Se omitido, é usado `${brand.slug}-${model.slug}`.
    * Cria o produto no Shopify Admin com esse handle para ativar carrinho/checkout.
@@ -177,6 +198,13 @@ export const BRANDS: Brand[] = [
           { label: "Patilhas", value: "Carbono Vermelho" },
           { label: "Costura", value: "Tricolor M" },
         ],
+        attributes: {
+          formato: "flat-bottom",
+          linha: "desportivo",
+          materiais: ["carbono-mate", "pele-perfurada"],
+          costuras: ["tricolor-m"],
+          features: ["patilhas", "patilhas-carbono", "faixa-central"],
+        },
         sku: "RL-BMW-FSERIES-CR",
         price: { amount: 999, currency: "EUR" },
         status: "Disponível",
@@ -198,6 +226,13 @@ export const BRANDS: Brand[] = [
           { label: "Material", value: "Alcântara" },
           { label: "Costura", value: "Tricolor M" },
         ],
+        attributes: {
+          formato: "flat-bottom",
+          linha: "desportivo",
+          materiais: ["alcantara"],
+          costuras: ["tricolor-m"],
+          features: ["faixa-12h"],
+        },
         sku: "RL-BMW-F30-ALC",
         price: { amount: 799, currency: "EUR" },
         status: "Disponível",
@@ -219,6 +254,13 @@ export const BRANDS: Brand[] = [
           { label: "Material", value: "Pele Perfurada + Carbono" },
           { label: "Patilhas", value: "Carbono" },
         ],
+        attributes: {
+          formato: "flat-bottom",
+          linha: "desportivo",
+          materiais: ["pele-perfurada", "carbono"],
+          costuras: ["tricolor-m"],
+          features: ["patilhas", "patilhas-carbono", "faixa-central"],
+        },
         sku: "RL-BMW-F30-MPB",
         price: { amount: 849, currency: "EUR" },
         status: "Disponível",
@@ -276,6 +318,13 @@ export const BRANDS: Brand[] = [
           { label: "LED Shift", value: "Integrado" },
           { label: "Costura", value: "Amarela Racing" },
         ],
+        attributes: {
+          formato: "flat-bottom",
+          linha: "desportivo",
+          materiais: ["carbono-forjado", "carbono-colorido", "alcantara"],
+          costuras: ["amarela"],
+          features: ["led-shift", "patilhas", "patilhas-carbono", "botoes-multifuncoes", "faixa-12h"],
+        },
         sku: "RL-BMW-GSERIES-FM",
         price: { amount: 1199, currency: "EUR" },
         status: "Disponível",
@@ -297,6 +346,13 @@ export const BRANDS: Brand[] = [
           { label: "Material", value: "Carbono Forjado Azul + Pele Perfurada" },
           { label: "Costura", value: "Tricolor M" },
         ],
+        attributes: {
+          formato: "flat-bottom",
+          linha: "desportivo",
+          materiais: ["carbono-forjado", "carbono-colorido", "pele-perfurada"],
+          costuras: ["tricolor-m"],
+          features: [],
+        },
         sku: "RL-BMW-G20-BC",
         price: { amount: 949, currency: "EUR" },
         status: "Disponível",
@@ -351,6 +407,88 @@ export const BRANDS: Brand[] = [
         price: { amount: 929, currency: "EUR" },
         status: "Disponível",
       }),
+      m({
+        slug: "g-series-black-carbon",
+        name: "BMW M G-Series Black Carbon Signature",
+        chassis: "G2x / G8x",
+        description: "Volante M flat bottom em carbono brilhante e pele perfurada, com costura tricolor M.",
+        longDescription:
+          "Volante BMW M G-Series flat bottom com aro superior em fibra de carbono brilhante, zonas de pegada em pele perfurada e marca 12h com costura tricolor M. Acabamento de assinatura REDLINE.",
+        img: bmwGBlackCarbon,
+        gallery: [bmwGBlackCarbon],
+        compatibilities: ["320i", "330i", "M340i", "M3 G80", "M4 G82"],
+        specs: [
+          { label: "Edição", value: "Black Carbon Signature" },
+          { label: "Formato", value: "Flat Bottom" },
+          { label: "Material", value: "Carbono Brilhante + Pele Perfurada" },
+          { label: "Costura", value: "Tricolor M" },
+        ],
+        sku: "RL-BMW-G-BLKCB",
+        price: { amount: 949, currency: "EUR" },
+        status: "Disponível",
+        attributes: {
+          formato: "flat-bottom",
+          linha: "desportivo",
+          materiais: ["carbono-brilhante", "pele-perfurada"],
+          costuras: ["tricolor-m"],
+          features: ["faixa-12h"],
+        },
+      }),
+      m({
+        slug: "g-series-blue-forged",
+        name: "BMW M G-Series Blue Forged Signature",
+        chassis: "G2x / G8x",
+        description: "Edição em carbono forjado azul com patilhas e costura tricolor M.",
+        longDescription:
+          "Volante BMW M G-Series flat bottom em carbono forjado com tonalidade azul, spoke central azul, aros em pele perfurada, patilhas de mudança e marca 12h com costura tricolor M. Peça de assinatura REDLINE.",
+        img: bmwGBlueForged,
+        gallery: [bmwGBlueForged],
+        compatibilities: ["330i", "M340i", "M3 G80", "M3 Touring G81", "M4 G82"],
+        specs: [
+          { label: "Edição", value: "Blue Forged Signature" },
+          { label: "Formato", value: "Flat Bottom" },
+          { label: "Material", value: "Carbono Forjado Azul + Pele Perfurada" },
+          { label: "Patilhas", value: "Sim" },
+          { label: "Costura", value: "Tricolor M" },
+        ],
+        sku: "RL-BMW-G-BLUFG",
+        price: { amount: 1099, currency: "EUR" },
+        status: "Disponível",
+        attributes: {
+          formato: "flat-bottom",
+          linha: "desportivo",
+          materiais: ["carbono-forjado", "carbono-colorido", "pele-perfurada"],
+          costuras: ["tricolor-m"],
+          features: ["patilhas", "faixa-12h"],
+        },
+      }),
+      m({
+        slug: "g-series-black-orange",
+        name: "BMW M G-Series Orange Marker Signature",
+        chassis: "G2x / G8x",
+        description: "Volante M flat bottom em carbono e pele perfurada com marca 12h laranja.",
+        longDescription:
+          "Volante BMW M G-Series flat bottom em fibra de carbono e pele perfurada, com marca 12h em laranja e costura tricolor M no spoke inferior. Assinatura REDLINE.",
+        img: bmwGBlackOrange,
+        gallery: [bmwGBlackOrange],
+        compatibilities: ["320i", "330i", "M340i", "M3 G80", "M4 G82"],
+        specs: [
+          { label: "Edição", value: "Orange Marker Signature" },
+          { label: "Formato", value: "Flat Bottom" },
+          { label: "Material", value: "Carbono + Pele Perfurada" },
+          { label: "Costura", value: "Tricolor M" },
+        ],
+        sku: "RL-BMW-G-ORNG",
+        price: { amount: 949, currency: "EUR" },
+        status: "Disponível",
+        attributes: {
+          formato: "flat-bottom",
+          linha: "desportivo",
+          materiais: ["carbono", "pele-perfurada"],
+          costuras: ["tricolor-m"],
+          features: ["faixa-12h"],
+        },
+      }),
     ],
   },
   {
@@ -403,6 +541,13 @@ export const BRANDS: Brand[] = [
           { label: "Material", value: "Pele Perfurada + Alcântara" },
           { label: "Patilhas", value: "Alumínio" },
         ],
+        attributes: {
+          formato: "flat-bottom",
+          linha: "desportivo",
+          materiais: ["pele-perfurada", "alcantara"],
+          costuras: ["personalizada"],
+          features: ["patilhas", "faixa-12h"],
+        },
         sku: "RL-MB-W205-AMGY",
         price: { amount: 899, currency: "EUR" },
         status: "Disponível",
@@ -436,6 +581,13 @@ export const BRANDS: Brand[] = [
           { label: "Material", value: "Alcântara" },
           { label: "Detalhe", value: "Amarelo Edition 1" },
         ],
+        attributes: {
+          formato: "flat-bottom",
+          linha: "desportivo",
+          materiais: ["alcantara"],
+          costuras: ["personalizada"],
+          features: ["faixa-12h", "insercoes"],
+        },
         sku: "RL-MB-W213-E1",
         price: { amount: 949, currency: "EUR" },
         status: "Disponível",
@@ -456,6 +608,13 @@ export const BRANDS: Brand[] = [
           { label: "Material", value: "Pele Perfurada + Alcântara" },
           { label: "Costura", value: "Vermelha" },
         ],
+        attributes: {
+          formato: "flat-bottom",
+          linha: "desportivo",
+          materiais: ["pele-perfurada", "alcantara"],
+          costuras: ["vermelha"],
+          features: [],
+        },
         sku: "RL-MB-W213-RED",
         price: { amount: 899, currency: "EUR" },
         status: "Disponível",
@@ -477,6 +636,13 @@ export const BRANDS: Brand[] = [
           { label: "Detalhe", value: "Vermelho" },
           { label: "Patilhas", value: "Carbono" },
         ],
+        attributes: {
+          formato: "flat-bottom",
+          linha: "desportivo",
+          materiais: ["carbono-forjado", "alcantara"],
+          costuras: ["vermelha"],
+          features: ["patilhas", "patilhas-carbono", "faixa-12h"],
+        },
         sku: "RL-MB-W213-FR",
         price: { amount: 1099, currency: "EUR" },
         status: "Disponível",
@@ -504,6 +670,34 @@ export const BRANDS: Brand[] = [
         sku: "RL-MB-W177",
         price: { amount: 829, currency: "EUR" },
         status: "Disponível",
+      }),
+      m({
+        slug: "amg-red-forged-signature",
+        name: "Mercedes-AMG Red Forged Signature",
+        chassis: "AMG",
+        description: "Volante AMG flat bottom em Alcantara vermelha, carbono forjado e patilhas em carbono.",
+        longDescription:
+          "Volante Mercedes-AMG flat bottom com aros em Alcantara vermelha, spokes em carbono forjado, centro vermelho com emblema AMG, display superior e patilhas de mudança em carbono. Peça de assinatura REDLINE.",
+        img: mbAmgRedForged,
+        gallery: [mbAmgRedForged],
+        compatibilities: ["C63 AMG", "E63 AMG S", "A45 AMG S", "GT AMG"],
+        specs: [
+          { label: "Edição", value: "Red Forged Signature" },
+          { label: "Formato", value: "Flat Bottom" },
+          { label: "Material", value: "Alcantara Vermelha + Carbono Forjado" },
+          { label: "Patilhas", value: "Carbono" },
+          { label: "Display", value: "Superior AMG" },
+        ],
+        sku: "RL-MB-AMG-RF",
+        price: { amount: 1249, currency: "EUR" },
+        status: "Disponível",
+        attributes: {
+          formato: "flat-bottom",
+          linha: "desportivo",
+          materiais: ["alcantara", "carbono-forjado"],
+          costuras: ["vermelha"],
+          features: ["patilhas", "patilhas-carbono", "display-digital"],
+        },
       }),
     ],
   },
@@ -555,6 +749,13 @@ export const BRANDS: Brand[] = [
           { label: "Compatível", value: "Audi 8Y" },
           { label: "Material", value: "Carbono + Alcântara" },
         ],
+        attributes: {
+          formato: "flat-bottom",
+          linha: "desportivo",
+          materiais: ["carbono-brilhante", "alcantara"],
+          costuras: ["personalizada"],
+          features: ["faixa-12h", "insercoes"],
+        },
         sku: "RL-AUDI-8Y-C",
         price: { amount: 949, currency: "EUR" },
         status: "Disponível",
@@ -588,6 +789,13 @@ export const BRANDS: Brand[] = [
           { label: "Material", value: "Alcântara" },
           { label: "Detalhe", value: "Azul RS" },
         ],
+        attributes: {
+          formato: "flat-bottom",
+          linha: "desportivo",
+          materiais: ["alcantara"],
+          costuras: ["azul"],
+          features: ["faixa-12h", "insercoes"],
+        },
         sku: "RL-AUDI-B8-RSB",
         price: { amount: 899, currency: "EUR" },
         status: "Disponível",
@@ -615,6 +823,141 @@ export const BRANDS: Brand[] = [
         sku: "RL-AUDI-C7",
         price: { amount: 879, currency: "EUR" },
         status: "Disponível",
+      }),
+      m({
+        slug: "r8-carbon-signature",
+        name: "Audi R8 Carbon Signature",
+        chassis: "R8 Type 4S",
+        description: "Volante R8 flat bottom em carbono e pele perfurada, com botões multifunções e patilhas.",
+        longDescription:
+          "Volante Audi R8 flat bottom com aro superior em fibra de carbono, zonas de pegada em pele perfurada, botões multifunções, arranque vermelho e patilhas de mudança. Assinatura REDLINE.",
+        img: audiR8Carbon,
+        gallery: [audiR8Carbon],
+        compatibilities: ["R8 Type 4S", "R8 V10", "R8 V10 Performance"],
+        specs: [
+          { label: "Edição", value: "Carbon Signature" },
+          { label: "Formato", value: "Flat Bottom" },
+          { label: "Material", value: "Carbono + Pele Perfurada" },
+          { label: "Botões", value: "Multifunções" },
+        ],
+        sku: "RL-AUDI-R8-C",
+        price: { amount: 1149, currency: "EUR" },
+        status: "Disponível",
+        attributes: {
+          formato: "flat-bottom",
+          linha: "desportivo",
+          materiais: ["carbono", "pele-perfurada"],
+          costuras: ["personalizada"],
+          features: ["patilhas", "botoes-multifuncoes"],
+        },
+      }),
+      m({
+        slug: "r8-blue-signature",
+        name: "Audi R8 Blue Alcantara Signature",
+        chassis: "R8 Type 4S",
+        description: "Volante R8 flat bottom em Alcantara azul e carbono, com marca 12h e patilhas.",
+        longDescription:
+          "Volante Audi R8 flat bottom com zonas de pegada em Alcantara azul, aro superior em carbono, marca 12h vermelha e patilhas de mudança. Peça de assinatura REDLINE.",
+        img: audiR8Blue,
+        gallery: [audiR8Blue],
+        compatibilities: ["R8 Type 4S", "R8 V10", "R8 V10 Performance"],
+        specs: [
+          { label: "Edição", value: "Blue Alcantara Signature" },
+          { label: "Formato", value: "Flat Bottom" },
+          { label: "Material", value: "Alcantara Azul + Carbono" },
+          { label: "Patilhas", value: "Sim" },
+        ],
+        sku: "RL-AUDI-R8-B",
+        price: { amount: 1149, currency: "EUR" },
+        status: "Disponível",
+        attributes: {
+          formato: "flat-bottom",
+          linha: "desportivo",
+          materiais: ["alcantara", "carbono"],
+          costuras: ["personalizada"],
+          features: ["faixa-12h", "patilhas"],
+        },
+      }),
+      m({
+        slug: "green-forged-signature",
+        name: "Audi Green Forged Signature",
+        chassis: "Gama S / RS",
+        description: "Volante round em carbono forjado verde, pele perfurada e costuras verdes.",
+        longDescription:
+          "Volante Audi de formato round com detalhes em carbono forjado verde, zonas de pegada em pele perfurada, costuras verdes contrastantes, arranque vermelho e botões multifunções. Assinatura REDLINE.",
+        img: audiGreenForged,
+        gallery: [audiGreenForged],
+        compatibilities: ["A4 B9", "S4 B9", "RS4 B9", "A5 B9", "RS5 B9"],
+        specs: [
+          { label: "Edição", value: "Green Forged Signature" },
+          { label: "Formato", value: "Round" },
+          { label: "Material", value: "Carbono Forjado Verde + Pele Perfurada" },
+          { label: "Costura", value: "Verde" },
+        ],
+        sku: "RL-AUDI-GRNF",
+        price: { amount: 999, currency: "EUR" },
+        status: "Sob Encomenda",
+        attributes: {
+          formato: "round",
+          linha: "desportivo",
+          materiais: ["carbono-forjado", "carbono-colorido", "pele-perfurada"],
+          costuras: ["verde"],
+          features: ["botoes-multifuncoes"],
+        },
+      }),
+      m({
+        slug: "green-camo-signature",
+        name: "Audi Green Camo Forged Signature",
+        chassis: "Gama S / RS",
+        description: "Volante flat bottom em carbono forjado verde camuflado com costuras verdes.",
+        longDescription:
+          "Volante Audi flat bottom em carbono forjado com padrão verde camuflado, zonas de pegada em pele perfurada, costuras verdes e botões multifunções. Peça de assinatura REDLINE.",
+        img: audiGreenCamo,
+        gallery: [audiGreenCamo],
+        compatibilities: ["A6 C8", "S6 C8", "RS6 C8", "RS7 C8"],
+        specs: [
+          { label: "Edição", value: "Green Camo Signature" },
+          { label: "Formato", value: "Flat Bottom" },
+          { label: "Material", value: "Carbono Forjado Verde + Pele Perfurada" },
+          { label: "Costura", value: "Verde" },
+        ],
+        sku: "RL-AUDI-GRNC",
+        price: { amount: 999, currency: "EUR" },
+        status: "Sob Encomenda",
+        attributes: {
+          formato: "flat-bottom",
+          linha: "desportivo",
+          materiais: ["carbono-forjado", "carbono-colorido", "pele-perfurada"],
+          costuras: ["verde"],
+          features: ["botoes-multifuncoes"],
+        },
+      }),
+      m({
+        slug: "rs-suede-signature",
+        name: "Audi RS Suede Signature",
+        chassis: "Gama RS",
+        description: "Volante RS flat bottom totalmente em Alcantara com marca 12h vermelha.",
+        longDescription:
+          "Volante Audi RS flat bottom revestido integralmente em Alcantara, com marca 12h vermelha e emblema RS. Estética motorsport pura, de assinatura REDLINE.",
+        img: audiRsSuede,
+        gallery: [audiRsSuede],
+        compatibilities: ["RS3 8Y", "RS4 B9", "RS5 B9", "TT RS"],
+        specs: [
+          { label: "Edição", value: "Suede Signature" },
+          { label: "Formato", value: "Flat Bottom" },
+          { label: "Material", value: "Alcantara" },
+          { label: "Detalhe", value: "Marca 12h Vermelha" },
+        ],
+        sku: "RL-AUDI-RS-SD",
+        price: { amount: 899, currency: "EUR" },
+        status: "Disponível",
+        attributes: {
+          formato: "flat-bottom",
+          linha: "desportivo",
+          materiais: ["alcantara"],
+          costuras: ["personalizada"],
+          features: ["faixa-12h"],
+        },
       }),
     ],
   },
@@ -661,6 +1004,33 @@ export const BRANDS: Brand[] = [
         price: { amount: 799, currency: "EUR" },
         status: "Disponível",
       }),
+      m({
+        slug: "forged-carbon-signature",
+        name: "Volkswagen Forged Carbon Signature",
+        chassis: "MQB",
+        description: "Volante GTI/R flat bottom em carbono forjado e Alcantara, com patilhas.",
+        longDescription:
+          "Volante Volkswagen flat bottom com spokes em carbono forjado, zonas de pegada em Alcantara, anel central azul e patilhas de mudança. Peça de assinatura REDLINE para a gama GTI e R.",
+        img: vwForged,
+        gallery: [vwForged],
+        compatibilities: ["Golf 7 GTI", "Golf 7 R", "Golf 8 GTI", "Golf 8 R"],
+        specs: [
+          { label: "Edição", value: "Forged Carbon Signature" },
+          { label: "Formato", value: "Flat Bottom" },
+          { label: "Material", value: "Carbono Forjado + Alcantara" },
+          { label: "Patilhas", value: "Sim" },
+        ],
+        sku: "RL-VW-FRGCB",
+        price: { amount: 899, currency: "EUR" },
+        status: "Disponível",
+        attributes: {
+          formato: "flat-bottom",
+          linha: "desportivo",
+          materiais: ["carbono-forjado", "alcantara"],
+          costuras: ["personalizada"],
+          features: ["patilhas"],
+        },
+      }),
     ],
   },
   {
@@ -697,6 +1067,13 @@ export const BRANDS: Brand[] = [
           { label: "Compatível", value: "Porsche 991" },
           { label: "Material", value: "Alcântara + Carbono" },
         ],
+        attributes: {
+          formato: "round",
+          linha: "desportivo",
+          materiais: ["alcantara", "carbono"],
+          costuras: ["personalizada"],
+          features: ["faixa-12h"],
+        },
         sku: "RL-POR-991-C",
         price: { amount: 1390, currency: "EUR" },
         status: "Sob Encomenda",

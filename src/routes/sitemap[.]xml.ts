@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { BRANDS } from "@/lib/brands";
 import { CATEGORY_PAGES } from "@/lib/categoryPages";
+import { GENERIC_COLLECTIONS } from "@/lib/collections";
 
 const BASE_URL = "https://redlinewheel.lovable.app";
 
@@ -12,6 +13,7 @@ export const Route = createFileRoute("/sitemap.xml")({
         const staticEntries = [
           { path: "/", priority: "1.0", changefreq: "weekly" },
           { path: "/products", priority: "0.9", changefreq: "daily" },
+          { path: "/filtros", priority: "0.7", changefreq: "weekly" },
           { path: "/configurator", priority: "0.8", changefreq: "weekly" },
           { path: "/about", priority: "0.6", changefreq: "monthly" },
           { path: "/contact", priority: "0.6", changefreq: "monthly" },
@@ -24,6 +26,12 @@ export const Route = createFileRoute("/sitemap.xml")({
           changefreq: "monthly",
         }));
 
+        const collectionEntries = GENERIC_COLLECTIONS.map((col) => ({
+          path: `/c/${col.urlSlug}`,
+          priority: "0.6",
+          changefreq: "monthly",
+        }));
+
         const brandEntries = BRANDS.flatMap((brand) => [
           { path: `/brand/${brand.slug}`, priority: "0.9", changefreq: "weekly" },
           ...brand.models.map((model) => ({
@@ -33,7 +41,12 @@ export const Route = createFileRoute("/sitemap.xml")({
           })),
         ]);
 
-        const entries = [...staticEntries, ...categoryEntries, ...brandEntries];
+        const entries = [
+          ...staticEntries,
+          ...categoryEntries,
+          ...collectionEntries,
+          ...brandEntries,
+        ];
 
         const urls = entries.map(
           (e) =>
