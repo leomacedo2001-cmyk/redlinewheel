@@ -26,7 +26,7 @@ export function SiteFooter() {
               </Link>
             </li>
             <li>
-              <Link to="/products" className="hover:text-primary">
+              <Link to="/acessorios" className="hover:text-primary">
                 Acessórios
               </Link>
             </li>

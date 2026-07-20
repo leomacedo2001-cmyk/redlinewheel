@@ -18,11 +18,14 @@ import { Route as FavoritosRouteImport } from './routes/favoritos'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ConfiguratorRouteImport } from './routes/configurator'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AcessoriosRouteImport } from './routes/acessorios'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AcessoriosIndexRouteImport } from './routes/acessorios.index'
 import { Route as ProdutosSlugRouteImport } from './routes/produtos.$slug'
 import { Route as ProductHandleRouteImport } from './routes/product.$handle'
 import { Route as CSlugRouteImport } from './routes/c.$slug'
+import { Route as AcessoriosSlugRouteImport } from './routes/acessorios.$slug'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as BrandSlugIndexRouteImport } from './routes/brand.$slug.index'
@@ -75,6 +78,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AcessoriosRoute = AcessoriosRouteImport.update({
+  id: '/acessorios',
+  path: '/acessorios',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -84,6 +92,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AcessoriosIndexRoute = AcessoriosIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AcessoriosRoute,
 } as any)
 const ProdutosSlugRoute = ProdutosSlugRouteImport.update({
   id: '/produtos/$slug',
@@ -99,6 +112,11 @@ const CSlugRoute = CSlugRouteImport.update({
   id: '/c/$slug',
   path: '/c/$slug',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AcessoriosSlugRoute = AcessoriosSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => AcessoriosRoute,
 } as any)
 const Char91DotwellKnownChar93OauthProtectedResourceRoute =
   Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
@@ -137,6 +155,7 @@ const BrandSlugModelModelRoute = BrandSlugModelModelRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/acessorios': typeof AcessoriosRouteWithChildren
   '/auth': typeof AuthRoute
   '/configurator': typeof ConfiguratorRoute
   '/contact': typeof ContactRoute
@@ -148,9 +167,11 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/acessorios/$slug': typeof AcessoriosSlugRoute
   '/c/$slug': typeof CSlugRoute
   '/product/$handle': typeof ProductHandleRoute
   '/produtos/$slug': typeof ProdutosSlugRoute
+  '/acessorios/': typeof AcessoriosIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/brand/$slug/': typeof BrandSlugIndexRoute
@@ -170,9 +191,11 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/acessorios/$slug': typeof AcessoriosSlugRoute
   '/c/$slug': typeof CSlugRoute
   '/product/$handle': typeof ProductHandleRoute
   '/produtos/$slug': typeof ProdutosSlugRoute
+  '/acessorios': typeof AcessoriosIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/brand/$slug': typeof BrandSlugIndexRoute
@@ -182,6 +205,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/acessorios': typeof AcessoriosRouteWithChildren
   '/auth': typeof AuthRoute
   '/configurator': typeof ConfiguratorRoute
   '/contact': typeof ContactRoute
@@ -193,9 +217,11 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/acessorios/$slug': typeof AcessoriosSlugRoute
   '/c/$slug': typeof CSlugRoute
   '/product/$handle': typeof ProductHandleRoute
   '/produtos/$slug': typeof ProdutosSlugRoute
+  '/acessorios/': typeof AcessoriosIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/brand/$slug/': typeof BrandSlugIndexRoute
@@ -206,6 +232,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/acessorios'
     | '/auth'
     | '/configurator'
     | '/contact'
@@ -217,9 +244,11 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/acessorios/$slug'
     | '/c/$slug'
     | '/product/$handle'
     | '/produtos/$slug'
+    | '/acessorios/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/brand/$slug/'
@@ -239,9 +268,11 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/acessorios/$slug'
     | '/c/$slug'
     | '/product/$handle'
     | '/produtos/$slug'
+    | '/acessorios'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/brand/$slug'
@@ -250,6 +281,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/acessorios'
     | '/auth'
     | '/configurator'
     | '/contact'
@@ -261,9 +293,11 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/acessorios/$slug'
     | '/c/$slug'
     | '/product/$handle'
     | '/produtos/$slug'
+    | '/acessorios/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/brand/$slug/'
@@ -273,6 +307,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AcessoriosRoute: typeof AcessoriosRouteWithChildren
   AuthRoute: typeof AuthRoute
   ConfiguratorRoute: typeof ConfiguratorRoute
   ContactRoute: typeof ContactRoute
@@ -358,6 +393,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/acessorios': {
+      id: '/acessorios'
+      path: '/acessorios'
+      fullPath: '/acessorios'
+      preLoaderRoute: typeof AcessoriosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -371,6 +413,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/acessorios/': {
+      id: '/acessorios/'
+      path: '/'
+      fullPath: '/acessorios/'
+      preLoaderRoute: typeof AcessoriosIndexRouteImport
+      parentRoute: typeof AcessoriosRoute
     }
     '/produtos/$slug': {
       id: '/produtos/$slug'
@@ -392,6 +441,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/c/$slug'
       preLoaderRoute: typeof CSlugRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/acessorios/$slug': {
+      id: '/acessorios/$slug'
+      path: '/$slug'
+      fullPath: '/acessorios/$slug'
+      preLoaderRoute: typeof AcessoriosSlugRouteImport
+      parentRoute: typeof AcessoriosRoute
     }
     '/.well-known/oauth-protected-resource': {
       id: '/.well-known/oauth-protected-resource'
@@ -438,9 +494,24 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AcessoriosRouteChildren {
+  AcessoriosSlugRoute: typeof AcessoriosSlugRoute
+  AcessoriosIndexRoute: typeof AcessoriosIndexRoute
+}
+
+const AcessoriosRouteChildren: AcessoriosRouteChildren = {
+  AcessoriosSlugRoute: AcessoriosSlugRoute,
+  AcessoriosIndexRoute: AcessoriosIndexRoute,
+}
+
+const AcessoriosRouteWithChildren = AcessoriosRoute._addFileChildren(
+  AcessoriosRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AcessoriosRoute: AcessoriosRouteWithChildren,
   AuthRoute: AuthRoute,
   ConfiguratorRoute: ConfiguratorRoute,
   ContactRoute: ContactRoute,

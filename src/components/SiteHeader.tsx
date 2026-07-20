@@ -18,6 +18,7 @@ export function SiteHeader() {
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
           <Link to="/" className="hover:text-primary transition-colors" activeOptions={{ exact: true }} activeProps={{ className: "text-primary" }}>Home</Link>
           <Link to="/products" className="hover:text-primary transition-colors" activeProps={{ className: "text-primary" }}>Produtos</Link>
+          <Link to="/acessorios" className="hover:text-primary transition-colors" activeProps={{ className: "text-primary" }}>Acessórios</Link>
           <Link to="/about" className="hover:text-primary transition-colors" activeProps={{ className: "text-primary" }}>Sobre</Link>
           <Link to="/contact" className="hover:text-primary transition-colors" activeProps={{ className: "text-primary" }}>Contacto</Link>
         </nav>

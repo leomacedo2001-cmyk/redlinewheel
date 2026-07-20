@@ -6,21 +6,21 @@ const BASE = process.env.BASE || "http://localhost:4173";
 
 // Página -> nº de produtos esperado (calculado a partir dos atributos).
 const EXPECT = {
-  "/produtos/alcantara": 13,
-  "/produtos/pele-perfurada": 11,
-  "/produtos/fibra-de-carbono": 16,
+  "/produtos/alcantara": 10,
+  "/produtos/pele-perfurada": 13,
+  "/produtos/fibra-de-carbono": 20,
   "/produtos/costuras-personalizadas": 22,
-  "/produtos/volante-led": 1, // correção: só o G-Series (g20 e w213-forged saíram)
-  "/produtos/patilhas": 10,
+  "/produtos/volante-led": 3, // G-Series Forged Magenta + Audi RS Carbon Signature + F-Series Carbon Red
+  "/produtos/patilhas": 14,
   "/produtos/oem-plus": 4,
-  "/c/formato-flat-bottom": 20,
-  "/c/formato-round": 2,
-  "/c/costura-vermelha": 3,
+  "/c/formato-flat-bottom": 21,
+  "/c/formato-round": 1,
+  "/c/costura-vermelha": 6,
   "/c/costura-azul": 1,
   "/c/costura-verde": 2,
   "/c/costura-tricolor-m": 7,
-  "/c/material-carbono-forjado": 8,
-  "/c/feature-faixa-12h": 13,
+  "/c/material-carbono-forjado": 7,
+  "/c/feature-faixa-12h": 15,
 };
 
 const SMOKE = [
@@ -29,6 +29,9 @@ const SMOKE = [
   "/filtros",
   "/brand/bmw",
   "/brand/bmw/model/g-series-forged-magenta",
+  "/acessorios",
+  "/acessorios/patilhas-borracha-azul",
+  "/acessorios/patilhas-carbono-azul",
   ...Object.keys(EXPECT),
 ];
 

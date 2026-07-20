@@ -1,7 +1,7 @@
 import { Star, MessageSquare } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
-export function ReviewsEmpty() {
+export function ReviewsEmpty({ productLabel = "volante" }: { productLabel?: string }) {
   return (
     <section className="mt-16 md:mt-24">
       <header className="mb-6 border-b border-border/60 pb-4">
@@ -17,7 +17,7 @@ export function ReviewsEmpty() {
           </div>
           <div className="text-sm font-semibold mb-1">Ainda sem avaliações</div>
           <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-            Sê o primeiro a partilhar a tua experiência com este volante depois da compra.
+            Sê o primeiro a partilhar a tua experiência com este {productLabel} depois da compra.
           </p>
         </div>
         <div className="border border-dashed border-border/60 p-8 text-center bg-surface/30">

@@ -3,6 +3,7 @@ import type {} from "@tanstack/react-start";
 import { BRANDS } from "@/lib/brands";
 import { CATEGORY_PAGES } from "@/lib/categoryPages";
 import { GENERIC_COLLECTIONS } from "@/lib/collections";
+import { ACCESSORIES } from "@/lib/accessories";
 
 const BASE_URL = "https://redlinewheel.lovable.app";
 
@@ -13,6 +14,7 @@ export const Route = createFileRoute("/sitemap.xml")({
         const staticEntries = [
           { path: "/", priority: "1.0", changefreq: "weekly" },
           { path: "/products", priority: "0.9", changefreq: "daily" },
+          { path: "/acessorios", priority: "0.7", changefreq: "weekly" },
           { path: "/filtros", priority: "0.7", changefreq: "weekly" },
           { path: "/configurator", priority: "0.8", changefreq: "weekly" },
           { path: "/about", priority: "0.6", changefreq: "monthly" },
@@ -41,11 +43,18 @@ export const Route = createFileRoute("/sitemap.xml")({
           })),
         ]);
 
+        const accessoryEntries = ACCESSORIES.map((a) => ({
+          path: `/acessorios/${a.slug}`,
+          priority: "0.6",
+          changefreq: "weekly",
+        }));
+
         const entries = [
           ...staticEntries,
           ...categoryEntries,
           ...collectionEntries,
           ...brandEntries,
+          ...accessoryEntries,
         ];
 
         const urls = entries.map(

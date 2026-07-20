@@ -1,5 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight } from "lucide-react";
 import { BrandsCatalog } from "@/components/BrandsCatalog";
+import { ACCESSORIES } from "@/lib/accessories";
 
 export const Route = createFileRoute("/products")({
   head: () => ({
@@ -27,6 +29,46 @@ function ProductsPage() {
         </p>
       </header>
       <BrandsCatalog />
+
+      <section className="mt-16 pt-8 border-t border-border/60">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <div className="text-xs uppercase tracking-[0.3em] text-primary mb-2">Complementa o teu volante</div>
+            <h2 className="text-2xl md:text-3xl font-bold">Acessórios</h2>
+          </div>
+          <Link
+            to="/acessorios"
+            className="inline-flex items-center text-xs uppercase tracking-wider font-medium text-primary hover:translate-x-1 transition-transform"
+          >
+            Ver todos <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {ACCESSORIES.map((a) => (
+            <Link
+              key={a.slug}
+              to="/acessorios/$slug"
+              params={{ slug: a.slug }}
+              className="group bg-surface border border-border/60 hover:border-primary/50 transition-all duration-300 flex"
+            >
+              <div className="w-1/3 aspect-square overflow-hidden bg-background shrink-0">
+                <img
+                  src={a.img}
+                  alt={a.name}
+                  loading="lazy"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+              </div>
+              <div className="flex-1 p-5 flex flex-col justify-center">
+                <h3 className="font-bold text-sm leading-tight group-hover:text-primary transition-colors">{a.name}</h3>
+                <span className="inline-flex items-center text-[11px] uppercase tracking-wider font-medium text-primary mt-2">
+                  Ver <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
