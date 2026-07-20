@@ -38,7 +38,7 @@ export function CarouselCard({ category, offset, onFocusCard }: CarouselCardProp
   const blur = isActive ? 0 : 1.5;
 
   const cardStyle: CSSProperties = {
-    transform: `translate(-50%, 0) translateX(${translateX}%) scale(${scale}) rotateY(${rotateY}deg)`,
+    transform: `translateX(${translateX}%) scale(${scale}) rotateY(${rotateY}deg)`,
     opacity,
     zIndex,
     filter: blur ? `blur(${blur}px)` : undefined,
@@ -96,7 +96,7 @@ export function CarouselCard({ category, offset, onFocusCard }: CarouselCardProp
 
   return (
     <div
-      className="absolute top-0 left-1/2 w-[78%] sm:w-[64%] md:w-[52%] lg:w-[38%] transition-[transform,opacity,filter] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+      className="col-start-1 row-start-1 justify-self-center w-[78%] sm:w-[64%] md:w-[52%] lg:w-[38%] transition-[transform,opacity,filter] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
       style={cardStyle}
       aria-hidden={!isVisible}
     >

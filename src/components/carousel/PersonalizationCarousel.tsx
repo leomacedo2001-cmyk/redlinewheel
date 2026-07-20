@@ -22,6 +22,8 @@ function getCircularOffset(index: number, active: number, length: number): numbe
 }
 
 const SWIPE_THRESHOLD_PX = 40;
+/** Intervalo entre avanços automáticos (dentro da janela de 4–5s pedida). */
+const AUTOPLAY_INTERVAL_MS = 4500;
 
 export function PersonalizationCarousel({ categories }: PersonalizationCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -30,17 +32,46 @@ export function PersonalizationCarousel({ categories }: PersonalizationCarouselP
   const containerRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number | null>(null);
   const [isInView, setIsInView] = useState(false);
+  const autoplayTimer = useRef<number | null>(null);
+
+  const clearAutoplay = useCallback(() => {
+    if (autoplayTimer.current !== null) {
+      window.clearInterval(autoplayTimer.current);
+      autoplayTimer.current = null;
+    }
+  }, []);
+
+  // (Re)inicia o temporizador do autoplay. Chamado no arranque e sempre que há
+  // interação manual, para que a rotação automática só retome alguns segundos
+  // depois da última ação do utilizador — nunca corre em paralelo com outro timer.
+  const restartAutoplay = useCallback(() => {
+    clearAutoplay();
+    if (!isInView || length <= 1) return;
+    autoplayTimer.current = window.setInterval(() => {
+      setActiveIndex((i) => (i + 1) % length);
+    }, AUTOPLAY_INTERVAL_MS);
+  }, [clearAutoplay, isInView, length]);
 
   const goPrev = useCallback(() => {
     setActiveIndex((i) => (i - 1 + length) % length);
-  }, [length]);
+    restartAutoplay();
+  }, [length, restartAutoplay]);
 
   const goNext = useCallback(() => {
     setActiveIndex((i) => (i + 1) % length);
-  }, [length]);
+    restartAutoplay();
+  }, [length, restartAutoplay]);
 
-  // Navegação por teclado (← →), ativa apenas quando o carousel está visível no ecrã,
-  // para não interferir com outras interações da página.
+  const goToIndex = useCallback(
+    (i: number) => {
+      setActiveIndex(i);
+      restartAutoplay();
+    },
+    [restartAutoplay]
+  );
+
+  // Deteta se o carousel está visível no ecrã — usado tanto para ativar a
+  // navegação por teclado como para pausar o autoplay fora de vista (poupa CPU/GPU).
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -50,6 +81,13 @@ export function PersonalizationCarousel({ categories }: PersonalizationCarouselP
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
+
+  // Arranca/para o autoplay em função da visibilidade; único ponto de criação
+  // do timer, garantindo que nunca existe mais do que um intervalo ativo.
+  useEffect(() => {
+    restartAutoplay();
+    return clearAutoplay;
+  }, [restartAutoplay, clearAutoplay]);
 
   useEffect(() => {
     if (!isInView) return;
@@ -82,7 +120,7 @@ export function PersonalizationCarousel({ categories }: PersonalizationCarouselP
   return (
     <div ref={containerRef}>
       <div
-        className="relative h-[560px] sm:h-[600px] md:h-[640px] overflow-hidden"
+        className="relative grid overflow-hidden"
         style={{ perspective: "1800px" }}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
@@ -92,12 +130,12 @@ export function PersonalizationCarousel({ categories }: PersonalizationCarouselP
             key={cat.slug}
             category={cat}
             offset={getCircularOffset(i, activeIndex, length)}
-            onFocusCard={() => setActiveIndex(i)}
+            onFocusCard={() => goToIndex(i)}
           />
         ))}
         <CarouselControls onPrev={goPrev} onNext={goNext} />
       </div>
-      <CarouselIndicators count={length} activeIndex={activeIndex} onSelect={setActiveIndex} />
+      <CarouselIndicators count={length} activeIndex={activeIndex} onSelect={goToIndex} />
     </div>
   );
 }
