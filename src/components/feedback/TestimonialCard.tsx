@@ -1,4 +1,4 @@
-import { Star, Quote } from "lucide-react";
+import { Star } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import type { Testimonial } from "@/lib/testimonials";
 
@@ -44,18 +44,19 @@ export function TestimonialCard({ testimonial }: TestimonialCardProps) {
           ))}
         </div>
 
-        <div className="relative">
-          <Quote className="absolute -top-1 -left-1 h-6 w-6 text-primary/15" />
-          <p className="text-sm text-muted-foreground leading-relaxed line-clamp-4 pl-4">
-            {review}
-          </p>
-        </div>
+        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-4">{review}</p>
       </div>
 
-      <div className="aspect-[4/5] overflow-hidden bg-background">
+      {/* aspect-[4/5] dá o tamanho de referência; flex-1 deixa crescer para preencher o
+          espaço livre quando o cartão não tem chip de modelo por baixo. */}
+      <div className="flex-1 aspect-[4/5] min-h-[220px] overflow-hidden bg-background">
         <img
           src={image}
-          alt={`Instalação de volante REDLINE personalizado — ${carModel}`}
+          alt={
+            carModel
+              ? `Instalação de volante REDLINE personalizado — ${carModel}`
+              : "Instalação de volante REDLINE personalizado"
+          }
           loading="lazy"
           decoding="async"
           width={720}
@@ -64,11 +65,13 @@ export function TestimonialCard({ testimonial }: TestimonialCardProps) {
         />
       </div>
 
-      <div className="p-4 mt-auto">
-        <span className="inline-flex items-center text-[10px] uppercase tracking-[0.2em] px-2.5 py-1.5 bg-background border border-border/60 text-muted-foreground">
-          {carModel}
-        </span>
-      </div>
+      {carModel && (
+        <div className="p-4">
+          <span className="inline-flex items-center text-[10px] uppercase tracking-[0.2em] px-2.5 py-1.5 bg-background border border-border/60 text-muted-foreground">
+            {carModel}
+          </span>
+        </div>
+      )}
     </article>
   );
 }

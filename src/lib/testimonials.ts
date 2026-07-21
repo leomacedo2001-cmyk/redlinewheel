@@ -23,6 +23,12 @@ import feedback18 from "@/assets/feedback/feedback-18.jpg";
  * estas fotos). Servem para ilustrar o design do cartão de testemunho.
  * Substituir por reviews reais dos clientes antes de publicar como genuíno
  * — basta editar os campos abaixo, o componente não precisa de alterações.
+ *
+ * `carModel` é intencionalmente omitido sempre que o modelo do carro não é
+ * determinável com elevada confiança só a partir da foto do volante (sem
+ * crachá exterior visível, muitas gerações partilham o mesmo interior — ex.
+ * BMW Série 3/4, Audi S4/S5). Nunca adivinhar aqui: o cartão já foi desenhado
+ * para ficar bem com ou sem esta etiqueta.
  */
 
 export type Testimonial = {
@@ -33,7 +39,7 @@ export type Testimonial = {
   country: string;
   rating: number; // 1–5
   review: string;
-  carModel: string;
+  carModel?: string;
 };
 
 export const TESTIMONIALS: Testimonial[] = [
@@ -44,8 +50,7 @@ export const TESTIMONIALS: Testimonial[] = [
     city: "Porto",
     country: "Portugal",
     rating: 5,
-    review: "Acabamento impecável e o ajuste ao airbag original ficou perfeito. Superou o que esperava.",
-    carModel: "BMW M3 G80",
+    review: "O acabamento em carbono e a costura tricolor ficaram impecáveis — parece ter saído assim da fábrica. As patilhas dão um toque desportivo incrível a conduzir de noite.",
   },
   {
     id: "t02",
@@ -54,8 +59,7 @@ export const TESTIMONIALS: Testimonial[] = [
     city: "Munique",
     country: "Alemanha",
     rating: 5,
-    review: "Comunicação clara do início ao fim e entrega mais rápida do que esperava. Recomendo sem hesitar.",
-    carModel: "Audi RS3 8Y",
+    review: "Encaixou perfeitamente no airbag original, sem qualquer folga. A combinação de carbono com pele perfurada ficou muito mais premium do que o volante de série.",
   },
   {
     id: "t03",
@@ -64,8 +68,7 @@ export const TESTIMONIALS: Testimonial[] = [
     city: "Lyon",
     country: "França",
     rating: 5,
-    review: "A qualidade da Alcântara e das costuras é de outro nível. Parece ter saído de fábrica.",
-    carModel: "Mercedes-AMG C63",
+    review: "A pele perfurada dá uma aderência ótima às mãos, mesmo em viagens mais longas. Escolhi a costura tricolor e o resultado superou o que estava à espera.",
   },
   {
     id: "t04",
@@ -74,8 +77,7 @@ export const TESTIMONIALS: Testimonial[] = [
     city: "Varsóvia",
     country: "Polónia",
     rating: 4,
-    review: "Resultado final excelente, só demorou um pouco mais do que o previsto inicialmente.",
-    carModel: "VW Golf 8 R",
+    review: "O padrão do carbono ficou único, não há dois volantes iguais. As patilhas deram um upgrade enorme à sensação de trocar de mudanças.",
   },
   {
     id: "t05",
@@ -84,8 +86,7 @@ export const TESTIMONIALS: Testimonial[] = [
     city: "Milão",
     country: "Itália",
     rating: 5,
-    review: "Já tinha visto o trabalho deles nas redes sociais, mas ao vivo é ainda mais impressionante.",
-    carModel: "Porsche 911 GT3",
+    review: "Só de pegar no volante já se sente a diferença de qualidade — o acabamento do carbono e da pele é mesmo de outro nível.",
   },
   {
     id: "t06",
@@ -94,8 +95,7 @@ export const TESTIMONIALS: Testimonial[] = [
     city: "Roterdão",
     country: "Países Baixos",
     rating: 5,
-    review: "Montagem simples, sem problemas elétricos, e o volante transformou por completo o cockpit.",
-    carModel: "BMW M4 F82",
+    review: "Tiraram-me todas as dúvidas antes de avançar com a encomenda e o resultado final ficou exatamente como tínhamos combinado.",
   },
   {
     id: "t07",
@@ -104,8 +104,7 @@ export const TESTIMONIALS: Testimonial[] = [
     city: "Vilnius",
     country: "Lituânia",
     rating: 5,
-    review: "Escolhi as cores todas ao pormenor e ficou exatamente como imaginei. Trabalho artesanal a sério.",
-    carModel: "Audi RS6 C8",
+    review: "Chegou muito bem embalado e mais depressa do que estava à espera. Mal vi o volante já queria instalar naquela mesma noite.",
   },
   {
     id: "t08",
@@ -114,8 +113,7 @@ export const TESTIMONIALS: Testimonial[] = [
     city: "Praga",
     country: "Chéquia",
     rating: 5,
-    review: "Aderência muito melhor do que o volante original e um toque premium em cada detalhe.",
-    carModel: "BMW M340i",
+    review: "Pedi um azul bem vivo a condizer com o resto do interior e ficou exatamente na tonalidade que eu queria. Reparam sempre quando param ao meu lado no semáforo.",
   },
   {
     id: "t09",
@@ -124,8 +122,8 @@ export const TESTIMONIALS: Testimonial[] = [
     city: "Dublin",
     country: "Irlanda",
     rating: 4,
-    review: "Muito satisfeito com o resultado — a equipa foi flexível para ajustar a configuração a meio do processo.",
-    carModel: "Mercedes-AMG A45 S",
+    review: "Mantiveram o espírito GTI com a costura vermelha e o carbono a condizer com os bancos axadrezados. Ficou perfeito com o resto do interior.",
+    carModel: "Volkswagen Golf GTI",
   },
   {
     id: "t10",
@@ -134,8 +132,7 @@ export const TESTIMONIALS: Testimonial[] = [
     city: "Bucareste",
     country: "Roménia",
     rating: 5,
-    review: "Segunda vez que compro à REDLINE e voltei a sair completamente satisfeita com o serviço.",
-    carModel: "VW Golf 7 R",
+    review: "O LED de mudança de caixa dá uma sensação de cockpit de competição incrível, mesmo numa estrada tranquila. Foi o pormenor que mais me impressionou.",
   },
   {
     id: "t11",
@@ -144,8 +141,7 @@ export const TESTIMONIALS: Testimonial[] = [
     city: "Atenas",
     country: "Grécia",
     rating: 5,
-    review: "Perguntei imensas dúvidas antes de encomendar e responderam sempre com paciência e detalhe.",
-    carModel: "Porsche 992 Carrera",
+    review: "Pedi para combinar a costura com a luz ambiente do carro e ficaram atentos a esse pormenor todo. Sempre que entro no carro à noite fico ainda mais satisfeito com a escolha.",
   },
   {
     id: "t12",
@@ -154,8 +150,7 @@ export const TESTIMONIALS: Testimonial[] = [
     city: "Copenhaga",
     country: "Dinamarca",
     rating: 5,
-    review: "O carbono forjado ficou espetacular à luz do dia. Vale cada cêntimo investido.",
-    carModel: "Audi TT RS",
+    review: "A pele tem um toque excelente e o azul do centro do volante ficou muito bem conseguido — nem parece um acabamento personalizado à parte.",
   },
   {
     id: "t13",
@@ -164,8 +159,7 @@ export const TESTIMONIALS: Testimonial[] = [
     city: "Viena",
     country: "Áustria",
     rating: 5,
-    review: "Embalagem cuidada, instruções claras e um volante que parece ter saído da fábrica da BMW.",
-    carModel: "BMW X5 M",
+    review: "Os botões M1 e M2 ficaram perfeitamente integrados e a resposta ao volante é imediata. Sinto-me muito mais confiante a conduzir em modo desportivo.",
   },
   {
     id: "t14",
@@ -174,8 +168,7 @@ export const TESTIMONIALS: Testimonial[] = [
     city: "Bruxelas",
     country: "Bélgica",
     rating: 5,
-    review: "Fiquei impressionada com o nível de personalização possível. Não há duas peças iguais.",
-    carModel: "Mercedes-AMG E63 S",
+    review: "A costura branca sobre o cinzento ficou um contraste elegante que não vejo em mais nenhum carro por aí. Trabalho de costura impecável, ponto a ponto.",
   },
   {
     id: "t15",
@@ -184,8 +177,7 @@ export const TESTIMONIALS: Testimonial[] = [
     city: "Estocolmo",
     country: "Suécia",
     rating: 4,
-    review: "Excelente relação qualidade-preço face a outras marcas europeias que também contactei.",
-    carModel: "Audi RS5 B9",
+    review: "Veio protegido com filme e espuma em cada canto, chegou sem um único risco. Dá para perceber logo que tratam o produto a sério.",
   },
   {
     id: "t16",
@@ -194,8 +186,7 @@ export const TESTIMONIALS: Testimonial[] = [
     city: "Zurique",
     country: "Suíça",
     rating: 5,
-    review: "Instalei eu mesmo em casa, sem qualquer complicação, e o resultado foi imediato.",
-    carModel: "BMW M2",
+    review: "Mostraram-me fotos de cada fase da montagem antes de aplicarem a pele. Só a estrutura em carbono já parecia mais robusta do que o volante original.",
   },
   {
     id: "t17",
@@ -204,8 +195,7 @@ export const TESTIMONIALS: Testimonial[] = [
     city: "Manchester",
     country: "Reino Unido",
     rating: 5,
-    review: "Já recomendei a REDLINE a três amigos do clube automóvel. É esse o nível de confiança.",
-    carModel: "Porsche Macan GTS",
+    review: "As patilhas por si só já mudam a sensação ao volante. Vieram com um acabamento em carbono impecável, sem qualquer folga ao encaixar.",
   },
   {
     id: "t18",
@@ -214,7 +204,6 @@ export const TESTIMONIALS: Testimonial[] = [
     city: "Madrid",
     country: "Espanha",
     rating: 5,
-    review: "Do primeiro contacto até à entrega, senti sempre que estava a lidar com verdadeiros artesãos.",
-    carModel: "BMW M5 F90",
+    review: "O emblema RS e o carbono deram um ar muito mais agressivo ao interior, sem exagerar. Ainda hoje me apanho a olhar para o volante parado nos semáforos.",
   },
 ];
