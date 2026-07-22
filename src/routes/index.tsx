@@ -5,6 +5,7 @@ import { FeaturedWheels } from "@/components/FeaturedWheels";
 import { BrandShowcase } from "@/components/BrandShowcase";
 
 import heroImg from "@/assets/hero-steering.jpg";
+import heroVideo from "@/assets/hero/hero-wheel-reveal.mp4";
 import { CustomProductsSection } from "@/components/CustomProductsSection";
 import { FeedbackShowcase } from "@/components/feedback/FeedbackShowcase";
 import { TransformationShowcase } from "@/components/transformation/TransformationShowcase";
@@ -35,15 +36,18 @@ function Home() {
     <>
       {/* HERO */}
       <section className="relative min-h-[92vh] flex items-end overflow-hidden">
-        <img
-          src={heroImg}
-          alt="Volante desportivo premium em carbono"
-          width={1920}
-          height={1080}
-          loading="eager"
-          fetchPriority="high"
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster={heroImg}
+          aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover"
-        />
+        >
+          <source src={heroVideo} type="video/mp4" />
+        </video>
         <div className="absolute inset-0" style={{ background: "var(--gradient-hero)" }} />
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/40 to-transparent" />
 
