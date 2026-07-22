@@ -55,7 +55,7 @@ export function TransformationShowcase() {
         </div>
       )}
 
-      <div className="relative mx-auto max-w-[1760px] px-6">
+      <div className="relative mx-auto max-w-[1500px] px-6">
         <div className="mx-auto mb-14 max-w-2xl text-center md:mb-16">
           <div className={revealClass} style={revealStyle(0)}>
             <span className="text-xs uppercase tracking-[0.3em] text-primary">Transformação</span>
