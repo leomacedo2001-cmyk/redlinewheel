@@ -97,10 +97,10 @@ export const TRANSFORMATION_PROJECTS: TransformationProject[] = [
     description:
       "O volante RS de série ganhou um friso LED integrado no aro superior, fibra de carbono nas zonas de pega e os comandos Drive Select e Start/Stop ao alcance dos dedos — sem perder a ergonomia nem os comandos originais.",
     callouts: [
-      { id: "carbon", label: "Fibra de Carbono", xPercent: 28, yPercent: 27, revealAt: 28 },
-      { id: "stitch", label: "Costura em Contraste", xPercent: 41, yPercent: 45, revealAt: 41 },
-      { id: "led", label: "Friso LED Integrado", xPercent: 49, yPercent: 10, revealAt: 49 },
-      { id: "startstop", label: "Start/Stop Integrado", xPercent: 58, yPercent: 69, revealAt: 58 },
+      { id: "carbon", label: "Fibra de Carbono", xPercent: 28, yPercent: 21, revealAt: 28 },
+      { id: "stitch", label: "Costura em Contraste", xPercent: 41, yPercent: 39, revealAt: 41 },
+      { id: "led", label: "Friso LED Integrado", xPercent: 49, yPercent: 4, revealAt: 49 },
+      { id: "startstop", label: "Start/Stop Integrado", xPercent: 58, yPercent: 63, revealAt: 58 },
     ],
   },
 ];
