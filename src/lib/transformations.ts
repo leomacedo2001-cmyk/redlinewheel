@@ -86,7 +86,6 @@ export const TRANSFORMATION_PROJECTS: TransformationProject[] = [
     after: audiDepois,
     beforeAlt: "Volante Audi RS de série, em pele perfurada preta",
     afterAlt: "Volante Audi RS personalizado REDLINE, com friso LED, fibra de carbono e comandos integrados",
-    framing: { focalX: 50, focalY: 20, zoom: 1 },
     modifications: [
       "Friso LED integrado no aro superior",
       "Fibra de carbono nas zonas de pega",
@@ -98,10 +97,10 @@ export const TRANSFORMATION_PROJECTS: TransformationProject[] = [
     description:
       "O volante RS de série ganhou um friso LED integrado no aro superior, fibra de carbono nas zonas de pega e os comandos Drive Select e Start/Stop ao alcance dos dedos — sem perder a ergonomia nem os comandos originais.",
     callouts: [
-      { id: "carbon", label: "Fibra de Carbono", xPercent: 30, yPercent: 22, revealAt: 30 },
-      { id: "stitch", label: "Costura em Contraste", xPercent: 40, yPercent: 43, revealAt: 40 },
-      { id: "led", label: "Friso LED Integrado", xPercent: 51, yPercent: 8, revealAt: 51 },
-      { id: "startstop", label: "Start/Stop Integrado", xPercent: 61, yPercent: 69, revealAt: 61 },
+      { id: "carbon", label: "Fibra de Carbono", xPercent: 28, yPercent: 26, revealAt: 28 },
+      { id: "stitch", label: "Costura em Contraste", xPercent: 44, yPercent: 40, revealAt: 44 },
+      { id: "led", label: "Friso LED Integrado", xPercent: 48, yPercent: 9, revealAt: 48 },
+      { id: "startstop", label: "Start/Stop Integrado", xPercent: 61, yPercent: 61, revealAt: 61 },
     ],
   },
 ];
