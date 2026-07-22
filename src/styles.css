@@ -114,6 +114,17 @@
   animation: fade-up 0.8s ease-out both;
 }
 
+/* Revela da esquerda para a direita, como uma cortina a abrir — usado nos
+   ícones de marca para evocar "a ser desenhado" sem precisar de vetores. */
+@keyframes draw-in {
+  from { opacity: 0; transform: translateY(8px); clip-path: inset(0 100% 0 0); }
+  to { opacity: 1; transform: translateY(0); clip-path: inset(0 0% 0 0); }
+}
+
+@utility animate-draw-in {
+  animation: draw-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 @keyframes marquee-x {
   from { transform: translate3d(0, 0, 0); }
   to { transform: translate3d(calc(-1 * var(--marquee-distance, 0px)), 0, 0); }
