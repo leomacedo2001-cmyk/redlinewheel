@@ -24,6 +24,15 @@ export type TransformationProject = {
   after: string;
   beforeAlt: string;
   afterAlt: string;
+  /**
+   * `object-position` CSS para as duas fotos deste projeto. Cada par
+   * antes/depois vem de uma sessão fotográfica diferente, com o volante
+   * enquadrado a uma altura ligeiramente diferente — quando a secção fica
+   * mais baixa (proporção mais panorâmica em ecrãs grandes), o corte
+   * automático ao centro pode não ser o ideal para todos os projetos.
+   * Omitir usa o centro (`50% 50%`), correto para a maioria.
+   */
+  imagePosition?: string;
   modifications: string[];
   productionTime: string;
   materials: string[];
@@ -66,6 +75,7 @@ export const TRANSFORMATION_PROJECTS: TransformationProject[] = [
     after: audiDepois,
     beforeAlt: "Volante Audi RS de série, em pele perfurada preta",
     afterAlt: "Volante Audi RS personalizado REDLINE, com friso LED, fibra de carbono e comandos integrados",
+    imagePosition: "50% 20%",
     modifications: [
       "Friso LED integrado no aro superior",
       "Fibra de carbono nas zonas de pega",

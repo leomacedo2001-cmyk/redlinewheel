@@ -10,6 +10,15 @@ type CompareSliderProps = {
   afterAlt: string;
   callouts: TransformationCallout[];
   active: boolean;
+  /**
+   * Posição CSS `object-position` para as duas fotos (a mesma para ambas, já
+   * que o par antes/depois partilha o mesmo enquadramento de origem). Cada
+   * projeto tem a sua própria fotografia — nem todas centram o volante da
+   * mesma forma quando a proporção da secção muda — por isso isto vive nos
+   * dados (`TransformationProject.imagePosition`), não numa classe CSS presa
+   * a uma marca específica.
+   */
+  imagePosition?: string;
 };
 
 function clamp(value: number, min: number, max: number): number {
@@ -23,7 +32,15 @@ function clamp(value: number, min: number, max: number): number {
  * (via `style`), sem nunca passar por um re-render do React — só o React
  * re-renderiza quando um callout muda de visível/invisível (raro, não por pixel).
  */
-export function CompareSlider({ before, after, beforeAlt, afterAlt, callouts, active }: CompareSliderProps) {
+export function CompareSlider({
+  before,
+  after,
+  beforeAlt,
+  afterAlt,
+  callouts,
+  active,
+  imagePosition = "50% 50%",
+}: CompareSliderProps) {
   const x = useMotionValue(50);
   const containerRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<HTMLButtonElement>(null);
@@ -117,7 +134,7 @@ export function CompareSlider({ before, after, beforeAlt, afterAlt, callouts, ac
   return (
     <div
       ref={containerRef}
-      className="relative aspect-video w-full touch-none select-none overflow-hidden rounded-sm bg-background"
+      className="relative aspect-video w-full touch-none select-none overflow-hidden rounded-sm bg-background lg:aspect-[2/1]"
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={stopDragging}
@@ -130,7 +147,7 @@ export function CompareSlider({ before, after, beforeAlt, afterAlt, callouts, ac
         decoding="async"
         draggable={false}
         className="pointer-events-none absolute inset-0 h-full w-full object-cover"
-        style={{ filter: beforeFilter }}
+        style={{ filter: beforeFilter, objectPosition: imagePosition }}
       />
 
       <motion.img
@@ -140,7 +157,7 @@ export function CompareSlider({ before, after, beforeAlt, afterAlt, callouts, ac
         decoding="async"
         draggable={false}
         className="pointer-events-none absolute inset-0 h-full w-full object-cover"
-        style={{ clipPath, filter: afterFilter }}
+        style={{ clipPath, filter: afterFilter, objectPosition: imagePosition }}
       />
 
       {callouts.map((c) => (

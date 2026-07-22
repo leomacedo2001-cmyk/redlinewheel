@@ -94,6 +94,7 @@ export function TransformationShowcase() {
                   afterAlt={project.afterAlt}
                   callouts={project.callouts}
                   active={isInView}
+                  imagePosition={project.imagePosition}
                 />
 
                 <div className="mt-10 grid gap-10 md:grid-cols-2 md:gap-16">
