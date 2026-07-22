@@ -13,6 +13,8 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as McpRouteImport } from './routes/mcp'
+import { Route as MarcasRouteImport } from './routes/marcas'
+import { Route as GaleriaRouteImport } from './routes/galeria'
 import { Route as FiltrosRouteImport } from './routes/filtros'
 import { Route as FavoritosRouteImport } from './routes/favoritos'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -51,6 +53,16 @@ const PrivacidadeRoute = PrivacidadeRouteImport.update({
 const McpRoute = McpRouteImport.update({
   id: '/mcp',
   path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarcasRoute = MarcasRouteImport.update({
+  id: '/marcas',
+  path: '/marcas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GaleriaRoute = GaleriaRouteImport.update({
+  id: '/galeria',
+  path: '/galeria',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FiltrosRoute = FiltrosRouteImport.update({
@@ -161,6 +173,8 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/favoritos': typeof FavoritosRoute
   '/filtros': typeof FiltrosRoute
+  '/galeria': typeof GaleriaRoute
+  '/marcas': typeof MarcasRoute
   '/mcp': typeof McpRoute
   '/privacidade': typeof PrivacidadeRoute
   '/products': typeof ProductsRoute
@@ -185,6 +199,8 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/favoritos': typeof FavoritosRoute
   '/filtros': typeof FiltrosRoute
+  '/galeria': typeof GaleriaRoute
+  '/marcas': typeof MarcasRoute
   '/mcp': typeof McpRoute
   '/privacidade': typeof PrivacidadeRoute
   '/products': typeof ProductsRoute
@@ -211,6 +227,8 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/favoritos': typeof FavoritosRoute
   '/filtros': typeof FiltrosRoute
+  '/galeria': typeof GaleriaRoute
+  '/marcas': typeof MarcasRoute
   '/mcp': typeof McpRoute
   '/privacidade': typeof PrivacidadeRoute
   '/products': typeof ProductsRoute
@@ -238,6 +256,8 @@ export interface FileRouteTypes {
     | '/contact'
     | '/favoritos'
     | '/filtros'
+    | '/galeria'
+    | '/marcas'
     | '/mcp'
     | '/privacidade'
     | '/products'
@@ -262,6 +282,8 @@ export interface FileRouteTypes {
     | '/contact'
     | '/favoritos'
     | '/filtros'
+    | '/galeria'
+    | '/marcas'
     | '/mcp'
     | '/privacidade'
     | '/products'
@@ -287,6 +309,8 @@ export interface FileRouteTypes {
     | '/contact'
     | '/favoritos'
     | '/filtros'
+    | '/galeria'
+    | '/marcas'
     | '/mcp'
     | '/privacidade'
     | '/products'
@@ -313,6 +337,8 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   FavoritosRoute: typeof FavoritosRoute
   FiltrosRoute: typeof FiltrosRoute
+  GaleriaRoute: typeof GaleriaRoute
+  MarcasRoute: typeof MarcasRoute
   McpRoute: typeof McpRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   ProductsRoute: typeof ProductsRoute
@@ -356,6 +382,20 @@ declare module '@tanstack/react-router' {
       path: '/mcp'
       fullPath: '/mcp'
       preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marcas': {
+      id: '/marcas'
+      path: '/marcas'
+      fullPath: '/marcas'
+      preLoaderRoute: typeof MarcasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/galeria': {
+      id: '/galeria'
+      path: '/galeria'
+      fullPath: '/galeria'
+      preLoaderRoute: typeof GaleriaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/filtros': {
@@ -517,6 +557,8 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   FavoritosRoute: FavoritosRoute,
   FiltrosRoute: FiltrosRoute,
+  GaleriaRoute: GaleriaRoute,
+  MarcasRoute: MarcasRoute,
   McpRoute: McpRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   ProductsRoute: ProductsRoute,

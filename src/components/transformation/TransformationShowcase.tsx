@@ -35,7 +35,8 @@ export function TransformationShowcase() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden border-t border-border/60 bg-surface/40 py-24 md:py-28"
+      id="transformacao"
+      className="relative scroll-mt-24 overflow-hidden border-t border-border/60 bg-surface/40 py-24 md:py-28"
     >
       <div
         className="pointer-events-none absolute inset-0"

@@ -104,7 +104,7 @@ export function FeedbackShowcase() {
   }
 
   return (
-    <section ref={sectionRef} className="border-t border-border/60 py-24 overflow-hidden">
+    <section ref={sectionRef} id="comunidade" className="scroll-mt-24 border-t border-border/60 py-24 overflow-hidden">
       <div
         className={
           isInView

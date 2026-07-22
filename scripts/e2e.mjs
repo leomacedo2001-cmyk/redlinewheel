@@ -26,6 +26,8 @@ const EXPECT = {
 const SMOKE = [
   "/",
   "/products",
+  "/marcas",
+  "/galeria",
   "/filtros",
   "/brand/bmw",
   "/brand/bmw/model/g-series-forged-magenta",

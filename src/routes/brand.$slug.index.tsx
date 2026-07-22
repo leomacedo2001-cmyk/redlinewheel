@@ -28,7 +28,7 @@ export const Route = createFileRoute("/brand/$slug/")({
     <div className="container-premium py-24 text-center">
       <h1 className="text-3xl font-bold mb-4">Marca não encontrada</h1>
       <Button asChild className="rounded-none">
-        <Link to="/products">Ver todas as marcas</Link>
+        <Link to="/marcas">Ver todas as marcas</Link>
       </Button>
     </div>
   ),
@@ -76,7 +76,7 @@ function BrandPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
         <div className="container-premium relative h-full flex flex-col justify-end pb-12">
           <Link
-            to="/products"
+            to="/marcas"
             className="inline-flex items-center text-xs uppercase tracking-[0.2em] text-muted-foreground hover:text-primary mb-6 w-fit"
           >
             <ArrowLeft className="h-3.5 w-3.5 mr-2" /> Voltar a Marcas

@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Heart } from "lucide-react";
 import { CartDrawer } from "./CartDrawer";
+import { MenuDrawer } from "./nav/MenuDrawer";
 import { useFavoritesStore } from "@/stores/favoritesStore";
 
 export function SiteHeader() {
@@ -8,34 +9,36 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
-      <div className="container-premium flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center gap-2">
-          <span className="text-xl font-bold tracking-tight">
+      <div className="container-premium grid h-16 grid-cols-[1fr_auto_1fr] items-center">
+        <div className="flex items-center justify-start">
+          <MenuDrawer />
+        </div>
+
+        <Link to="/" className="flex items-center justify-center gap-2">
+          <span className="text-2xl font-bold tracking-tight">
             REDLINE<span className="text-primary">.</span>
           </span>
-          <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground hidden sm:inline">Automotive</span>
+          <span className="hidden text-xs uppercase tracking-[0.3em] text-muted-foreground sm:inline">
+            Automotive
+          </span>
         </Link>
-        <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
-          <Link to="/" className="hover:text-primary transition-colors" activeOptions={{ exact: true }} activeProps={{ className: "text-primary" }}>Home</Link>
-          <Link to="/products" className="hover:text-primary transition-colors" activeProps={{ className: "text-primary" }}>Produtos</Link>
-          <Link to="/acessorios" className="hover:text-primary transition-colors" activeProps={{ className: "text-primary" }}>Acessórios</Link>
-          <Link to="/about" className="hover:text-primary transition-colors" activeProps={{ className: "text-primary" }}>Sobre</Link>
-          <Link to="/contact" className="hover:text-primary transition-colors" activeProps={{ className: "text-primary" }}>Contacto</Link>
-        </nav>
-        <div className="flex items-center gap-2">
+
+        <div className="flex items-center justify-end gap-2">
           <Link
             to="/favoritos"
             aria-label="Favoritos"
-            className="relative h-10 w-10 flex items-center justify-center hover:text-primary transition-colors"
+            className="group relative flex h-10 w-10 items-center justify-center text-foreground/80 transition-all duration-300 hover:scale-105 hover:text-primary hover:drop-shadow-[0_0_10px_oklch(0.58_0.22_25/0.35)]"
           >
             <Heart className="h-5 w-5" />
             {favCount > 0 && (
-              <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
                 {favCount}
               </span>
             )}
           </Link>
-          <CartDrawer />
+          <div className="transition-all duration-300 hover:scale-105 hover:drop-shadow-[0_0_10px_oklch(0.58_0.22_25/0.35)]">
+            <CartDrawer />
+          </div>
         </div>
       </div>
     </header>

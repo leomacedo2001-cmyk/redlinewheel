@@ -103,7 +103,7 @@ export const Route = createFileRoute("/brand/$slug/model/$model")({
     <div className="container-premium py-24 text-center">
       <h1 className="text-3xl font-bold mb-4">Modelo não encontrado</h1>
       <Button asChild className="rounded-none">
-        <Link to="/products">Ver todas as marcas</Link>
+        <Link to="/marcas">Ver todas as marcas</Link>
       </Button>
     </div>
   ),
@@ -214,7 +214,7 @@ function ModelPage() {
         <Breadcrumbs
           items={[
             { label: "Home", to: "/" },
-            { label: "Produtos", to: "/products" },
+            { label: "Marcas", to: "/marcas" },
             { label: brand.name, to: "/brand/$slug", params: { slug: brand.slug } },
             { label: model.name },
           ]}
