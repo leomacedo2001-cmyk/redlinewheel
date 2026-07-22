@@ -24,6 +24,14 @@ export function DetailCallout({ label, xPercent, yPercent, visible }: DetailCall
           opacity: visible ? 1 : 0,
           y: visible ? 0 : 10,
           filter: visible ? "blur(0px)" : "blur(6px)",
+          // `filter: blur(0px)` continua a forçar uma camada de composição
+          // independente — o texto lá dentro fica sujeito a reamostragem e
+          // perde nitidez de forma imprevisível consoante a posição exata em
+          // sub-pixel de cada rótulo (por isso uns ficavam nítidos e outros
+          // não). Assim que a transição termina, larga a propriedade por
+          // completo (`none`, não `blur(0px)`) e o texto volta a ser pintado
+          // pelo motor de texto normal do browser — sempre nítido.
+          transitionEnd: visible ? { filter: "none" } : {},
         }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         className="inline-flex items-center gap-2 whitespace-nowrap border border-white/15 bg-background/85 px-2.5 py-1.5 text-[10px] uppercase tracking-[0.2em] text-white shadow-[0_8px_20px_rgba(0,0,0,0.35)] backdrop-blur-lg"

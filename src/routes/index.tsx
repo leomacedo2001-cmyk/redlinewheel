@@ -88,15 +88,15 @@ function Home() {
       <TransformationShowcase />
 
       {/* FEATURED PRODUCTS */}
-      <section className="container-premium py-24">
-        <div className="flex items-end justify-between mb-12">
+      <section className="container-premium py-20 md:py-24">
+        <div className="flex items-end justify-between mb-12 md:mb-14">
           <div>
             <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">Coleção</div>
             <h2 className="text-4xl md:text-5xl font-bold">Produtos em Destaque</h2>
           </div>
           <Link
             to="/products"
-            className="hidden md:inline-flex items-center text-sm font-medium hover:text-primary transition-colors"
+            className="hidden md:inline-flex items-center text-sm font-medium hover:text-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
           >
             Ver todos <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
@@ -107,9 +107,9 @@ function Home() {
       <CustomProductsSection />
 
       {/* BENEFITS */}
-      <section className="bg-surface py-24">
+      <section className="bg-surface/40 py-20 md:py-24">
         <div className="container-premium">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12 md:mb-14">
             <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">
               A Diferença REDLINE
             </div>
@@ -149,7 +149,7 @@ function Home() {
 
       {/* CTA */}
       <section className="border-t border-border/60">
-        <div className="container-premium py-24 text-center">
+        <div className="container-premium py-20 md:py-24 text-center">
           <Star className="h-8 w-8 text-primary mx-auto mb-6" />
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
             Pronto para transformar o teu interior?

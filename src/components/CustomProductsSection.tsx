@@ -60,9 +60,9 @@ const CATEGORIES = [
 
 export function CustomProductsSection() {
   return (
-    <section id="produtos-personalizados" className="bg-surface/40 border-y border-border/60 py-24">
+    <section id="produtos-personalizados" className="bg-surface/40 border-y border-border/60 py-20 md:py-24">
       <div className="container-premium">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 md:mb-14">
           <div>
             <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">
               Personalização

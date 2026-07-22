@@ -104,12 +104,12 @@ export function FeedbackShowcase() {
   }
 
   return (
-    <section ref={sectionRef} id="comunidade" className="scroll-mt-24 border-t border-border/60 py-24 overflow-hidden">
+    <section ref={sectionRef} id="comunidade" className="scroll-mt-24 border-t border-border/60 py-20 md:py-24 overflow-hidden">
       <div
         className={
           isInView
-            ? "container-premium mb-14 text-center animate-fade-up"
-            : "container-premium mb-14 text-center opacity-0"
+            ? "container-premium mb-12 text-center animate-fade-up md:mb-14"
+            : "container-premium mb-12 text-center opacity-0 md:mb-14"
         }
       >
         <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">

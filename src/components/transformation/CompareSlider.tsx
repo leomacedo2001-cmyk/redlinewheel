@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, useMotionTemplate, useMotionValue, useTransform } from "framer-motion";
 import { DetailCallout } from "./DetailCallout";
-import type { TransformationCallout } from "@/lib/transformations";
+import type { TransformationCallout, TransformationFraming } from "@/lib/transformations";
 
 type CompareSliderProps = {
   before: string;
@@ -10,16 +10,11 @@ type CompareSliderProps = {
   afterAlt: string;
   callouts: TransformationCallout[];
   active: boolean;
-  /**
-   * Posição CSS `object-position` para as duas fotos (a mesma para ambas, já
-   * que o par antes/depois partilha o mesmo enquadramento de origem). Cada
-   * projeto tem a sua própria fotografia — nem todas centram o volante da
-   * mesma forma quando a proporção da secção muda — por isso isto vive nos
-   * dados (`TransformationProject.imagePosition`), não numa classe CSS presa
-   * a uma marca específica.
-   */
-  imagePosition?: string;
+  /** Enquadramento (ponto focal + zoom) desta fotografia — ver `TransformationFraming`. */
+  framing?: TransformationFraming;
 };
+
+const DEFAULT_FRAMING: Required<TransformationFraming> = { focalX: 50, focalY: 50, zoom: 1 };
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
@@ -39,8 +34,13 @@ export function CompareSlider({
   afterAlt,
   callouts,
   active,
-  imagePosition = "50% 50%",
+  framing,
 }: CompareSliderProps) {
+  const { focalX, focalY, zoom } = { ...DEFAULT_FRAMING, ...framing };
+  const objectPosition = `${focalX}% ${focalY}%`;
+  const zoomStyle =
+    zoom !== 1 ? { transform: `scale(${zoom})`, transformOrigin: objectPosition } : undefined;
+
   const x = useMotionValue(50);
   const containerRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<HTMLButtonElement>(null);
@@ -134,7 +134,7 @@ export function CompareSlider({
   return (
     <div
       ref={containerRef}
-      className="relative aspect-video w-full touch-none select-none overflow-hidden rounded-sm bg-background lg:aspect-[2/1]"
+      className="relative aspect-video w-full touch-none select-none overflow-hidden rounded-sm bg-background"
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={stopDragging}
@@ -147,7 +147,7 @@ export function CompareSlider({
         decoding="async"
         draggable={false}
         className="pointer-events-none absolute inset-0 h-full w-full object-cover"
-        style={{ filter: beforeFilter, objectPosition: imagePosition }}
+        style={{ filter: beforeFilter, objectPosition, ...zoomStyle }}
       />
 
       <motion.img
@@ -157,7 +157,7 @@ export function CompareSlider({
         decoding="async"
         draggable={false}
         className="pointer-events-none absolute inset-0 h-full w-full object-cover"
-        style={{ clipPath, filter: afterFilter, objectPosition: imagePosition }}
+        style={{ clipPath, filter: afterFilter, objectPosition, ...zoomStyle }}
       />
 
       {callouts.map((c) => (

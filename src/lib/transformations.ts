@@ -16,6 +16,24 @@ export type TransformationCallout = {
   revealAt: number;
 };
 
+/**
+ * Enquadramento de uma fotografia (par antes/depois) dentro do comparador.
+ * Cada projeto vem de uma sessão fotográfica diferente — câmara, distância e
+ * enquadramento do volante variam de marca para marca — por isso o
+ * enquadramento nunca pode ser uma regra CSS global: vive aqui, um valor por
+ * projeto, tal como qualquer outro dado editorial (descrição, materiais...).
+ * Adicionar uma marca nova é só acrescentar um objeto com o seu próprio
+ * `focalX`/`focalY`/`zoom` — o componente não muda.
+ */
+export type TransformationFraming = {
+  /** Posição horizontal do ponto focal (0–100) — normalmente o centro do volante. */
+  focalX: number;
+  /** Posição vertical do ponto focal (0–100). */
+  focalY: number;
+  /** Ampliação a partir do ponto focal. 1 = sem zoom extra (default). */
+  zoom?: number;
+};
+
 export type TransformationProject = {
   id: string;
   brandSlug: string;
@@ -24,15 +42,8 @@ export type TransformationProject = {
   after: string;
   beforeAlt: string;
   afterAlt: string;
-  /**
-   * `object-position` CSS para as duas fotos deste projeto. Cada par
-   * antes/depois vem de uma sessão fotográfica diferente, com o volante
-   * enquadrado a uma altura ligeiramente diferente — quando a secção fica
-   * mais baixa (proporção mais panorâmica em ecrãs grandes), o corte
-   * automático ao centro pode não ser o ideal para todos os projetos.
-   * Omitir usa o centro (`50% 50%`), correto para a maioria.
-   */
-  imagePosition?: string;
+  /** Omitir usa o centro sem zoom (`{ focalX: 50, focalY: 50, zoom: 1 }`). */
+  framing?: TransformationFraming;
   modifications: string[];
   productionTime: string;
   materials: string[];
@@ -75,7 +86,7 @@ export const TRANSFORMATION_PROJECTS: TransformationProject[] = [
     after: audiDepois,
     beforeAlt: "Volante Audi RS de série, em pele perfurada preta",
     afterAlt: "Volante Audi RS personalizado REDLINE, com friso LED, fibra de carbono e comandos integrados",
-    imagePosition: "50% 20%",
+    framing: { focalX: 50, focalY: 20, zoom: 1 },
     modifications: [
       "Friso LED integrado no aro superior",
       "Fibra de carbono nas zonas de pega",
