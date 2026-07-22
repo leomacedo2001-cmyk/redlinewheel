@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, Wrench, Truck, Star } from "lucide-react";
 import { FeaturedWheels } from "@/components/FeaturedWheels";
+import { BrandShowcase } from "@/components/BrandShowcase";
 
 import heroImg from "@/assets/hero-steering.jpg";
 import engineeringImg from "@/assets/engineering-showcase.jpg";
@@ -28,8 +29,6 @@ export const Route = createFileRoute("/")({
   }),
   component: Home,
 });
-
-import { BRANDS } from "@/lib/brands";
 
 function Home() {
   return (
@@ -86,30 +85,7 @@ function Home() {
         </div>
       </section>
 
-      {/* BRANDS MARQUEE */}
-      <section className="border-y border-border/60 bg-surface/50 py-8">
-        <div className="container-premium">
-          <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4 text-center">
-            Compatível com
-          </div>
-          <nav
-            aria-label="Marcas disponíveis"
-            className="flex flex-wrap justify-center gap-x-8 gap-y-3"
-          >
-            {BRANDS.map((b) => (
-              <Link
-                key={b.slug}
-                to="/brand/$slug"
-                params={{ slug: b.slug }}
-                activeProps={{ className: "text-primary" }}
-                className="text-sm font-medium text-muted-foreground/80 hover:text-primary focus:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 transition-colors uppercase tracking-wider"
-              >
-                {b.name}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      </section>
+      <BrandShowcase />
 
       {/* FEATURED PRODUCTS */}
       <section className="container-premium py-24">
