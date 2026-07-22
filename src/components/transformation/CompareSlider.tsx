@@ -30,14 +30,17 @@ export function CompareSlider({ before, after, beforeAlt, afterAlt, callouts, ac
   const [dragging, setDragging] = useState(false);
 
   const [visibleCallouts, setVisibleCallouts] = useState<Set<string>>(
-    () => new Set(callouts.filter((c) => c.revealAt <= 50).map((c) => c.id)),
+    () => new Set(callouts.filter((c) => c.revealAt >= 50).map((c) => c.id)),
   );
   const visibleRef = useRef(visibleCallouts);
   visibleRef.current = visibleCallouts;
 
   const leftPercent = useMotionTemplate`${x}%`;
-  const revealPercent = useTransform(x, (v) => 100 - v);
-  const clipPath = useMotionTemplate`inset(0 ${revealPercent}% 0 0)`;
+  // Camada "depois" revelada a partir da direita: aos 0% mostra só "antes",
+  // aos 100% mostra só "depois" — arrastar para a direita descobre mais
+  // personalização, mantendo a esquerda como "antes" e a direita como "depois".
+  const hiddenPercent = useTransform(x, (v) => 100 - v);
+  const clipPath = useMotionTemplate`inset(0 0 0 ${hiddenPercent}%)`;
 
   const afterContrast = useTransform(x, (v) => 1 + v / 2500);
   const afterSaturate = useTransform(x, (v) => 1 + v / 3000);
@@ -54,7 +57,7 @@ export function CompareSlider({ before, after, beforeAlt, afterAlt, callouts, ac
       let changed = false;
       const next = new Set(visibleRef.current);
       for (const c of callouts) {
-        const shouldShow = v >= c.revealAt;
+        const shouldShow = 100 - v <= c.revealAt;
         if (shouldShow && !next.has(c.id)) {
           next.add(c.id);
           changed = true;
