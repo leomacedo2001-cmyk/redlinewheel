@@ -64,15 +64,16 @@ export function TransformationShowcase() {
           <BrandProjectNav brands={NAV_BRANDS} activeSlug={activeBrandSlug} onSelect={setActiveBrandSlug} />
         </div>
 
-        <div className={revealClass} style={revealStyle(620)}>
-          <AnimatePresence mode="wait">
+        <div className={`${revealClass} grid`} style={revealStyle(620)}>
+          <AnimatePresence>
             {project ? (
               <motion.div
                 key={project.id}
+                className="col-start-1 row-start-1"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
               >
                 <CompareSlider
                   before={project.before}
@@ -131,14 +132,27 @@ export function TransformationShowcase() {
                     </div>
                     <div className="col-span-2">
                       <div className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Modificações</div>
-                      <ul className="space-y-1.5">
+                      <motion.ul
+                        initial="hidden"
+                        animate="visible"
+                        variants={{ visible: { transition: { staggerChildren: 0.05, delayChildren: 0.1 } } }}
+                        className="space-y-1.5"
+                      >
                         {project.modifications.map((m) => (
-                          <li key={m} className="flex items-start gap-2 font-medium leading-snug">
+                          <motion.li
+                            key={m}
+                            variants={{
+                              hidden: { opacity: 0, y: 6 },
+                              visible: { opacity: 1, y: 0 },
+                            }}
+                            transition={{ duration: 0.35, ease: "easeOut" }}
+                            className="flex items-start gap-2 font-medium leading-snug"
+                          >
                             <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-primary" />
                             {m}
-                          </li>
+                          </motion.li>
                         ))}
-                      </ul>
+                      </motion.ul>
                     </div>
                   </div>
                 </div>
@@ -146,10 +160,11 @@ export function TransformationShowcase() {
             ) : (
               <motion.div
                 key={`coming-soon-${activeBrand.slug}`}
+                className="col-start-1 row-start-1"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
               >
                 <ComingSoonPanel brandName={activeBrand.name} />
                 <div className="mt-10 text-center">

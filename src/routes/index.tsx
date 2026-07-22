@@ -85,7 +85,7 @@ function Home() {
         </div>
       </section>
 
-      <BrandShowcase />
+      <TransformationShowcase />
 
       {/* FEATURED PRODUCTS */}
       <section className="container-premium py-24">
@@ -145,7 +145,7 @@ function Home() {
 
       <FeedbackShowcase />
 
-      <TransformationShowcase />
+      <BrandShowcase />
 
       {/* CTA */}
       <section className="border-t border-border/60">

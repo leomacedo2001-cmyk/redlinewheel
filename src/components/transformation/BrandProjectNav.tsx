@@ -22,7 +22,7 @@ export function BrandProjectNav({ brands, activeSlug, onSelect }: BrandProjectNa
             role="tab"
             aria-selected={active}
             onClick={() => onSelect(b.slug)}
-            className={`shrink-0 border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors duration-300 ${
+            className={`shrink-0 border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-[color,border-color,background-color,transform] duration-300 active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 ${
               active
                 ? "border-primary bg-primary/10 text-primary"
                 : "border-border/60 text-muted-foreground hover:border-primary/40 hover:text-foreground"

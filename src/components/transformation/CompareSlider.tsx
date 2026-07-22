@@ -161,8 +161,13 @@ export function CompareSlider({ before, after, beforeAlt, afterAlt, callouts, ac
       </div>
 
       <motion.div
-        className="pointer-events-none absolute top-0 bottom-0 w-px bg-white/70"
-        style={{ left: leftPercent }}
+        className="pointer-events-none absolute top-0 bottom-0 w-px"
+        style={{
+          left: leftPercent,
+          background:
+            "linear-gradient(to bottom, transparent, rgba(255,255,255,0.9) 15%, rgba(255,255,255,0.9) 85%, transparent)",
+          boxShadow: "0 0 8px rgba(255,255,255,0.45)",
+        }}
       />
 
       <motion.button
@@ -174,14 +179,22 @@ export function CompareSlider({ before, after, beforeAlt, afterAlt, callouts, ac
         aria-valuemax={100}
         aria-valuenow={50}
         onKeyDown={onKeyDown}
-        style={{ left: leftPercent }}
-        className={`absolute top-1/2 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 cursor-ew-resize items-center justify-center rounded-full border border-white/50 bg-background/80 text-white/80 backdrop-blur transition-[box-shadow,transform] duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+        style={{
+          left: leftPercent,
+          background: "radial-gradient(circle at 32% 26%, oklch(0.34 0.006 250), oklch(0.1 0.005 250) 74%)",
+        }}
+        className={`absolute top-1/2 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 cursor-ew-resize items-center justify-center rounded-full border border-white/40 text-white/85 backdrop-blur transition-[transform,box-shadow] duration-300 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] hover:scale-[1.03] hover:shadow-[0_4px_14px_rgba(0,0,0,0.55),0_0_16px_oklch(0.58_0.22_25/0.3)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
           dragging
-            ? "scale-110 shadow-lg shadow-primary/50 ring-4 ring-primary/30"
-            : "shadow-[0_0_16px_rgba(0,0,0,0.5)]"
+            ? "scale-105 shadow-[0_4px_18px_rgba(0,0,0,0.6),0_0_22px_oklch(0.58_0.22_25/0.5)]"
+            : "shadow-[0_4px_14px_rgba(0,0,0,0.55)]"
         }`}
       >
-        <span className="flex gap-1">
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 rounded-full"
+          style={{ background: "radial-gradient(circle at 34% 24%, rgba(255,255,255,0.35), transparent 45%)" }}
+        />
+        <span className="relative flex gap-1">
           <span className="h-3 w-px bg-current" />
           <span className="h-3 w-px bg-current" />
         </span>
