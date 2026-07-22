@@ -36,7 +36,7 @@ export function TransformationShowcase() {
     <section
       ref={sectionRef}
       id="transformacao"
-      className="relative scroll-mt-24 overflow-hidden border-t border-border/60 bg-surface/40 py-20 md:py-24"
+      className="relative scroll-mt-24 overflow-hidden border-t border-border/60 bg-surface/40 py-14 md:py-16"
     >
       <div
         className="pointer-events-none absolute inset-0"
@@ -57,11 +57,11 @@ export function TransformationShowcase() {
       )}
 
       <div className="relative mx-auto max-w-[1500px] px-6">
-        <div className="mx-auto mb-12 max-w-2xl text-center md:mb-14">
+        <div className="mx-auto mb-8 max-w-2xl text-center md:mb-9">
           <div className={revealClass} style={revealStyle(0)}>
             <span className="text-xs uppercase tracking-[0.3em] text-primary">Transformação</span>
           </div>
-          <h2 className={`${revealClass} text-4xl md:text-5xl font-bold mt-3 mb-6`} style={revealStyle(120)}>
+          <h2 className={`${revealClass} text-4xl md:text-5xl font-bold mt-2 mb-3`} style={revealStyle(120)}>
             Onde o Original Termina.
           </h2>
           <p className={`${revealClass} text-muted-foreground`} style={revealStyle(260)}>
@@ -72,7 +72,7 @@ export function TransformationShowcase() {
           </p>
         </div>
 
-        <div className={`${revealClass} mb-6 flex justify-center`} style={revealStyle(520)}>
+        <div className={`${revealClass} mb-5 flex justify-center`} style={revealStyle(520)}>
           <BrandProjectNav brands={NAV_BRANDS} activeSlug={activeBrandSlug} onSelect={setActiveBrandSlug} />
         </div>
 
@@ -87,20 +87,22 @@ export function TransformationShowcase() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
               >
-                <CompareSlider
-                  before={project.before}
-                  after={project.after}
-                  beforeAlt={project.beforeAlt}
-                  afterAlt={project.afterAlt}
-                  callouts={project.callouts}
-                  active={isInView}
-                  framing={project.framing}
-                />
+                <div className="mx-auto max-w-[1000px]">
+                  <CompareSlider
+                    before={project.before}
+                    after={project.after}
+                    beforeAlt={project.beforeAlt}
+                    afterAlt={project.afterAlt}
+                    callouts={project.callouts}
+                    active={isInView}
+                    framing={project.framing}
+                  />
+                </div>
 
-                <div className="mt-8 grid gap-8 md:grid-cols-2 md:gap-12">
+                <div className="mt-6 grid gap-6 md:grid-cols-2 md:gap-10">
                   <div>
                     <h3 className="text-2xl font-bold mb-3">{project.projectName}</h3>
-                    <p className="text-muted-foreground leading-relaxed mb-6">{project.description}</p>
+                    <p className="text-muted-foreground leading-relaxed mb-5">{project.description}</p>
                     <Button
                       asChild
                       className="bg-primary hover:bg-primary/90 rounded-none h-12 px-8 text-sm uppercase tracking-wider"
@@ -110,7 +112,7 @@ export function TransformationShowcase() {
                       </Link>
                     </Button>
 
-                    <div className="mt-8 grid grid-cols-2 gap-6">
+                    <div className="mt-6 grid grid-cols-2 gap-6">
                       <div className="border-l-2 border-primary pl-4">
                         <div className="text-3xl font-bold">500+</div>
                         <div className="text-xs uppercase tracking-wider text-muted-foreground">
@@ -126,7 +128,7 @@ export function TransformationShowcase() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-x-6 gap-y-6 text-sm">
+                  <div className="grid grid-cols-2 gap-x-6 gap-y-5 text-sm">
                     <div>
                       <div className="text-xs uppercase tracking-wider text-muted-foreground mb-2">
                         Tempo de Produção
@@ -179,8 +181,10 @@ export function TransformationShowcase() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
               >
-                <ComingSoonPanel brandName={activeBrand.name} />
-                <div className="mt-10 text-center">
+                <div className="mx-auto max-w-[1000px]">
+                  <ComingSoonPanel brandName={activeBrand.name} />
+                </div>
+                <div className="mt-6 text-center">
                   <Button
                     asChild
                     variant="outline"
