@@ -78,7 +78,7 @@ function Home() {
                 variant="outline"
                 className="rounded-none h-14 px-8 text-sm uppercase tracking-wider border-foreground/30"
               >
-                <Link to="/products">Explorar Coleção</Link>
+                <Link to="/marcas">Explorar Coleção</Link>
               </Button>
             </div>
           </div>

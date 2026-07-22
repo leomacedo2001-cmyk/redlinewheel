@@ -107,7 +107,7 @@ export function CustomProductsSection() {
               </ul>
               <Button
                 asChild
-                className="rounded-none h-14 uppercase tracking-[0.2em] text-sm bg-primary hover:bg-primary/90 px-8 self-start"
+                className="rounded-none h-14 uppercase tracking-wider text-sm bg-primary hover:bg-primary/90 px-8 self-start"
               >
                 <Link to="/configurator">
                   Pedir Orçamento <ArrowRight className="ml-2 h-4 w-4" />
