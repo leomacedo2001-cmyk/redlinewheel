@@ -5,9 +5,9 @@ import { FeaturedWheels } from "@/components/FeaturedWheels";
 import { BrandShowcase } from "@/components/BrandShowcase";
 
 import heroImg from "@/assets/hero-steering.jpg";
-import engineeringImg from "@/assets/engineering-showcase.jpg";
 import { CustomProductsSection } from "@/components/CustomProductsSection";
 import { FeedbackShowcase } from "@/components/feedback/FeedbackShowcase";
+import { TransformationShowcase } from "@/components/transformation/TransformationShowcase";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -145,46 +145,7 @@ function Home() {
 
       <FeedbackShowcase />
 
-      {/* SHOWCASE SPLIT */}
-      <section className="container-premium py-24 grid md:grid-cols-2 gap-12 items-center">
-        <div>
-          <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">Engenharia</div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Cada detalhe
-            <br />
-            importa.
-          </h2>
-          <p className="text-muted-foreground mb-8 leading-relaxed">
-            Do design ao acabamento final, cada volante REDLINE é o resultado de centenas de horas
-            de trabalho manual. Combinamos materiais premium com tecnologia de ponta para criar
-            peças únicas que elevam qualquer interior.
-          </p>
-          <div className="grid grid-cols-2 gap-6">
-            <div className="border-l-2 border-primary pl-4">
-              <div className="text-3xl font-bold">500+</div>
-              <div className="text-xs uppercase tracking-wider text-muted-foreground">
-                Volantes entregues
-              </div>
-            </div>
-            <div className="border-l-2 border-primary pl-4">
-              <div className="text-3xl font-bold">2 anos</div>
-              <div className="text-xs uppercase tracking-wider text-muted-foreground">
-                Garantia premium
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="relative aspect-square bg-surface overflow-hidden">
-          <img
-            src={engineeringImg}
-            alt="Volante personalizado"
-            width={1024}
-            height={1024}
-            loading="lazy"
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </section>
+      <TransformationShowcase />
 
       {/* CTA */}
       <section className="border-t border-border/60">
