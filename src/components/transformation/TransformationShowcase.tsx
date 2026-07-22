@@ -4,7 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BRANDS } from "@/lib/brands";
-import { getProjectForBrand } from "@/lib/transformations";
+import { getProjectForBrand, TRANSFORMATION_PROJECTS } from "@/lib/transformations";
 import { CompareSlider } from "./CompareSlider";
 import { BrandProjectNav } from "./BrandProjectNav";
 import { ComingSoonPanel } from "./ComingSoonPanel";
@@ -44,7 +44,18 @@ export function TransformationShowcase() {
         }}
       />
 
-      <div className="container-premium relative">
+      {isInView && (
+        <div aria-hidden="true" className="absolute h-px w-px overflow-hidden opacity-0">
+          {TRANSFORMATION_PROJECTS.map((p) => (
+            <div key={p.id}>
+              <img src={p.before} alt="" loading="eager" decoding="async" />
+              <img src={p.after} alt="" loading="eager" decoding="async" />
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="relative mx-auto max-w-[1760px] px-6">
         <div className="mx-auto mb-14 max-w-2xl text-center md:mb-16">
           <div className={revealClass} style={revealStyle(0)}>
             <span className="text-xs uppercase tracking-[0.3em] text-primary">Transformação</span>

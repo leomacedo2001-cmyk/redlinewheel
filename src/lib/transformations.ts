@@ -1,5 +1,7 @@
 import porscheAntes from "@/assets/transformations/porsche-antes.png";
 import porscheDepois from "@/assets/transformations/porsche-depois.png";
+import audiAntes from "@/assets/transformations/audi-antes.png";
+import audiDepois from "@/assets/transformations/audi-depois.png";
 
 /**
  * `revealAt` é a posição (0–100) do slider a partir da qual o callout
@@ -54,6 +56,31 @@ export const TRANSFORMATION_PROJECTS: TransformationProject[] = [
       { id: "stitch", label: "Costura Manual Tricolor", xPercent: 36, yPercent: 9, revealAt: 36 },
       { id: "badge", label: "Emblema REDLINE", xPercent: 50, yPercent: 88, revealAt: 50 },
       { id: "grip", label: "Pega em Alcântara", xPercent: 72, yPercent: 52, revealAt: 72 },
+    ],
+  },
+  {
+    id: "audi-signature",
+    brandSlug: "audi",
+    projectName: "Audi — Edição Signature",
+    before: audiAntes,
+    after: audiDepois,
+    beforeAlt: "Volante Audi RS de série, em pele perfurada preta",
+    afterAlt: "Volante Audi RS personalizado REDLINE, com friso LED, fibra de carbono e comandos integrados",
+    modifications: [
+      "Friso LED integrado no aro superior",
+      "Fibra de carbono nas zonas de pega",
+      "Costura em contraste vermelho",
+      "Botões Drive Select e Start/Stop integrados",
+    ],
+    productionTime: "48 horas",
+    materials: ["Fibra de Carbono", "Couro Perfurado", "Costura em Contraste"],
+    description:
+      "O volante RS de série ganhou um friso LED integrado no aro superior, fibra de carbono nas zonas de pega e os comandos Drive Select e Start/Stop ao alcance dos dedos — sem perder a ergonomia nem os comandos originais.",
+    callouts: [
+      { id: "carbon", label: "Fibra de Carbono", xPercent: 28, yPercent: 28, revealAt: 28 },
+      { id: "stitch", label: "Costura em Contraste", xPercent: 40, yPercent: 50, revealAt: 40 },
+      { id: "led", label: "Friso LED Integrado", xPercent: 50, yPercent: 14, revealAt: 50 },
+      { id: "startstop", label: "Start/Stop Integrado", xPercent: 62, yPercent: 73, revealAt: 62 },
     ],
   },
 ];
