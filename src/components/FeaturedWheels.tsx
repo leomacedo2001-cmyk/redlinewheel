@@ -1,45 +1,35 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type PointerEvent as ReactPointerEvent,
-} from "react";
+import { useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Star } from "lucide-react";
 import { getBrandModel, type Brand, type BrandModel } from "@/lib/brands";
 import { SectionEyebrow } from "@/components/SectionEyebrow";
 import { AmbientGlow } from "@/components/AmbientGlow";
 
 /**
- * Produtos em Destaque — showroom curado, não um carrossel de e-commerce.
+ * Produtos em Destaque — showroom curado com um Navegador de Produto: a
+ * imagem, o título, a descrição, o preço e os selos do hero mudam ao passar
+ * o rato (ou ao navegar por teclado) sobre a lista à direita — como um
+ * configurador automóvel, nunca uma navegação de página.
  *
- * Reconstruído do zero (a versão anterior — marquee infinito, depois
- * coverflow com escala/blur por distância recalculada a cada frame de
- * scroll — foi abandonada por completo, não iterada). Duas decisões
- * deliberadas para nunca mais reintroduzir os artefactos de render já
- * vistos nas versões antigas:
+ * Reconstrução completa (não iteração) da versão anterior: já não há um
+ * cartão "hero" fixo + lista de cartões-link separados. Agora é um único
+ * ecrã de exibição (hero) cujo conteúdo é function do item selecionado, e
+ * uma lista de seletores que só existe para mudar essa seleção — a
+ * navegação real para a página do produto vive só no CTA do próprio hero.
  *
- * 1. Hierarquia real, não "o que está centrado de momento": uma peça
- *    fixa em destaque (grande, à esquerda) + uma fila de apoio — nunca um
- *    truque de escala/opacidade recalculado por JS a cada frame de scroll.
- * 2. Scroll 100% nativo (overflow-x-auto + scroll-snap do próprio browser),
- *    zero manipulação de estilo por frame. É estruturalmente impossível
- *    voltar a haver "barras pretas a deslizar": não há nenhum mecanismo a
- *    escrever transform/filter em loop — o compositor do browser trata de
- *    tudo sozinho.
+ * A imagem nunca é cortada: `object-contain` (não `cover`) garante que o
+ * volante inteiro cabe sempre dentro da moldura, com espaço de "estúdio"
+ * (gradiente escuro) a preencher a área à volta em vez de cortar bordas —
+ * este é o requisito com prioridade sobre qualquer outra decisão de layout.
  */
 
 /**
  * Curadoria manual — 7 peças, não o catálogo inteiro. Cada uma tem carbono
- * forjado, LED, Alcântara completa ou um acabamento verdadeiramente único
- * (nunca incluída só "porque existe"). Só peças com fotografia local
- * (ficheiro no repositório, não um asset externo do Lovable) entram aqui —
- * é o que torna possível tratar a imagem de forma consistente; as peças
- * "Signature" fotografadas via asset externo (incluindo a única Porsche
- * assinatura do catálogo) ficam de fora desta secção por não ser possível
- * validar/tratar a imagem original neste ambiente.
+ * forjado, LED, Alcântara completa ou um acabamento verdadeiramente único.
+ * Só peças com fotografia local (ficheiro no repositório, não um asset
+ * externo do Lovable) entram aqui — é o que torna possível tratar a
+ * imagem de forma consistente sem arriscar mostrar uma foto partida.
  */
 const CURATED_SHOWCASE: { brandSlug: string; modelSlug: string }[] = [
   { brandSlug: "mercedes-benz", modelSlug: "amg-red-forged-signature" },
@@ -51,220 +41,180 @@ const CURATED_SHOWCASE: { brandSlug: string; modelSlug: string }[] = [
   { brandSlug: "volkswagen", modelSlug: "forged-carbon-signature" },
 ];
 
-/** Grading consistente aplicado a TODAS as imagens da vitrine — a mesma "sessão de estúdio" visual. */
-const IMAGE_GRADE = "brightness(0.92)_contrast(1.12)_saturate(1.03)";
-const IMAGE_GRADE_HOVER = "brightness(0.97)_contrast(1.18)_saturate(1.06)";
-
 type ShowcaseItem = { brand: Brand; model: BrandModel };
-
-function usePrefersReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduced(mq.matches);
-    const onChange = () => setReduced(mq.matches);
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, []);
-  return reduced;
-}
 
 function formatPrice(model: BrandModel): string | null {
   if (!model.price) return null;
   return `${model.price.currency === "EUR" ? "€" : model.price.currency + " "}${model.price.amount.toFixed(0)}`;
 }
 
-/** Vinheta + reflexo de carbono partilhados pelo hero e pelos cartões de apoio. */
-function ImageAtmosphere({ hover = true }: { hover?: boolean }) {
+const EASE = [0.22, 1, 0.36, 1] as const;
+
+function HeroDisplay({ item }: { item: ShowcaseItem }) {
+  const { brand, model } = item;
+  const price = formatPrice(model);
+  const reducedMotion = useReducedMotion();
+
   return (
-    <>
+    <div className="relative">
+      {/* glow ambiente atrás do hero — o objeto "flutua" iluminado, nunca preso numa caixa */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute -inset-10 -z-10 opacity-60 blur-3xl md:-inset-16"
         style={{
-          background: "radial-gradient(120% 120% at 50% 42%, transparent 42%, oklch(0 0 0 / 0.45) 100%)",
+          background:
+            "radial-gradient(closest-side, oklch(0.58 0.22 25 / 0.32), transparent 72%)",
         }}
       />
-      {hover && (
+
+      <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-b from-surface via-background to-black md:aspect-[16/10]">
+        {/* soft directional studio light + floor falloff — o "estúdio" à volta do produto */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -translate-x-[130%] rotate-12 bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-[1100ms] ease-out group-hover:translate-x-[130%] motion-reduce:hidden"
-        />
-      )}
-    </>
-  );
-}
-
-type TiltState = { hovered: boolean; x: number; y: number };
-const MAX_TILT_DEG = 2;
-
-function useTilt(reducedMotion: boolean) {
-  const ref = useRef<HTMLAnchorElement>(null);
-  const [tilt, setTilt] = useState<TiltState>({ hovered: false, x: 0, y: 0 });
-
-  const onPointerMove = useCallback(
-    (e: ReactPointerEvent<HTMLAnchorElement>) => {
-      if (reducedMotion || e.pointerType !== "mouse") return;
-      const rect = ref.current?.getBoundingClientRect();
-      if (!rect) return;
-      const px = (e.clientX - rect.left) / rect.width;
-      const py = (e.clientY - rect.top) / rect.height;
-      setTilt({ hovered: true, x: (0.5 - py) * 2 * MAX_TILT_DEG, y: (px - 0.5) * 2 * MAX_TILT_DEG });
-    },
-    [reducedMotion],
-  );
-  const onPointerEnter = useCallback(
-    (e: ReactPointerEvent<HTMLAnchorElement>) => {
-      if (!reducedMotion && e.pointerType === "mouse") setTilt((t) => ({ ...t, hovered: true }));
-    },
-    [reducedMotion],
-  );
-  const onPointerLeave = useCallback(() => setTilt({ hovered: false, x: 0, y: 0 }), []);
-
-  const transform =
-    tilt.hovered && !reducedMotion
-      ? `perspective(1200px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateY(-6px)`
-      : undefined;
-
-  return { ref, transform, onPointerMove, onPointerEnter, onPointerLeave };
-}
-
-function HeroSpotlight({ item, isInView }: { item: ShowcaseItem; isInView: boolean }) {
-  const { brand, model } = item;
-  const reducedMotion = usePrefersReducedMotion();
-  const { ref, transform, onPointerMove, onPointerEnter, onPointerLeave } = useTilt(reducedMotion);
-  const price = formatPrice(model);
-
-  return (
-    <div className={isInView ? "animate-card-reveal motion-reduce:animate-none" : "opacity-0 motion-reduce:opacity-100"}>
-      <Link
-        ref={ref}
-        to="/brand/$slug/model/$model"
-        params={{ slug: brand.slug, model: model.slug }}
-        onPointerMove={onPointerMove}
-        onPointerEnter={onPointerEnter}
-        onPointerLeave={onPointerLeave}
-        style={{ transform }}
-        aria-label={`Ver detalhes de ${model.name}`}
-        className="group relative flex h-full flex-col overflow-hidden border border-primary/30 bg-surface transition-[transform,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform hover:border-primary/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary motion-reduce:!transform-none"
-      >
-        <span className="absolute left-5 top-0 z-20 -translate-y-1/2 bg-primary px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.58_0.22_25/0.7)]">
-          Coleção Signature
-        </span>
-        <span className="absolute inset-x-0 top-0 z-10 h-px origin-left scale-x-0 bg-gradient-to-r from-primary via-primary to-transparent transition-transform duration-500 ease-out group-hover:scale-x-100" />
-        {/* glow ambiente atrás do hero, sempre ligeiramente presente, mais forte no hover */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -inset-16 -z-0 opacity-40 blur-3xl transition-opacity duration-500 group-hover:opacity-70"
-          style={{ background: "radial-gradient(closest-side, oklch(0.58 0.22 25 / 0.35), transparent 75%)" }}
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background: [
+              "radial-gradient(60% 55% at 50% 30%, oklch(1 0 0 / 0.05), transparent 70%)",
+              "radial-gradient(70% 45% at 50% 100%, oklch(0.58 0.22 25 / 0.12), transparent 75%)",
+            ].join(", "),
+          }}
         />
 
-        <div className="relative aspect-[16/11] overflow-hidden bg-background">
-          <img
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={`${brand.slug}-${model.slug}`}
             src={model.img}
             alt={model.name}
             loading="eager"
             decoding="async"
-            width={1280}
-            height={880}
-            className={`h-full w-full object-cover [filter:${IMAGE_GRADE}] transition-[transform,filter] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.035] group-hover:[filter:${IMAGE_GRADE_HOVER}]`}
+            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 1.03, filter: "blur(6px)" }}
+            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+            exit={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.98, filter: "blur(4px)" }}
+            transition={{ duration: reducedMotion ? 0.2 : 0.5, ease: EASE }}
+            className="absolute inset-0 h-full w-full object-contain p-6 [filter:brightness(0.97)_contrast(1.1)_saturate(1.03)] md:p-10"
           />
-          <ImageAtmosphere />
-          <div className="absolute left-4 top-4 z-10 border border-primary/40 bg-background/80 px-2.5 py-1 text-[10px] uppercase tracking-[0.2em] text-primary backdrop-blur transition-transform duration-300 ease-out group-hover:scale-105">
-            {brand.name}
-          </div>
-          {model.status && (
-            <div className="absolute right-4 top-4 z-10 border border-border bg-background/80 px-2.5 py-1 text-[10px] uppercase tracking-[0.2em] text-foreground/80 backdrop-blur transition-transform duration-300 ease-out group-hover:scale-105">
-              {model.status}
-            </div>
-          )}
-        </div>
+        </AnimatePresence>
 
-        <div className="relative flex flex-1 flex-col gap-5 p-6 md:p-7 transition-transform duration-300 ease-out group-hover:-translate-y-0.5">
-          <div>
-            <h3 className="mb-2 text-2xl font-bold leading-tight transition-colors group-hover:text-primary md:text-3xl">
-              {model.name}
-            </h3>
-            <p className="max-w-lg text-sm leading-relaxed text-muted-foreground">{model.description}</p>
+        <span className="absolute left-5 top-5 z-10 bg-primary px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.58_0.22_25/0.7)]">
+          Coleção Signature
+        </span>
+        <div className="absolute right-5 top-5 z-10 flex items-center gap-1 border border-border/60 bg-background/70 px-2.5 py-1.5 backdrop-blur">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Star key={i} className="h-3 w-3 fill-primary text-primary" />
+          ))}
+        </div>
+      </div>
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={`${brand.slug}-${model.slug}-info`}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: reducedMotion ? 0.15 : 0.35, ease: EASE, delay: reducedMotion ? 0 : 0.08 }}
+          className="relative mt-6 md:mt-8"
+        >
+          <div className="mb-3 flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+            <span className="text-primary">{brand.name}</span>
+            <span className="text-border">•</span>
+            <span>Feito à Mão</span>
+            <span className="text-border">•</span>
+            <span>48h de Produção</span>
+            {model.status && (
+              <>
+                <span className="text-border">•</span>
+                <span>{model.status}</span>
+              </>
+            )}
           </div>
-          <div className="mt-auto flex items-end justify-between border-t border-border/60 pt-5">
+
+          <h3 className="mb-3 text-3xl font-bold leading-tight md:text-4xl">{model.name}</h3>
+          <p className="max-w-xl text-sm leading-relaxed text-muted-foreground md:text-[15px]">
+            {model.description}
+          </p>
+
+          <div className="mt-7 flex flex-wrap items-end justify-between gap-6 border-t border-border/60 pt-6">
             {price && (
               <div>
                 <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Desde</div>
-                <div className="text-3xl font-bold tracking-tight">{price}</div>
+                <div className="text-4xl font-bold tracking-tight">{price}</div>
               </div>
             )}
-            <span className="inline-flex flex-col items-start text-xs font-medium uppercase tracking-wider text-primary">
-              <span className="inline-flex items-center transition-transform duration-300 ease-out group-hover:translate-x-1.5">
-                Ver Produto <ArrowRight className="ml-2 h-4 w-4" />
-              </span>
-              <span className="mt-0.5 h-px w-0 bg-primary transition-all duration-300 ease-out group-hover:w-full" />
-            </span>
+            <Link
+              to="/brand/$slug/model/$model"
+              params={{ slug: brand.slug, model: model.slug }}
+              className="group/cta relative inline-flex h-14 items-center gap-3 overflow-hidden bg-primary px-8 text-sm font-medium uppercase tracking-wider text-primary-foreground transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-0.5 hover:shadow-[0_20px_45px_-16px_oklch(0.58_0.22_25/0.65)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              <span
+                aria-hidden="true"
+                className="absolute inset-0 -translate-x-full bg-white/15 transition-transform duration-500 ease-out group-hover/cta:translate-x-full"
+              />
+              <span className="relative">Ver Produto</span>
+              <ArrowRight className="relative h-4 w-4 transition-transform duration-300 ease-out group-hover/cta:translate-x-1.5" />
+            </Link>
           </div>
-        </div>
-      </Link>
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }
 
-function CompactCard({
+function NavigatorRow({
   item,
-  isInView,
-  revealDelayMs,
+  active,
+  onActivate,
 }: {
   item: ShowcaseItem;
-  isInView: boolean;
-  revealDelayMs: number;
+  active: boolean;
+  onActivate: () => void;
 }) {
   const { brand, model } = item;
-  const reducedMotion = usePrefersReducedMotion();
-  const { ref, transform, onPointerMove, onPointerEnter, onPointerLeave } = useTilt(reducedMotion);
   const price = formatPrice(model);
 
   return (
-    <div
-      className={`w-[240px] shrink-0 snap-start lg:w-full ${
-        isInView ? "animate-card-reveal motion-reduce:animate-none" : "opacity-0 motion-reduce:opacity-100"
+    <button
+      type="button"
+      onMouseEnter={onActivate}
+      onFocus={onActivate}
+      aria-current={active}
+      className={`group relative flex w-[220px] shrink-0 items-center gap-3 overflow-hidden border bg-surface/60 p-2.5 text-left transition-[border-color,background-color,box-shadow] duration-300 ease-out lg:w-full ${
+        active
+          ? "border-primary/70 bg-surface shadow-[0_16px_36px_-22px_oklch(0.58_0.22_25/0.5)]"
+          : "border-border/50 hover:border-primary/40 hover:bg-surface"
       }`}
-      style={isInView ? { animationDelay: `${revealDelayMs}ms` } : undefined}
     >
-      <Link
-        ref={ref}
-        to="/brand/$slug/model/$model"
-        params={{ slug: brand.slug, model: model.slug }}
-        onPointerMove={onPointerMove}
-        onPointerEnter={onPointerEnter}
-        onPointerLeave={onPointerLeave}
-        style={{ transform }}
-        aria-label={`Ver detalhes de ${model.name}`}
-        className="group relative flex items-center gap-4 overflow-hidden border border-border/60 bg-surface p-3 transition-[transform,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform hover:border-primary/60 hover:shadow-[0_20px_45px_-24px_rgba(0,0,0,0.65),0_0_30px_-14px_oklch(0.58_0.22_25/0.4)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary motion-reduce:!transform-none"
-      >
-        <div className="relative aspect-square w-24 shrink-0 overflow-hidden bg-background">
-          <img
-            src={model.img}
-            alt={model.name}
-            loading="lazy"
-            decoding="async"
-            width={200}
-            height={200}
-            className={`h-full w-full object-cover [filter:${IMAGE_GRADE}] transition-[transform,filter] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06] group-hover:[filter:${IMAGE_GRADE_HOVER}]`}
-          />
-          <ImageAtmosphere />
+      <span
+        aria-hidden="true"
+        className={`absolute inset-y-0 left-0 w-0.5 bg-primary transition-transform duration-300 ease-out ${
+          active ? "scale-y-100" : "scale-y-0"
+        }`}
+      />
+      <div className="relative aspect-square w-16 shrink-0 overflow-hidden bg-gradient-to-b from-surface to-background">
+        <img
+          src={model.img}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          decoding="async"
+          className={`absolute inset-0 h-full w-full object-contain p-1.5 transition-[filter,transform] duration-300 ease-out [filter:brightness(0.92)_contrast(1.08)] ${
+            active ? "scale-105 [filter:brightness(1)_contrast(1.14)]" : "opacity-80"
+          }`}
+        />
+      </div>
+      <div className="min-w-0 flex-1">
+        <div
+          className={`mb-1 text-[9px] uppercase tracking-[0.18em] transition-colors ${
+            active ? "text-primary" : "text-muted-foreground"
+          }`}
+        >
+          {brand.name}
         </div>
-        <div className="min-w-0 flex-1">
-          <div className="mb-1 text-[9px] uppercase tracking-[0.2em] text-primary transition-transform duration-300 ease-out group-hover:translate-x-0.5">
-            {brand.name}
-          </div>
-          <h4 className="mb-1.5 truncate text-sm font-bold leading-tight transition-colors group-hover:text-primary">
-            {model.name}
-          </h4>
-          <div className="flex items-center justify-between">
-            {price && <span className="text-sm font-bold">{price}</span>}
-            <ArrowRight className="h-3.5 w-3.5 text-primary opacity-0 transition-all duration-300 ease-out group-hover:translate-x-1 group-hover:opacity-100" />
-          </div>
+        <div className={`truncate text-sm font-semibold leading-tight transition-colors ${active ? "text-primary" : ""}`}>
+          {model.name}
         </div>
-      </Link>
-    </div>
+        {price && <div className="mt-1 text-xs text-muted-foreground">{price}</div>}
+      </div>
+    </button>
   );
 }
 
@@ -276,71 +226,55 @@ export function FeaturedProductsSection() {
       ),
     [],
   );
-  const [flagship, ...supporting] = items;
-
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const [isInView, setIsInView] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsInView(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.12 },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+    if (activeIndex >= items.length) setActiveIndex(0);
+  }, [items.length, activeIndex]);
 
-  const revealClass = isInView ? "animate-fade-up" : "opacity-0 motion-reduce:opacity-100";
-  const revealStyle = (delayMs: number) => (isInView ? { animationDelay: `${delayMs}ms` } : undefined);
-
-  if (!flagship) return null;
+  if (items.length === 0) return null;
+  const active = items[activeIndex];
 
   return (
-    <section ref={sectionRef} className="relative overflow-x-clip py-20 md:py-24">
+    <section className="relative overflow-x-hidden py-20 md:py-24">
       <AmbientGlow edge="top" />
       <AmbientGlow edge="bottom" />
 
       <div className="container-premium">
-        <div className="mb-10 flex items-end justify-between md:mb-12">
+        <div className="mb-10 flex items-end justify-between md:mb-14">
           <div>
-            <SectionEyebrow className={`mb-3 ${revealClass}`} style={revealStyle(0)}>
-              Coleção
-            </SectionEyebrow>
-            <h2 className={`text-4xl font-bold md:text-5xl ${revealClass}`} style={revealStyle(110)}>
-              Produtos em Destaque
-            </h2>
+            <SectionEyebrow className="mb-3">Coleção</SectionEyebrow>
+            <h2 className="text-4xl font-bold md:text-5xl">Produtos em Destaque</h2>
           </div>
           <Link
             to="/products"
-            className={`hidden items-center text-sm font-medium transition-colors hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 md:inline-flex ${revealClass}`}
-            style={revealStyle(220)}
+            className="hidden items-center text-sm font-medium transition-colors hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 md:inline-flex"
           >
             Ver todos <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </div>
 
-        <div className="grid gap-5 lg:grid-cols-[1.15fr_1fr] lg:gap-6">
-          <HeroSpotlight item={flagship} isInView={isInView} />
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1.9fr_1fr] lg:gap-12">
+          <HeroDisplay item={active} />
 
-          <div
-            className="scrollbar-none -mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-1 lg:mx-0 lg:max-h-[640px] lg:flex-col lg:gap-3 lg:overflow-x-visible lg:overflow-y-auto lg:px-0"
-            aria-label="Mais peças da coleção"
-          >
-            {supporting.map((item, i) => (
-              <CompactCard
-                key={`${item.brand.slug}-${item.model.slug}`}
-                item={item}
-                isInView={isInView}
-                revealDelayMs={180 + i * 70}
-              />
-            ))}
+          <div className="lg:pt-1">
+            <div className="mb-3 hidden text-[10px] uppercase tracking-[0.2em] text-muted-foreground lg:block">
+              Explora a coleção
+            </div>
+            <div
+              className="scrollbar-none -mx-6 flex gap-3 overflow-x-auto px-6 pb-1 lg:mx-0 lg:max-h-[520px] lg:flex-col lg:overflow-x-visible lg:overflow-y-auto lg:px-0"
+              role="listbox"
+              aria-label="Selecionar produto em destaque"
+            >
+              {items.map((item, i) => (
+                <NavigatorRow
+                  key={`${item.brand.slug}-${item.model.slug}`}
+                  item={item}
+                  active={i === activeIndex}
+                  onActivate={() => setActiveIndex(i)}
+                />
+              ))}
+            </div>
           </div>
         </div>
 
