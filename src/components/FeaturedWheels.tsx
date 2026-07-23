@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Star } from "lucide-react";
@@ -162,11 +162,15 @@ function HeroDisplay({ item }: { item: ShowcaseItem }) {
 function NavigatorRow({
   item,
   active,
-  onActivate,
+  onHoverActivate,
+  onHoverCancel,
+  onFocusActivate,
 }: {
   item: ShowcaseItem;
   active: boolean;
-  onActivate: () => void;
+  onHoverActivate: () => void;
+  onHoverCancel: () => void;
+  onFocusActivate: () => void;
 }) {
   const { brand, model } = item;
   const price = formatPrice(model);
@@ -174,8 +178,9 @@ function NavigatorRow({
   return (
     <button
       type="button"
-      onMouseEnter={onActivate}
-      onFocus={onActivate}
+      onMouseEnter={onHoverActivate}
+      onMouseLeave={onHoverCancel}
+      onFocus={onFocusActivate}
       aria-current={active}
       className={`group relative flex w-[220px] shrink-0 items-center gap-3 overflow-hidden border bg-surface/60 p-2.5 text-left transition-[border-color,background-color,box-shadow] duration-300 ease-out lg:w-full ${
         active
@@ -232,6 +237,36 @@ export function FeaturedProductsSection() {
     if (activeIndex >= items.length) setActiveIndex(0);
   }, [items.length, activeIndex]);
 
+  // Debounce da ativação por hover: sem isto, o Chromium volta a avaliar
+  // :hover sempre que o layout se desloca por baixo do rato — incluindo
+  // durante um simples scroll, sem o rato se mexer. Numa lista alta como
+  // esta, isso disparava onMouseEnter em várias linhas por segundo enquanto
+  // se fazia scroll com o rato pousado em cima da coluna, mudando a key das
+  // duas árvores AnimatePresence (imagem + bloco de info) mais depressa do
+  // que a própria transição (350–500ms) — ficavam dessincronizadas a meio
+  // da saída/entrada, com a opacidade a cair para quase zero durante essa
+  // troca (confirmado a medir: imagem a ~0.0001, bloco de info a ~0.18) e a
+  // secção a parecer "partida" enquanto se fazia scroll. O foco por teclado
+  // não sofre disto (não é recalculado pelo scroll) e mantém-se instantâneo.
+  const hoverTimeoutRef = useRef<number | null>(null);
+  const clearHoverTimeout = useCallback(() => {
+    if (hoverTimeoutRef.current !== null) {
+      window.clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+  }, []);
+  const handleHoverActivate = useCallback(
+    (i: number) => {
+      clearHoverTimeout();
+      hoverTimeoutRef.current = window.setTimeout(() => {
+        hoverTimeoutRef.current = null;
+        setActiveIndex(i);
+      }, 120);
+    },
+    [clearHoverTimeout],
+  );
+  useEffect(() => clearHoverTimeout, [clearHoverTimeout]);
+
   if (items.length === 0) return null;
   const active = items[activeIndex];
 
@@ -271,7 +306,12 @@ export function FeaturedProductsSection() {
                   key={`${item.brand.slug}-${item.model.slug}`}
                   item={item}
                   active={i === activeIndex}
-                  onActivate={() => setActiveIndex(i)}
+                  onHoverActivate={() => handleHoverActivate(i)}
+                  onHoverCancel={clearHoverTimeout}
+                  onFocusActivate={() => {
+                    clearHoverTimeout();
+                    setActiveIndex(i);
+                  }}
                 />
               ))}
             </div>
