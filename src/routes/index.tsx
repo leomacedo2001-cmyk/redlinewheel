@@ -145,7 +145,7 @@ function Home() {
       <BrandShowcase />
 
       {/* CTA */}
-      <section className="relative isolate overflow-hidden border-t border-border/60">
+      <section className="relative isolate overflow-hidden border-t border-border/60 -mb-24">
         <AmbientGlow edge="top" />
         <AmbientGlow edge="bottom" />
         <div className="container-premium relative py-20 md:py-24 text-center">
