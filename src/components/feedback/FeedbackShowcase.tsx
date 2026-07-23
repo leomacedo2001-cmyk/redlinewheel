@@ -110,8 +110,6 @@ export function FeedbackShowcase() {
       id="comunidade"
       className="relative scroll-mt-24 overflow-hidden py-20 md:py-24"
     >
-      <div className="divider-fade container-premium" />
-
       {/* profundidade de fundo — mesma linguagem radial da Transformação, subtil */}
       <div
         className="pointer-events-none absolute inset-0"
@@ -127,9 +125,12 @@ export function FeedbackShowcase() {
             : "container-premium relative mb-12 text-center opacity-0 md:mb-14"
         }
       >
-        <SectionEyebrow align="center" className="mb-3">
+        {/* Rótulo primeiro — marca o "capítulo" antes do friso e do título,
+            em vez de ficar espremido entre o friso e o título. */}
+        <SectionEyebrow align="center" className="mb-5">
           Comunidade REDLINE
         </SectionEyebrow>
+        <div className="mx-auto mb-6 h-px w-16 bg-primary/35" />
         <h2 className="text-4xl md:text-5xl font-bold mb-4">Confiança que se vê ao volante.</h2>
         <p className="text-muted-foreground max-w-xl mx-auto">
           Instalações reais, em carros reais. Uma pequena amostra dos volantes que já saíram das
