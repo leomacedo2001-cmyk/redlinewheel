@@ -10,6 +10,7 @@ import { CustomProductsSection } from "@/components/CustomProductsSection";
 import { FeedbackShowcase } from "@/components/feedback/FeedbackShowcase";
 import { TransformationShowcase } from "@/components/transformation/TransformationShowcase";
 import { SectionEyebrow } from "@/components/SectionEyebrow";
+import { AmbientLightField } from "@/components/AmbientLightField";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -34,7 +35,11 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   return (
-    <>
+    <div className="relative">
+      {/* Luz ambiente única, contínua do Hero ao CTA — ver AmbientLightField
+          para o porquê de substituir os glows por-secção. */}
+      <AmbientLightField />
+
       {/* HERO */}
       <section className="relative min-h-[92vh] flex items-end overflow-hidden">
         <video
@@ -112,13 +117,7 @@ function Home() {
       <CustomProductsSection />
 
       {/* BENEFITS */}
-      <section className="relative overflow-hidden bg-surface/40 py-20 md:py-24">
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background: "radial-gradient(50% 45% at 50% 0%, oklch(0.58 0.22 25 / 0.05), transparent 70%)",
-          }}
-        />
+      <section className="relative bg-surface/40 py-20 md:py-24">
         <div className="container-premium relative">
           <div className="text-center mb-12 md:mb-14">
             <SectionEyebrow align="center" className="mb-3">
@@ -163,13 +162,7 @@ function Home() {
       <BrandShowcase />
 
       {/* CTA */}
-      <section className="relative overflow-hidden border-t border-border/60">
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background: "radial-gradient(45% 60% at 50% 100%, oklch(0.58 0.22 25 / 0.08), transparent 70%)",
-          }}
-        />
+      <section className="relative border-t border-border/60">
         <div className="container-premium relative py-20 md:py-24 text-center">
           <div className="relative mx-auto mb-6 flex h-14 w-14 items-center justify-center">
             <span className="absolute inset-0 rounded-full bg-primary/10 blur-xl" />
@@ -192,6 +185,6 @@ function Home() {
           </Button>
         </div>
       </section>
-    </>
+    </div>
   );
 }

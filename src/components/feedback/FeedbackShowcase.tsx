@@ -108,16 +108,8 @@ export function FeedbackShowcase() {
     <section
       ref={sectionRef}
       id="comunidade"
-      className="relative scroll-mt-24 overflow-hidden py-20 md:py-24"
+      className="relative scroll-mt-24 py-20 md:py-24"
     >
-      {/* profundidade de fundo — mesma linguagem radial da Transformação, subtil */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background: "radial-gradient(50% 45% at 50% 0%, oklch(0.58 0.22 25 / 0.06), transparent 70%)",
-        }}
-      />
-
       <div
         className={
           isInView

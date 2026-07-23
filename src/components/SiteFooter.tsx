@@ -2,8 +2,18 @@ import { Link } from "@tanstack/react-router";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border/60 bg-surface mt-24">
-      <div className="container-premium py-16 grid gap-12 md:grid-cols-4">
+    <footer className="relative overflow-hidden border-t border-border/60 bg-surface mt-24">
+      {/* continua a luz ambiente da homepage — o footer vive fora da árvore
+          da rota (ver __root.tsx), por isso tem o seu próprio glow subtil em
+          vez de herdar o AmbientLightField da página. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-40"
+        style={{
+          background: "radial-gradient(60% 100% at 50% 0%, oklch(0.58 0.22 25 / 0.05), transparent 75%)",
+        }}
+      />
+      <div className="container-premium relative py-16 grid gap-12 md:grid-cols-4">
         <div>
           <div className="text-2xl font-bold">
             REDLINE<span className="text-primary">.</span>
