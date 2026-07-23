@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { BRANDS } from "@/lib/brands";
 import { SectionEyebrow } from "@/components/SectionEyebrow";
+import { AmbientGlow } from "@/components/AmbientGlow";
 
 import bmwIcon from "@/assets/brand-icons/bmw.png";
 import audiIcon from "@/assets/brand-icons/audi.png";
@@ -53,20 +54,16 @@ export function BrandShowcase() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden border-y border-border/60 bg-surface/40 py-20 md:py-24">
+    <section ref={sectionRef} className="relative border-y border-border/60 bg-surface/40 py-20 md:py-24">
+      <AmbientGlow edge="top" />
+      <AmbientGlow edge="bottom" />
       <div
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-0 -z-10"
         style={{
           backgroundImage:
             "linear-gradient(oklch(1 0 0 / 0.035) 1px, transparent 1px), linear-gradient(90deg, oklch(1 0 0 / 0.035) 1px, transparent 1px)",
           backgroundSize: "40px 40px",
           maskImage: "radial-gradient(80% 80% at 50% 40%, black, transparent)",
-        }}
-      />
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background: "radial-gradient(55% 50% at 50% 0%, oklch(0.58 0.22 25 / 0.07), transparent 70%)",
         }}
       />
 

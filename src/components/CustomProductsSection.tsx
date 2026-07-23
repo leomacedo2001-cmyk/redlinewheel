@@ -13,6 +13,7 @@ import oemPlus from "@/assets/custom-oem-plus-catalog.jpg";
 import { CATEGORY_PAGES } from "@/lib/categoryPages";
 import { PersonalizationCarousel } from "@/components/carousel/PersonalizationCarousel";
 import { SectionEyebrow } from "@/components/SectionEyebrow";
+import { AmbientGlow } from "@/components/AmbientGlow";
 
 const CATEGORIES = [
   {
@@ -61,8 +62,10 @@ const CATEGORIES = [
 
 export function CustomProductsSection() {
   return (
-    <section id="produtos-personalizados" className="bg-surface/40 border-y border-border/60 py-20 md:py-24">
-      <div className="container-premium">
+    <section id="produtos-personalizados" className="relative bg-surface/40 border-y border-border/60 py-20 md:py-24">
+      <AmbientGlow edge="top" />
+      <AmbientGlow edge="bottom" />
+      <div className="container-premium relative">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 md:mb-14">
           <div>
             <SectionEyebrow className="mb-3">Personalização</SectionEyebrow>

@@ -10,7 +10,7 @@ import { CustomProductsSection } from "@/components/CustomProductsSection";
 import { FeedbackShowcase } from "@/components/feedback/FeedbackShowcase";
 import { TransformationShowcase } from "@/components/transformation/TransformationShowcase";
 import { SectionEyebrow } from "@/components/SectionEyebrow";
-import { AmbientLightField } from "@/components/AmbientLightField";
+import { AmbientGlow } from "@/components/AmbientGlow";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -36,10 +36,6 @@ export const Route = createFileRoute("/")({
 function Home() {
   return (
     <div className="relative">
-      {/* Luz ambiente única, contínua do Hero ao CTA — ver AmbientLightField
-          para o porquê de substituir os glows por-secção. */}
-      <AmbientLightField />
-
       {/* HERO */}
       <section className="relative min-h-[92vh] flex items-end overflow-hidden">
         <video
@@ -103,6 +99,8 @@ function Home() {
 
       {/* BENEFITS */}
       <section className="relative bg-surface/40 py-20 md:py-24">
+        <AmbientGlow edge="top" />
+        <AmbientGlow edge="bottom" />
         <div className="container-premium relative">
           <div className="text-center mb-12 md:mb-14">
             <SectionEyebrow align="center" className="mb-3">
@@ -148,6 +146,8 @@ function Home() {
 
       {/* CTA */}
       <section className="relative border-t border-border/60">
+        <AmbientGlow edge="top" />
+        <AmbientGlow edge="bottom" />
         <div className="container-premium relative py-20 md:py-24 text-center">
           <div className="relative mx-auto mb-6 flex h-14 w-14 items-center justify-center">
             <span className="absolute inset-0 rounded-full bg-primary/10 blur-xl" />

@@ -11,6 +11,7 @@ import { ArrowRight } from "lucide-react";
 import { BRANDS, type Brand, type BrandModel } from "@/lib/brands";
 import { SectionEyebrow } from "@/components/SectionEyebrow";
 import { CarouselControls } from "@/components/carousel/CarouselControls";
+import { AmbientGlow } from "@/components/AmbientGlow";
 
 /**
  * Produtos em Destaque — carrossel de foco central, ao estilo de um
@@ -400,15 +401,9 @@ export function FeaturedProductsSection() {
     isInView ? { animationDelay: `${delayMs}ms` } : undefined;
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden py-20 md:py-24">
-      {/* atmosfera local — reforça (sem duplicar) o campo de luz ambiente da página */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10"
-        style={{
-          background: "radial-gradient(60% 55% at 50% 45%, oklch(0.6 0.23 32 / 0.05), transparent 72%)",
-        }}
-      />
+    <section ref={sectionRef} className="relative py-20 md:py-24">
+      <AmbientGlow edge="top" />
+      <AmbientGlow edge="bottom" />
 
       <div className="container-premium">
         <div className="flex items-end justify-between mb-12 md:mb-14">

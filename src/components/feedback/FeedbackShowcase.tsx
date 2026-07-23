@@ -9,6 +9,7 @@ import { TESTIMONIALS } from "@/lib/testimonials";
 import { TestimonialCard } from "./TestimonialCard";
 import { CarouselControls } from "@/components/carousel/CarouselControls";
 import { SectionEyebrow } from "@/components/SectionEyebrow";
+import { AmbientGlow } from "@/components/AmbientGlow";
 
 /**
  * Showcase "Comunidade REDLINE" — cartões de testemunho premium.
@@ -110,6 +111,11 @@ export function FeedbackShowcase() {
       id="comunidade"
       className="relative scroll-mt-24 py-20 md:py-24"
     >
+      {/* Comunidade é a secção-âncora do sistema de luz — halo forte, sempre visível,
+          nunca "uma secção preta" entre a Diferença REDLINE e as Marcas. */}
+      <AmbientGlow edge="top" strength="strong" />
+      <AmbientGlow edge="bottom" strength="strong" />
+
       <div
         className={
           isInView

@@ -8,6 +8,7 @@ import { getProjectForBrand, TRANSFORMATION_PROJECTS } from "@/lib/transformatio
 import { CompareSlider } from "./CompareSlider";
 import { BrandProjectNav } from "./BrandProjectNav";
 import { ComingSoonPanel } from "./ComingSoonPanel";
+import { AmbientGlow } from "@/components/AmbientGlow";
 
 /** "Outras Marcas" não é uma marca real — não faz sentido como projeto de transformação. */
 const NAV_BRANDS = BRANDS.filter((b) => b.slug !== "outras-marcas");
@@ -36,14 +37,17 @@ export function TransformationShowcase() {
     <section
       ref={sectionRef}
       id="transformacao"
-      className="relative scroll-mt-24 overflow-hidden border-t border-border/60 bg-surface/40 py-14 md:py-16"
+      className="relative scroll-mt-24 border-t border-border/60 bg-surface/40 py-14 md:py-16"
     >
       <div
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-0 -z-10"
         style={{
           background: "radial-gradient(60% 55% at 50% 0%, oklch(0.58 0.22 25 / 0.07), transparent 70%)",
         }}
       />
+      {/* halo de saída — fecha o hiato que ficava entre a Transformação (secção
+          longa) e Produtos em Destaque; o tratamento existente acima mantém-se intocado. */}
+      <AmbientGlow edge="bottom" />
 
       {isInView && (
         <div aria-hidden="true" className="absolute h-px w-px overflow-hidden opacity-0">
