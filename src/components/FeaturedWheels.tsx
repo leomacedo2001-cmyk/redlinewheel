@@ -5,6 +5,12 @@ import { ArrowRight, Star } from "lucide-react";
 import { getBrandModel, type Brand, type BrandModel } from "@/lib/brands";
 import { SectionEyebrow } from "@/components/SectionEyebrow";
 import { AmbientGlow } from "@/components/AmbientGlow";
+import mercedesAmgRedForgedStudio from "@/assets/mercedes-amg-red-forged-studio-16x9.png";
+import audiRsCarbonStudio from "@/assets/audi-rs-carbon-studio-16x9.png";
+import bmwGBlueForgedStudio from "@/assets/bmw-g-blue-forged-studio-16x9.png";
+import audiGreenCamoStudio from "@/assets/audi-green-camo-studio-16x9.png";
+import audiRsSuedeStudio from "@/assets/audi-rs-suede-studio-16x9.png";
+import vwForgedCarbonStudio from "@/assets/vw-forged-carbon-studio-16x9.png";
 
 /**
  * Produtos em Destaque — showroom curado com um Navegador de Produto: a
@@ -62,6 +68,26 @@ const HERO_ZOOM: Record<string, number> = {
   "volkswagen-forged-carbon-signature": 1.11,
 };
 
+/**
+ * Fotografias de estúdio dedicadas ao hero desta secção — já em 16:9,
+ * compostas para este enquadramento específico, por isso não herdam nem o
+ * zoom de segurança (HERO_ZOOM) nem o grading (brightness/contrast/
+ * saturate) pensados só para as fotos quadradas antigas mal-enquadradas
+ * nesta caixa mais larga. Exclusivas desta secção: propositadamente não
+ * entram em brands.ts, para nunca aparecerem na página de produto, no
+ * catálogo ou em qualquer outro sítio do site. Falta a foto da BMW M
+ * G-Series Black Carbon Signature — essa mantém a fotografia (e o
+ * tratamento) que já tinha.
+ */
+const HERO_IMAGE_OVERRIDE: Record<string, string> = {
+  "mercedes-benz-amg-red-forged-signature": mercedesAmgRedForgedStudio,
+  "audi-rs-carbon-signature": audiRsCarbonStudio,
+  "bmw-g-series-blue-forged": bmwGBlueForgedStudio,
+  "audi-green-camo-signature": audiGreenCamoStudio,
+  "audi-rs-suede-signature": audiRsSuedeStudio,
+  "volkswagen-forged-carbon-signature": vwForgedCarbonStudio,
+};
+
 type ShowcaseItem = { brand: Brand; model: BrandModel };
 
 function formatPrice(model: BrandModel): string | null {
@@ -71,11 +97,21 @@ function formatPrice(model: BrandModel): string | null {
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
+/** Combina o blur animado do crossfade com o grading estático (quando existe) — CSS só tem um `filter`. */
+function blurGrade(blurPx: number, grade: string | undefined): string {
+  return grade ? `blur(${blurPx}px) ${grade}` : `blur(${blurPx}px)`;
+}
+
 function HeroDisplay({ item }: { item: ShowcaseItem }) {
   const { brand, model } = item;
   const price = formatPrice(model);
   const reducedMotion = useReducedMotion();
-  const zoom = HERO_ZOOM[`${brand.slug}-${model.slug}`] ?? 1;
+  const key = `${brand.slug}-${model.slug}`;
+  const studioOverride = HERO_IMAGE_OVERRIDE[key];
+  const heroImg = studioOverride ?? model.img;
+  // A foto de estúdio já vem em 16:9 bem enquadrada — sem corte de segurança nem grading extra.
+  const zoom = studioOverride ? 1 : (HERO_ZOOM[key] ?? 1);
+  const imgFilter = studioOverride ? undefined : "brightness(0.95) contrast(1.16) saturate(1.05)";
 
   return (
     <div className="relative">
@@ -107,24 +143,24 @@ function HeroDisplay({ item }: { item: ShowcaseItem }) {
 
         <AnimatePresence mode="wait">
           <motion.img
-            key={`${brand.slug}-${model.slug}`}
-            src={model.img}
+            key={key}
+            src={heroImg}
             alt={model.name}
             loading="eager"
             decoding="async"
             initial={
               reducedMotion
-                ? { opacity: 0, scale: zoom }
-                : { opacity: 0, scale: zoom * 1.03, filter: "blur(6px)" }
+                ? { opacity: 0, scale: zoom, filter: blurGrade(0, imgFilter) }
+                : { opacity: 0, scale: zoom * 1.03, filter: blurGrade(6, imgFilter) }
             }
-            animate={{ opacity: 1, scale: zoom, filter: "blur(0px)" }}
+            animate={{ opacity: 1, scale: zoom, filter: blurGrade(0, imgFilter) }}
             exit={
               reducedMotion
-                ? { opacity: 0, scale: zoom }
-                : { opacity: 0, scale: zoom * 0.98, filter: "blur(4px)" }
+                ? { opacity: 0, scale: zoom, filter: blurGrade(0, imgFilter) }
+                : { opacity: 0, scale: zoom * 0.98, filter: blurGrade(4, imgFilter) }
             }
             transition={{ duration: reducedMotion ? 0.2 : 0.5, ease: EASE }}
-            className="absolute inset-0 h-full w-full object-contain p-3 [filter:brightness(0.95)_contrast(1.16)_saturate(1.05)] md:p-5"
+            className="absolute inset-0 h-full w-full object-contain p-3 md:p-5"
           />
         </AnimatePresence>
 
