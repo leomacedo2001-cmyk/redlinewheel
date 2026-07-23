@@ -67,7 +67,10 @@ function HeroDisplay({ item }: { item: ShowcaseItem }) {
         }}
       />
 
-      <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-b from-surface via-background to-black md:aspect-[16/10]">
+      {/* sem fundo próprio — a caixa em si tem de ser invisível, para o
+          volante flutuar diretamente no halo/fundo da secção em vez de
+          parecer preso dentro de um retângulo com cor própria */}
+      <div className="relative aspect-[4/3] overflow-hidden bg-transparent md:aspect-[16/10]">
         {/* soft directional studio light + floor falloff — o "estúdio" à volta do produto */}
         <div
           aria-hidden="true"
