@@ -41,6 +41,27 @@ const CURATED_SHOWCASE: { brandSlug: string; modelSlug: string }[] = [
   { brandSlug: "volkswagen", modelSlug: "forged-carbon-signature" },
 ];
 
+/**
+ * Zoom seguro por foto — a única forma de reduzir a margem vazia à volta do
+ * volante sem arriscar cortá-lo: as 7 fotos são todas quadradas (1200x1200)
+ * mostradas numa caixa mais larga que alta, e cada uma tem uma margem de
+ * fundo de estúdio diferente à volta do volante. Valores calculados a partir
+ * de inspeção visual de cada foto (margem mais apertada em qualquer aresta,
+ * top/bottom/left/right), usando sempre menos de metade dessa margem como
+ * "orçamento" de corte — a folga fica para erro de estimativa, nunca para
+ * chegar ao máximo teórico. A foto "Audi Green Camo" é um close-up que já
+ * ocupa a moldura toda (sem margem nenhuma) — fica sem zoom.
+ */
+const HERO_ZOOM: Record<string, number> = {
+  "mercedes-benz-amg-red-forged-signature": 1.05,
+  "audi-rs-carbon-signature": 1.1,
+  "bmw-g-series-blue-forged": 1.07,
+  "audi-green-camo-signature": 1,
+  "bmw-g-series-black-carbon": 1.03,
+  "audi-rs-suede-signature": 1.15,
+  "volkswagen-forged-carbon-signature": 1.11,
+};
+
 type ShowcaseItem = { brand: Brand; model: BrandModel };
 
 function formatPrice(model: BrandModel): string | null {
@@ -54,6 +75,7 @@ function HeroDisplay({ item }: { item: ShowcaseItem }) {
   const { brand, model } = item;
   const price = formatPrice(model);
   const reducedMotion = useReducedMotion();
+  const zoom = HERO_ZOOM[`${brand.slug}-${model.slug}`] ?? 1;
 
   return (
     <div className="relative">
@@ -90,9 +112,17 @@ function HeroDisplay({ item }: { item: ShowcaseItem }) {
             alt={model.name}
             loading="eager"
             decoding="async"
-            initial={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 1.03, filter: "blur(6px)" }}
-            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-            exit={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.98, filter: "blur(4px)" }}
+            initial={
+              reducedMotion
+                ? { opacity: 0, scale: zoom }
+                : { opacity: 0, scale: zoom * 1.03, filter: "blur(6px)" }
+            }
+            animate={{ opacity: 1, scale: zoom, filter: "blur(0px)" }}
+            exit={
+              reducedMotion
+                ? { opacity: 0, scale: zoom }
+                : { opacity: 0, scale: zoom * 0.98, filter: "blur(4px)" }
+            }
             transition={{ duration: reducedMotion ? 0.2 : 0.5, ease: EASE }}
             className="absolute inset-0 h-full w-full object-contain p-3 [filter:brightness(0.95)_contrast(1.16)_saturate(1.05)] md:p-5"
           />
