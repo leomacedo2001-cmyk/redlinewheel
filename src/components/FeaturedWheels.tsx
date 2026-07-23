@@ -94,7 +94,7 @@ function HeroDisplay({ item }: { item: ShowcaseItem }) {
             animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
             exit={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.98, filter: "blur(4px)" }}
             transition={{ duration: reducedMotion ? 0.2 : 0.5, ease: EASE }}
-            className="absolute inset-0 h-full w-full object-contain p-6 [filter:brightness(0.97)_contrast(1.1)_saturate(1.03)] md:p-10"
+            className="absolute inset-0 h-full w-full object-contain p-3 [filter:brightness(0.95)_contrast(1.16)_saturate(1.05)] md:p-5"
           />
         </AnimatePresence>
 
