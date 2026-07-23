@@ -15,63 +15,60 @@ function initials(name: string): string {
     .join("");
 }
 
+/**
+ * O destaque é a transformação, nunca o modelo de carro — por isso o cartão
+ * nunca mostra `carModel`, mesmo quando o dado existe (ver testimonials.ts).
+ */
 export function TestimonialCard({ testimonial }: TestimonialCardProps) {
-  const { name, city, country, rating, review, carModel, image } = testimonial;
+  const { name, city, country, rating, review, image } = testimonial;
 
   return (
-    <article className="group h-full bg-surface border border-border/60 flex flex-col overflow-hidden transition-all duration-500 hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_24px_50px_-20px_rgba(0,0,0,0.55)]">
-      <div className="p-5 flex flex-col gap-3">
-        <div className="flex items-center gap-3">
-          <Avatar className="h-10 w-10 border border-border/60">
-            <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
-              {initials(name)}
-            </AvatarFallback>
-          </Avatar>
-          <div className="min-w-0">
-            <div className="text-sm font-semibold leading-tight truncate">{name}</div>
-            <div className="text-xs text-muted-foreground truncate">
-              {city}, {country}
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-0.5" aria-label={`${rating} de 5 estrelas`}>
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Star
-              key={i}
-              className={`h-3.5 w-3.5 ${i < rating ? "fill-primary text-primary" : "text-border"}`}
-            />
-          ))}
-        </div>
-
-        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-4">{review}</p>
-      </div>
+    <article className="group relative flex h-full flex-col overflow-hidden border border-border/60 bg-surface transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-[0_32px_60px_-24px_rgba(0,0,0,0.65)]">
+      {/* friso técnico — acende-se no hover, mesma linguagem da Transformação */}
+      <span className="absolute inset-x-0 top-0 z-10 h-px origin-left scale-x-0 bg-gradient-to-r from-primary via-primary to-transparent transition-transform duration-500 ease-out group-hover:scale-x-100" />
 
       {/* aspect-[4/5] dá o tamanho de referência; flex-1 deixa crescer para preencher o
-          espaço livre quando o cartão não tem chip de modelo por baixo. */}
-      <div className="flex-1 aspect-[4/5] min-h-[220px] overflow-hidden bg-background">
+          cartão agora que já não há chip de modelo por baixo. */}
+      <div className="relative aspect-[4/5] flex-1 min-h-[240px] overflow-hidden bg-background">
         <img
           src={image}
-          alt={
-            carModel
-              ? `Instalação de volante REDLINE personalizado — ${carModel}`
-              : "Instalação de volante REDLINE personalizado"
-          }
+          alt="Instalação de volante REDLINE personalizado"
           loading="lazy"
           decoding="async"
           width={720}
           height={900}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
         />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/10 to-transparent opacity-90" />
       </div>
 
-      {carModel && (
-        <div className="p-4">
-          <span className="inline-flex items-center text-[10px] uppercase tracking-[0.2em] px-2.5 py-1.5 bg-background border border-border/60 text-muted-foreground">
-            {carModel}
-          </span>
+      <div className="relative flex flex-col gap-3 p-5">
+        <div className="flex items-center gap-3">
+          <Avatar className="h-10 w-10 border border-border/60 ring-1 ring-primary/10">
+            <AvatarFallback className="bg-primary/10 text-xs font-semibold text-primary">
+              {initials(name)}
+            </AvatarFallback>
+          </Avatar>
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-sm font-semibold leading-tight">{name}</div>
+            <div className="truncate text-xs text-muted-foreground">
+              {city}, {country}
+            </div>
+          </div>
+          <div className="flex items-center gap-0.5" aria-label={`${rating} de 5 estrelas`}>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Star
+                key={i}
+                className={`h-3 w-3 ${i < rating ? "fill-primary text-primary" : "text-border"}`}
+              />
+            ))}
+          </div>
         </div>
-      )}
+
+        <p className="border-l border-primary/30 pl-3 text-sm leading-relaxed text-muted-foreground line-clamp-4">
+          {review}
+        </p>
+      </div>
     </article>
   );
 }

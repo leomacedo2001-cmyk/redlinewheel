@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { BRANDS } from "@/lib/brands";
+import { SectionEyebrow } from "@/components/SectionEyebrow";
 
 import bmwIcon from "@/assets/brand-icons/bmw.png";
 import audiIcon from "@/assets/brand-icons/audi.png";
@@ -71,7 +72,7 @@ export function BrandShowcase() {
 
       <div className="container-premium relative">
         <div className={`text-center mb-12 md:mb-14 ${isInView ? "animate-fade-up" : "opacity-0"}`}>
-          <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">Marcas</div>
+          <SectionEyebrow align="center" className="mb-3">Marcas</SectionEyebrow>
           <h2 className="text-4xl md:text-5xl font-bold mb-4">Encontra a Tua Marca.</h2>
           <p className="text-muted-foreground max-w-xl mx-auto">
             Compatibilidade OEM para dezenas de modelos, com o acabamento que só a REDLINE oferece.

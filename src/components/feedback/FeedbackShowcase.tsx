@@ -8,6 +8,7 @@ import {
 import { TESTIMONIALS } from "@/lib/testimonials";
 import { TestimonialCard } from "./TestimonialCard";
 import { CarouselControls } from "@/components/carousel/CarouselControls";
+import { SectionEyebrow } from "@/components/SectionEyebrow";
 
 /**
  * Showcase "Comunidade REDLINE" — cartões de testemunho premium.
@@ -104,17 +105,31 @@ export function FeedbackShowcase() {
   }
 
   return (
-    <section ref={sectionRef} id="comunidade" className="scroll-mt-24 border-t border-border/60 py-20 md:py-24 overflow-hidden">
+    <section
+      ref={sectionRef}
+      id="comunidade"
+      className="relative scroll-mt-24 overflow-hidden py-20 md:py-24"
+    >
+      <div className="divider-fade container-premium" />
+
+      {/* profundidade de fundo — mesma linguagem radial da Transformação, subtil */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: "radial-gradient(50% 45% at 50% 0%, oklch(0.58 0.22 25 / 0.06), transparent 70%)",
+        }}
+      />
+
       <div
         className={
           isInView
-            ? "container-premium mb-12 text-center animate-fade-up md:mb-14"
-            : "container-premium mb-12 text-center opacity-0 md:mb-14"
+            ? "container-premium relative mb-12 text-center animate-fade-up md:mb-14"
+            : "container-premium relative mb-12 text-center opacity-0 md:mb-14"
         }
       >
-        <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">
+        <SectionEyebrow align="center" className="mb-3">
           Comunidade REDLINE
-        </div>
+        </SectionEyebrow>
         <h2 className="text-4xl md:text-5xl font-bold mb-4">Confiança que se vê ao volante.</h2>
         <p className="text-muted-foreground max-w-xl mx-auto">
           Instalações reais, em carros reais. Uma pequena amostra dos volantes que já saíram das
@@ -122,7 +137,7 @@ export function FeedbackShowcase() {
         </p>
       </div>
 
-      <div className="container-premium">
+      <div className="container-premium relative">
         <div
           className="relative grid overflow-hidden"
           onTouchStart={handleTouchStart}
@@ -144,7 +159,14 @@ export function FeedbackShowcase() {
                 }}
                 aria-hidden={!inWindow}
               >
-                <TestimonialCard testimonial={testimonial} />
+                {/* wrapper independente: a revelação anima opacidade/translateY/blur
+                    próprios, sem entrar em conflito com o translateX do carrossel acima. */}
+                <div
+                  className={isInView ? "animate-card-reveal h-full" : "h-full opacity-0"}
+                  style={isInView ? { animationDelay: `${Math.min(i, 6) * 90}ms` } : undefined}
+                >
+                  <TestimonialCard testimonial={testimonial} />
+                </div>
               </div>
             );
           })}

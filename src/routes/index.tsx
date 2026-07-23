@@ -9,6 +9,7 @@ import heroVideo from "@/assets/hero/hero-wheel-reveal.mp4";
 import { CustomProductsSection } from "@/components/CustomProductsSection";
 import { FeedbackShowcase } from "@/components/feedback/FeedbackShowcase";
 import { TransformationShowcase } from "@/components/transformation/TransformationShowcase";
+import { SectionEyebrow } from "@/components/SectionEyebrow";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -95,7 +96,7 @@ function Home() {
       <section className="container-premium py-20 md:py-24">
         <div className="flex items-end justify-between mb-12 md:mb-14">
           <div>
-            <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">Coleção</div>
+            <SectionEyebrow className="mb-3">Coleção</SectionEyebrow>
             <h2 className="text-4xl md:text-5xl font-bold">Produtos em Destaque</h2>
           </div>
           <Link
@@ -111,12 +112,18 @@ function Home() {
       <CustomProductsSection />
 
       {/* BENEFITS */}
-      <section className="bg-surface/40 py-20 md:py-24">
-        <div className="container-premium">
+      <section className="relative overflow-hidden bg-surface/40 py-20 md:py-24">
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background: "radial-gradient(50% 45% at 50% 0%, oklch(0.58 0.22 25 / 0.05), transparent 70%)",
+          }}
+        />
+        <div className="container-premium relative">
           <div className="text-center mb-12 md:mb-14">
-            <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">
+            <SectionEyebrow align="center" className="mb-3">
               A Diferença REDLINE
-            </div>
+            </SectionEyebrow>
             <h2 className="text-4xl md:text-5xl font-bold">Construído para entusiastas.</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-px bg-border">
@@ -137,8 +144,12 @@ function Home() {
                 d: "Envio rápido para toda a Europa. Embalagem premium, instalação opcional.",
               },
             ].map(({ icon: Icon, t, d }) => (
-              <div key={t} className="bg-surface p-10 hover:bg-surface-elevated transition-colors">
-                <Icon className="h-8 w-8 text-primary mb-6" />
+              <div
+                key={t}
+                className="group relative bg-surface p-10 transition-colors duration-500 hover:bg-surface-elevated"
+              >
+                <span className="absolute inset-x-0 top-0 h-px origin-left scale-x-0 bg-gradient-to-r from-primary to-transparent transition-transform duration-500 ease-out group-hover:scale-x-100" />
+                <Icon className="h-8 w-8 text-primary mb-6 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-0.5" />
                 <h3 className="text-xl font-bold mb-3">{t}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{d}</p>
               </div>
@@ -152,9 +163,18 @@ function Home() {
       <BrandShowcase />
 
       {/* CTA */}
-      <section className="border-t border-border/60">
-        <div className="container-premium py-20 md:py-24 text-center">
-          <Star className="h-8 w-8 text-primary mx-auto mb-6" />
+      <section className="relative overflow-hidden border-t border-border/60">
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background: "radial-gradient(45% 60% at 50% 100%, oklch(0.58 0.22 25 / 0.08), transparent 70%)",
+          }}
+        />
+        <div className="container-premium relative py-20 md:py-24 text-center">
+          <div className="relative mx-auto mb-6 flex h-14 w-14 items-center justify-center">
+            <span className="absolute inset-0 rounded-full bg-primary/10 blur-xl" />
+            <Star className="relative h-8 w-8 text-primary" />
+          </div>
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
             Pronto para transformar o teu interior?
           </h2>

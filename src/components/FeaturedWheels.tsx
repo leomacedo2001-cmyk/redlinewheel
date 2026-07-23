@@ -55,9 +55,10 @@ function Card({ brand, model }: FeaturedItem) {
     <Link
       to="/brand/$slug/model/$model"
       params={{ slug: brand.slug, model: model.slug }}
-      className="group bg-surface border border-border/60 hover:border-primary/50 transition-all duration-300 flex flex-col h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      className="group relative bg-surface border border-border/60 hover:border-primary/50 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-[0_28px_55px_-24px_rgba(0,0,0,0.6)] flex flex-col h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
       aria-label={`Ver detalhes de ${model.name}`}
     >
+      <span className="absolute inset-x-0 top-0 z-10 h-px origin-left scale-x-0 bg-gradient-to-r from-primary to-transparent transition-transform duration-500 ease-out group-hover:scale-x-100" />
       <div className="aspect-square overflow-hidden bg-background relative">
         <img
           src={model.img}
@@ -66,7 +67,7 @@ function Card({ brand, model }: FeaturedItem) {
           decoding="async"
           width={1024}
           height={1024}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+          className="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
         />
         <div className="absolute top-3 left-3 bg-background/80 backdrop-blur px-2.5 py-1 text-[10px] uppercase tracking-[0.2em] text-primary border border-primary/40">
           {brand.name}

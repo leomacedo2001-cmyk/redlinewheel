@@ -12,6 +12,7 @@ import oemPlus from "@/assets/custom-oem-plus-catalog.jpg";
 
 import { CATEGORY_PAGES } from "@/lib/categoryPages";
 import { PersonalizationCarousel } from "@/components/carousel/PersonalizationCarousel";
+import { SectionEyebrow } from "@/components/SectionEyebrow";
 
 const CATEGORIES = [
   {
@@ -64,9 +65,7 @@ export function CustomProductsSection() {
       <div className="container-premium">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 md:mb-14">
           <div>
-            <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">
-              Personalização
-            </div>
+            <SectionEyebrow className="mb-3">Personalização</SectionEyebrow>
             <h2 className="text-4xl md:text-5xl font-bold">Configura o teu volante.</h2>
             <p className="text-muted-foreground mt-4 max-w-xl">
               O nosso serviço principal é o volante feito à tua medida. Pede orçamento através do
@@ -76,7 +75,7 @@ export function CustomProductsSection() {
         </div>
 
         {/* Hero — Volantes Personalizados */}
-        <article className="group relative bg-surface border border-primary/40 hover:border-primary transition-all duration-300 mb-10 overflow-hidden">
+        <article className="group relative bg-surface border border-primary/40 hover:border-primary transition-all duration-500 mb-10 overflow-hidden hover:shadow-[0_32px_70px_-28px_rgba(0,0,0,0.6)]">
           <div className="grid md:grid-cols-2">
             <div className="aspect-square md:aspect-auto overflow-hidden bg-background relative">
               <img
