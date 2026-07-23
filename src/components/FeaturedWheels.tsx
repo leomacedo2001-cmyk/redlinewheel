@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { BRANDS, type Brand, type BrandModel } from "@/lib/brands";
@@ -31,9 +31,15 @@ const FEATURED_SLUGS: string[] = [
   "991-carbon-signature",
 ];
 
+/** A peça que ancora a hierarquia visual da vitrine — ver ponto 1 do pedido. */
+const FLAGSHIP_SLUG = "g-series-forged-magenta";
+
 // Velocidade constante e lenta (pixels por segundo). Ajusta este valor para
 // acelerar/abrandar — a duração é sempre recalculada a partir da largura real.
 const MARQUEE_SPEED_PX_PER_SEC = 34;
+
+/** Inclinação máxima do tilt 3D ao seguir o cursor — física, nunca dramática. */
+const MAX_TILT_DEG = 2.5;
 
 type FeaturedItem = { brand: Brand; model: BrandModel };
 
@@ -47,67 +53,163 @@ function collectFeatured(): FeaturedItem[] {
   return FEATURED_SLUGS.map((slug) => map.get(slug)).filter((x): x is FeaturedItem => Boolean(x));
 }
 
-function Card({ brand, model }: FeaturedItem) {
+function usePrefersReducedMotion(): boolean {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
+    const onChange = () => setReduced(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+  return reduced;
+}
+
+type CardProps = FeaturedItem & {
+  flagship: boolean;
+  isInView: boolean;
+  revealDelayMs: number;
+};
+
+function Card({ brand, model, flagship, isInView, revealDelayMs }: CardProps) {
   const price = model.price
     ? `${model.price.currency === "EUR" ? "€" : model.price.currency + " "}${model.price.amount.toFixed(0)}`
     : null;
+
+  const linkRef = useRef<HTMLAnchorElement>(null);
+  const [hovered, setHovered] = useState(false);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const reducedMotion = usePrefersReducedMotion();
+
+  const handlePointerMove = useCallback(
+    (e: ReactPointerEvent<HTMLAnchorElement>) => {
+      if (reducedMotion || e.pointerType !== "mouse") return;
+      const rect = linkRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      const px = (e.clientX - rect.left) / rect.width;
+      const py = (e.clientY - rect.top) / rect.height;
+      setTilt({ x: (0.5 - py) * 2 * MAX_TILT_DEG, y: (px - 0.5) * 2 * MAX_TILT_DEG });
+    },
+    [reducedMotion],
+  );
+
+  const handlePointerEnter = useCallback(
+    (e: ReactPointerEvent<HTMLAnchorElement>) => {
+      if (!reducedMotion && e.pointerType === "mouse") setHovered(true);
+    },
+    [reducedMotion],
+  );
+
+  const handlePointerLeave = useCallback(() => {
+    setHovered(false);
+    setTilt({ x: 0, y: 0 });
+  }, []);
+
+  const transform =
+    hovered && !reducedMotion
+      ? `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateY(-4px)`
+      : undefined;
+
   return (
-    <Link
-      to="/brand/$slug/model/$model"
-      params={{ slug: brand.slug, model: model.slug }}
-      className="group relative bg-surface border border-border/60 hover:border-primary/50 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-[0_28px_55px_-24px_rgba(0,0,0,0.6)] flex flex-col h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-      aria-label={`Ver detalhes de ${model.name}`}
+    <div
+      className={
+        isInView
+          ? "h-full animate-card-reveal motion-reduce:animate-none"
+          : "h-full opacity-0 motion-reduce:opacity-100"
+      }
+      style={isInView ? { animationDelay: `${revealDelayMs}ms` } : undefined}
     >
-      <span className="absolute inset-x-0 top-0 z-10 h-px origin-left scale-x-0 bg-gradient-to-r from-primary to-transparent transition-transform duration-500 ease-out group-hover:scale-x-100" />
-      <div className="aspect-square overflow-hidden bg-background relative">
-        <img
-          src={model.img}
-          alt={model.name}
-          loading="eager"
-          decoding="async"
-          width={1024}
-          height={1024}
-          className="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
-        />
-        <div className="absolute top-3 left-3 bg-background/80 backdrop-blur px-2.5 py-1 text-[10px] uppercase tracking-[0.2em] text-primary border border-primary/40">
-          {brand.name}
-        </div>
-        {model.status && (
-          <div className="absolute top-3 right-3 bg-background/80 backdrop-blur px-2.5 py-1 text-[10px] uppercase tracking-[0.2em] text-foreground/80 border border-border">
-            {model.status}
-          </div>
+      <Link
+        ref={linkRef}
+        to="/brand/$slug/model/$model"
+        params={{ slug: brand.slug, model: model.slug }}
+        onPointerMove={handlePointerMove}
+        onPointerEnter={handlePointerEnter}
+        onPointerLeave={handlePointerLeave}
+        style={{ transform }}
+        aria-label={`Ver detalhes de ${model.name}`}
+        className={`group relative flex h-full flex-col border bg-surface transition-[transform,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform hover:border-primary/60 hover:shadow-[0_32px_60px_-26px_rgba(0,0,0,0.65),0_0_46px_-16px_oklch(0.58_0.22_25/0.4)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary motion-reduce:!transform-none ${
+          flagship ? "border-primary/35" : "border-border/60"
+        }`}
+      >
+        {flagship && (
+          <span className="absolute left-4 top-0 z-20 -translate-y-1/2 bg-primary px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-primary-foreground">
+            Peça de Assinatura
+          </span>
         )}
-      </div>
-      <div className="p-5 flex flex-col flex-1 gap-4">
-        <div className="flex-1">
-          <h3 className="font-bold text-base leading-tight mb-2 group-hover:text-primary transition-colors">
-            {model.name}
-          </h3>
-          <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">
-            {model.description}
-          </p>
-        </div>
-        <div className="flex items-center justify-between pt-1">
-          {price && (
-            <div>
-              <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Desde</div>
-              <div className="text-base font-bold">{price}</div>
+
+        <span className="absolute inset-x-0 top-0 z-10 h-px origin-left scale-x-0 bg-gradient-to-r from-primary to-transparent transition-transform duration-500 ease-out group-hover:scale-x-100" />
+
+        <div className="relative aspect-square overflow-hidden bg-background">
+          <img
+            src={model.img}
+            alt={model.name}
+            loading="eager"
+            decoding="async"
+            width={1024}
+            height={1024}
+            className="h-full w-full object-cover [filter:brightness(0.93)_contrast(1.08)_saturate(1.02)] transition-[transform,filter] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] group-hover:[filter:brightness(0.97)_contrast(1.15)_saturate(1.05)]"
+          />
+
+          {/* vinheta — unifica fundos inconsistentes (verde/cinza/preto) sem tocar nas fotos originais */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background: "radial-gradient(120% 120% at 50% 45%, transparent 45%, oklch(0 0 0 / 0.42) 100%)",
+            }}
+          />
+
+          {/* reflexo de carbono — luz de estúdio a passar pela superfície, quase impercetível */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 -translate-x-[130%] rotate-12 bg-gradient-to-r from-transparent via-white/8 to-transparent transition-transform duration-[1100ms] ease-out group-hover:translate-x-[130%] motion-reduce:hidden"
+          />
+
+          <div className="absolute left-3 top-3 z-10 border border-primary/40 bg-background/80 px-2.5 py-1 text-[10px] uppercase tracking-[0.2em] text-primary backdrop-blur transition-transform duration-300 ease-out group-hover:scale-105">
+            {brand.name}
+          </div>
+          {model.status && (
+            <div className="absolute right-3 top-3 z-10 border border-border bg-background/80 px-2.5 py-1 text-[10px] uppercase tracking-[0.2em] text-foreground/80 backdrop-blur transition-transform duration-300 ease-out group-hover:scale-105">
+              {model.status}
             </div>
           )}
-          <span className="inline-flex items-center text-[11px] uppercase tracking-wider font-medium text-primary group-hover:translate-x-1 transition-transform">
-            Ver Produto <ArrowRight className="ml-2 h-3.5 w-3.5" />
-          </span>
         </div>
-      </div>
-    </Link>
+
+        <div className="relative flex flex-1 flex-col gap-4 p-5 transition-transform duration-300 ease-out group-hover:-translate-y-0.5">
+          <div className="flex-1">
+            <h3 className="mb-2 text-base font-bold leading-tight transition-colors group-hover:text-primary">
+              {model.name}
+            </h3>
+            <p className="text-xs leading-relaxed text-muted-foreground line-clamp-3">{model.description}</p>
+          </div>
+          <div className="flex items-end justify-between pt-1">
+            {price && (
+              <div>
+                <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Desde</div>
+                <div className="text-xl font-bold tracking-tight">{price}</div>
+              </div>
+            )}
+            <span className="inline-flex flex-col items-start text-[11px] font-medium uppercase tracking-wider text-primary">
+              <span className="inline-flex items-center transition-transform duration-300 ease-out group-hover:translate-x-1">
+                Ver Produto <ArrowRight className="ml-2 h-3.5 w-3.5" />
+              </span>
+              <span className="mt-0.5 h-px w-0 bg-primary transition-all duration-300 ease-out group-hover:w-full" />
+            </span>
+          </div>
+        </div>
+      </Link>
+    </div>
   );
 }
 
 export function FeaturedWheels() {
   const items = useMemo(collectFeatured, []);
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const seamRef = useRef<HTMLDivElement>(null); // marca o início do conjunto duplicado
   const [distance, setDistance] = useState<number | null>(null);
+  const [isInView, setIsInView] = useState(false);
 
   useEffect(() => {
     const track = trackRef.current;
@@ -128,6 +230,23 @@ export function FeaturedWheels() {
     return () => ro.disconnect();
   }, [items.length]);
 
+  // Entrada em cascata — dispara uma única vez quando a vitrine entra em vista.
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   if (items.length === 0) {
     return (
       <div className="text-center py-20 border border-border/60 bg-surface/30">
@@ -143,6 +262,7 @@ export function FeaturedWheels() {
 
   return (
     <div
+      ref={wrapperRef}
       className="relative overflow-hidden group/marquee"
       style={{
         maskImage: "linear-gradient(to right, transparent, black 4%, black 96%, transparent)",
@@ -154,7 +274,7 @@ export function FeaturedWheels() {
         ref={trackRef}
         className={
           distance
-            ? "flex gap-6 w-max animate-marquee-x group-hover/marquee:[animation-play-state:paused] opacity-100 transition-opacity duration-500"
+            ? "flex gap-6 w-max animate-marquee-x group-hover/marquee:[animation-play-state:paused] motion-reduce:[animation-play-state:paused] opacity-100 transition-opacity duration-500"
             : "flex gap-6 w-max opacity-0"
         }
         style={
@@ -172,11 +292,16 @@ export function FeaturedWheels() {
             ref={i === items.length ? seamRef : undefined}
             className="shrink-0 basis-[280px] sm:basis-[320px] lg:basis-[340px]"
           >
-            <Card brand={brand} model={model} />
+            <Card
+              brand={brand}
+              model={model}
+              flagship={model.slug === FLAGSHIP_SLUG}
+              isInView={isInView}
+              revealDelayMs={Math.min(i % items.length, 7) * 70}
+            />
           </div>
         ))}
       </div>
     </div>
   );
 }
-
