@@ -3,25 +3,9 @@ import { Link } from "@tanstack/react-router";
 export function SiteFooter() {
   return (
     <footer className="relative overflow-hidden border-t border-border/60 bg-surface mt-24">
-      {/* O footer é o fim da experiência — o halo tem de se apagar por
-          completo DENTRO dele, nunca escapar por baixo. Por isso não reutiliza
-          o <AmbientGlow> partilhado (esse é feito para "meio a sobrepor-se à
-          secção seguinte": largura = altura, pensado para as secções da home
-          que TÊM uma seguinte). Aqui: altura fixa e pequena, ancorada ao
-          topo, com o próprio gradiente já a chegar a 0% de opacidade bem
-          antes do fim dessa altura — e overflow-hidden no footer como rede
-          de segurança, para nunca ser fisicamente possível pintar fora dele,
-          seja qual for a largura do ecrã. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-64"
-        style={{
-          background: [
-            "radial-gradient(60% 100% at 50% 0%, oklch(0.65 0.23 32 / 0.08) 0%, oklch(0.6 0.2 28 / 0.05) 30%, transparent 60%)",
-            "radial-gradient(42% 100% at 50% 0%, oklch(0.45 0.14 20 / 0.035) 0%, transparent 50%)",
-          ].join(", "),
-        }}
-      />
+      {/* O website termina aqui — sem luz própria. A pequena transição vem só
+          do halo inferior da última secção (CTA), já dentro dela mesma; o
+          footer em si é preto sólido, sem gradientes nem pseudo-elementos. */}
       <div className="container-premium relative py-16 grid gap-12 md:grid-cols-4">
         <div>
           <div className="text-2xl font-bold">

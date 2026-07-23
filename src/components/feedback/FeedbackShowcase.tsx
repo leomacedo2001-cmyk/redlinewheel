@@ -109,7 +109,7 @@ export function FeedbackShowcase() {
     <section
       ref={sectionRef}
       id="comunidade"
-      className="relative scroll-mt-24 py-20 md:py-24"
+      className="relative isolate overflow-hidden scroll-mt-24 py-20 md:py-24"
     >
       {/* Comunidade é a secção-âncora do sistema de luz — halo forte, sempre visível,
           nunca "uma secção preta" entre a Diferença REDLINE e as Marcas. */}

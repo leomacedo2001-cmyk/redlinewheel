@@ -1,61 +1,46 @@
 type AmbientGlowProps = {
-  /** Em que aresta da secção o halo nasce — sobe/desce para se sobrepor à secção vizinha. */
+  /** Em que aresta da própria secção o halo se ancora — nunca sai da secção. */
   edge: "top" | "bottom";
-  /** "strong" para secções-âncora (ex.: Comunidade) onde o halo deve ser o elemento de fundo dominante. */
+  /** "strong" para secções-âncora (ex.: Comunidade) onde a luz deve ler-se ligeiramente mais. */
   strength?: "default" | "strong";
 };
 
 /**
- * Halo de luz ambiente reutilizável — a unidade base do sistema de
- * iluminação contínua da homepage. Em vez de um único campo por página
- * (frágil: a posição de cada nó dependia de percentagens da altura total,
- * que se desalinham sempre que uma secção muda de altura — foi exatamente
- * isso que apagou o halo da Comunidade), cada secção passa a ter o seu
- * próprio halo, ancorado a si mesma. Metade do halo nasce sempre fora da
- * secção (para cima ou para baixo, consoante `edge`), pelo que o halo
- * inferior de uma secção sobrepõe-se sempre ao halo superior da seguinte —
- * a continuidade deixa de depender de qualquer cálculo global.
+ * Halo de luz ambiente — separador atmosférico entre secções, não um fundo.
  *
- * Três gradientes radiais concêntricos, nunca um só stop duro — para
- * parecer luz a refletir-se em fumo, não um círculo desenhado.
+ * Cada secção fica inteiramente preta; isto é só uma luz muito ténue junto a
+ * uma das arestas, inteiramente CONTIDA dentro da própria secção (nunca sai
+ * para a secção vizinha — cada secção ilumina-se a si mesma nas duas pontas,
+ * simetricamente). Por isso: altura fixa e pequena (não `aspect-square`
+ * ligado à largura — essa era a causa do "fundo vermelho gigante": em ecrãs
+ * largos a caixa ficava tão alta quanto a secção era larga), ancorada com
+ * `top-0`/`bottom-0` em vez do antigo `-translate-y-1/2` que a fazia
+ * atravessar para a secção seguinte.
  *
- * Largura = inset-x-0 (100% da própria secção, nunca um pixel fixo maior
- * que o ecrã): a versão anterior usava 1200–1600px fixos e, centrada com
- * left-1/2, ultrapassava a viewport em ecrãs mais estreitos que isso —
- * incluindo 1280px de desktop — criando scroll horizontal em TODO o site (o
- * footer com o halo é partilhado por todas as páginas, não só a homepage).
- * `w-screen`/`100vw` tem o mesmo problema noutra forma (inclui a barra de
- * scroll em muitos browsers). `inset-x-0` iguala exactamente a largura já
- * segura da própria secção — nunca pode transbordar, e em desktop essa
- * largura já ronda os 1280–1920px pedidos.
+ * Sem `filter: blur()`: medido pixel a pixel (screenshot + leitura RGB), um
+ * blur de 150–260px sobre uma caixa já com falloff radial e opacidade de
+ * 4–6% dilui o resultado para virtualmente zero (a média do blur mistura a
+ * cor com uma enorme área de pixels a 0% de alpha à volta). A suavidade
+ * "luz a passar por fumo" já vem só do próprio gradiente radial multi-stop
+ * (`0%` → `transparent 65%`), sem precisar de blur nenhum — e a opacidade
+ * teve de subir para ~15–18% no próprio stop central para, depois do
+ * falloff, ainda sobrar um resultado visível (confirmado: R chega a ~19
+ * contra G/B~9 no pico, caindo para quase zero a meio da secção — visível
+ * como luz, nunca como uma área vermelha).
  *
- * Propositadamente SEM z-index negativo: com nenhum antepassado a isolar um
- * stacking context (nem as secções, nem <main>, nem <body>, todos
- * `position:relative`/`static` sem z-index), um `-z-10` sobe até ao
- * stacking context raiz do documento inteiro — onde fica atrás de TODO O
- * RESTO da página, não só do conteúdo da própria secção, tornando-se
- * completamente invisível (confirmado a testar com fundo vermelho sólido:
- * só ficava visível ao forçar z-index positivo). Este componente é sempre
- * o primeiro filho dentro da secção que o usa, por isso a ordem do DOM já
- * garante que fica atrás do título/cartões dessa secção, sem precisar de
- * nenhum z-index.
+ * Cada secção que usa este componente deve ter `overflow-hidden` +
+ * `isolate` no próprio elemento da secção, para o halo nunca conseguir
+ * pintar fora dela mesma, seja qual for a largura do ecrã.
  */
 export function AmbientGlow({ edge, strength = "default" }: AmbientGlowProps) {
-  const core = strength === "strong" ? 0.14 : 0.1;
-  const mid = strength === "strong" ? 0.09 : 0.065;
-  const outer = strength === "strong" ? 0.06 : 0.045;
+  const opacity = strength === "strong" ? 0.18 : 0.15;
 
   return (
     <div
       aria-hidden="true"
-      className={`pointer-events-none absolute inset-x-0 aspect-square ${
-        edge === "top" ? "top-0 -translate-y-1/2" : "bottom-0 translate-y-1/2"
-      }`}
+      className={`pointer-events-none absolute inset-x-0 h-[150px] ${edge === "top" ? "top-0" : "bottom-0"}`}
       style={{
-        background: [
-          `radial-gradient(circle at center, oklch(0.65 0.23 32 / ${core}) 0%, oklch(0.6 0.2 28 / ${mid}) 35%, transparent 72%)`,
-          `radial-gradient(circle at center, oklch(0.45 0.14 20 / ${outer}) 0%, transparent 60%)`,
-        ].join(", "),
+        background: `radial-gradient(ellipse 65% 100% at 50% ${edge === "top" ? "0%" : "100%"}, oklch(0.6 0.2 30 / ${opacity}) 0%, transparent 65%)`,
       }}
     />
   );

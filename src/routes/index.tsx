@@ -37,7 +37,7 @@ function Home() {
   return (
     <div className="relative">
       {/* HERO */}
-      <section className="relative min-h-[92vh] flex items-end overflow-hidden">
+      <section className="relative isolate min-h-[92vh] flex items-end overflow-hidden">
         <video
           autoPlay
           muted
@@ -98,7 +98,7 @@ function Home() {
       <CustomProductsSection />
 
       {/* BENEFITS */}
-      <section className="relative bg-surface/40 py-20 md:py-24">
+      <section className="relative isolate overflow-hidden bg-surface/40 py-20 md:py-24">
         <AmbientGlow edge="top" />
         <AmbientGlow edge="bottom" />
         <div className="container-premium relative">
@@ -145,7 +145,7 @@ function Home() {
       <BrandShowcase />
 
       {/* CTA */}
-      <section className="relative border-t border-border/60">
+      <section className="relative isolate overflow-hidden border-t border-border/60">
         <AmbientGlow edge="top" />
         <AmbientGlow edge="bottom" />
         <div className="container-premium relative py-20 md:py-24 text-center">

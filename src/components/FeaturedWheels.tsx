@@ -57,13 +57,13 @@ function HeroDisplay({ item }: { item: ShowcaseItem }) {
 
   return (
     <div className="relative">
-      {/* glow ambiente atrás do hero — o objeto "flutua" iluminado, nunca preso numa caixa */}
+      {/* glow ambiente atrás do hero — muito ténue, só para o objeto não parecer preso numa caixa */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -inset-10 -z-10 opacity-60 blur-3xl md:-inset-16"
+        className="pointer-events-none absolute -inset-6 -z-10 blur-3xl md:-inset-10"
         style={{
           background:
-            "radial-gradient(closest-side, oklch(0.58 0.22 25 / 0.32), transparent 72%)",
+            "radial-gradient(closest-side, oklch(0.58 0.22 25 / 0.045), transparent 72%)",
         }}
       />
 
@@ -74,8 +74,8 @@ function HeroDisplay({ item }: { item: ShowcaseItem }) {
           className="pointer-events-none absolute inset-0"
           style={{
             background: [
-              "radial-gradient(60% 55% at 50% 30%, oklch(1 0 0 / 0.05), transparent 70%)",
-              "radial-gradient(70% 45% at 50% 100%, oklch(0.58 0.22 25 / 0.12), transparent 75%)",
+              "radial-gradient(60% 55% at 50% 30%, oklch(1 0 0 / 0.04), transparent 70%)",
+              "radial-gradient(70% 45% at 50% 100%, oklch(0.58 0.22 25 / 0.05), transparent 75%)",
             ].join(", "),
           }}
         />
@@ -236,7 +236,7 @@ export function FeaturedProductsSection() {
   const active = items[activeIndex];
 
   return (
-    <section className="relative overflow-x-hidden py-20 md:py-24">
+    <section className="relative isolate overflow-hidden py-20 md:py-24">
       <AmbientGlow edge="top" />
       <AmbientGlow edge="bottom" />
 

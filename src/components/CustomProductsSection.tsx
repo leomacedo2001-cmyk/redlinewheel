@@ -62,7 +62,7 @@ const CATEGORIES = [
 
 export function CustomProductsSection() {
   return (
-    <section id="produtos-personalizados" className="relative bg-surface/40 border-y border-border/60 py-20 md:py-24">
+    <section id="produtos-personalizados" className="relative isolate overflow-hidden bg-surface/40 border-y border-border/60 py-20 md:py-24">
       <AmbientGlow edge="top" />
       <AmbientGlow edge="bottom" />
       <div className="container-premium relative">

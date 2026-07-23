@@ -37,16 +37,9 @@ export function TransformationShowcase() {
     <section
       ref={sectionRef}
       id="transformacao"
-      className="relative scroll-mt-24 border-t border-border/60 bg-surface/40 py-14 md:py-16"
+      className="relative isolate overflow-hidden scroll-mt-24 border-t border-border/60 bg-surface/40 py-14 md:py-16"
     >
-      <div
-        className="pointer-events-none absolute inset-0 -z-10"
-        style={{
-          background: "radial-gradient(60% 55% at 50% 0%, oklch(0.58 0.22 25 / 0.07), transparent 70%)",
-        }}
-      />
-      {/* halo de saída — fecha o hiato que ficava entre a Transformação (secção
-          longa) e Produtos em Destaque; o tratamento existente acima mantém-se intocado. */}
+      <AmbientGlow edge="top" />
       <AmbientGlow edge="bottom" />
 
       {isInView && (

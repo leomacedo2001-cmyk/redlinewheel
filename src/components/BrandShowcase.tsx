@@ -54,7 +54,7 @@ export function BrandShowcase() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative border-y border-border/60 bg-surface/40 py-20 md:py-24">
+    <section ref={sectionRef} className="relative isolate overflow-hidden border-y border-border/60 bg-surface/40 py-20 md:py-24">
       <AmbientGlow edge="top" />
       <AmbientGlow edge="bottom" />
       <div
