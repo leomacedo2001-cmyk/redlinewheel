@@ -157,3 +157,12 @@
 @utility animate-card-reveal {
   animation: card-reveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+
+/* Esconde a scrollbar do carril de "Produtos em Destaque" (o snap nativo +
+   arrastar já comunicam que é deslizável, sem precisar da barra visível). */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, Wrench, Truck, Star } from "lucide-react";
-import { FeaturedWheels } from "@/components/FeaturedWheels";
+import { FeaturedProductsSection } from "@/components/FeaturedWheels";
 import { BrandShowcase } from "@/components/BrandShowcase";
 
 import heroImg from "@/assets/hero-steering.jpg";
@@ -97,22 +97,7 @@ function Home() {
 
       <TransformationShowcase />
 
-      {/* FEATURED PRODUCTS */}
-      <section className="container-premium py-20 md:py-24">
-        <div className="flex items-end justify-between mb-12 md:mb-14">
-          <div>
-            <SectionEyebrow className="mb-3">Coleção</SectionEyebrow>
-            <h2 className="text-4xl md:text-5xl font-bold">Produtos em Destaque</h2>
-          </div>
-          <Link
-            to="/products"
-            className="hidden md:inline-flex items-center text-sm font-medium hover:text-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
-          >
-            Ver todos <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
-        </div>
-        <FeaturedWheels />
-      </section>
+      <FeaturedProductsSection />
 
       <CustomProductsSection />
 

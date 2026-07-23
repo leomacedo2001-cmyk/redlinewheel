@@ -1,19 +1,30 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { BRANDS, type Brand, type BrandModel } from "@/lib/brands";
+import { SectionEyebrow } from "@/components/SectionEyebrow";
+import { CarouselControls } from "@/components/carousel/CarouselControls";
 
 /**
- * Produtos em Destaque — vitrine em movimento contínuo, estilo "marquee" premium.
+ * Produtos em Destaque — carrossel de foco central, ao estilo de um
+ * configurador automóvel premium (Apple/Porsche): o cartão perfeitamente
+ * centrado é sempre o "hero" (maior, nítido, com glow) e os cartões
+ * laterais recuam progressivamente em escala/nitidez/brilho consoante a
+ * distância ao centro — nunca desaparecem, só perdem importância.
  *
- * Nota técnica sobre o loop infinito:
- * A lista de itens é duplicada (para dar a sensação de infinito) e o track desloca-se
- * em translateX. Em vez de usar "-50%" (que, com gaps entre cartões, NÃO corresponde
- * exatamente à largura de um conjunto de itens — a diferença é a causa mais comum de
- * "saltos" visíveis em marquees), medimos com ResizeObserver a distância real em pixels
- * entre o início do 1º cartão e o início do cartão duplicado equivalente. Isso garante
- * uma junção matematicamente exata, invisível, independentemente do nº de itens, do
- * gap ou do breakpoint responsivo.
+ * Mecânica: scroll horizontal nativo com `scroll-snap` (dá de graça o
+ * "assenta sempre num cartão, nunca a meio" e o momentum/easing do
+ * dispositivo) + arrastar com o rato (que não tem scroll nativo por
+ * arrasto) + um loop de rAF, ligado ao evento de scroll, que lê a posição
+ * de cada cartão e escreve escala/opacidade/blur/sombra directamente no
+ * DOM — nunca via `setState`, para não re-renderizar React a cada frame.
  */
 
 const FEATURED_SLUGS: string[] = [
@@ -31,15 +42,13 @@ const FEATURED_SLUGS: string[] = [
   "991-carbon-signature",
 ];
 
-/** A peça que ancora a hierarquia visual da vitrine — ver ponto 1 do pedido. */
+/** A peça que ancora a hierarquia visual da vitrine quando ainda ninguém tocou no carrossel. */
 const FLAGSHIP_SLUG = "g-series-forged-magenta";
-
-// Velocidade constante e lenta (pixels por segundo). Ajusta este valor para
-// acelerar/abrandar — a duração é sempre recalculada a partir da largura real.
-const MARQUEE_SPEED_PX_PER_SEC = 34;
 
 /** Inclinação máxima do tilt 3D ao seguir o cursor — física, nunca dramática. */
 const MAX_TILT_DEG = 2.5;
+
+const GAP_PX = 24; // gap-6
 
 type FeaturedItem = { brand: Brand; model: BrandModel };
 
@@ -65,13 +74,17 @@ function usePrefersReducedMotion(): boolean {
   return reduced;
 }
 
+const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
 type CardProps = FeaturedItem & {
   flagship: boolean;
   isInView: boolean;
   revealDelayMs: number;
+  cardRef: (el: HTMLDivElement | null) => void;
 };
 
-function Card({ brand, model, flagship, isInView, revealDelayMs }: CardProps) {
+function Card({ brand, model, flagship, isInView, revealDelayMs, cardRef }: CardProps) {
   const price = model.price
     ? `${model.price.currency === "EUR" ? "€" : model.price.currency + " "}${model.price.amount.toFixed(0)}`
     : null;
@@ -105,18 +118,18 @@ function Card({ brand, model, flagship, isInView, revealDelayMs }: CardProps) {
     setTilt({ x: 0, y: 0 });
   }, []);
 
-  const transform =
+  const innerTransform =
     hovered && !reducedMotion
       ? `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateY(-4px)`
       : undefined;
 
   return (
     <div
-      className={
-        isInView
-          ? "h-full animate-card-reveal motion-reduce:animate-none"
-          : "h-full opacity-0 motion-reduce:opacity-100"
-      }
+      ref={cardRef}
+      data-hero="false"
+      className={`group/hero shrink-0 basis-[280px] snap-center sm:basis-[320px] lg:basis-[340px] ${
+        isInView ? "animate-card-reveal motion-reduce:animate-none" : "opacity-0 motion-reduce:opacity-100"
+      }`}
       style={isInView ? { animationDelay: `${revealDelayMs}ms` } : undefined}
     >
       <Link
@@ -126,9 +139,9 @@ function Card({ brand, model, flagship, isInView, revealDelayMs }: CardProps) {
         onPointerMove={handlePointerMove}
         onPointerEnter={handlePointerEnter}
         onPointerLeave={handlePointerLeave}
-        style={{ transform }}
+        style={{ transform: innerTransform }}
         aria-label={`Ver detalhes de ${model.name}`}
-        className={`group relative flex h-full flex-col border bg-surface transition-[transform,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform hover:border-primary/60 hover:shadow-[0_32px_60px_-26px_rgba(0,0,0,0.65),0_0_46px_-16px_oklch(0.58_0.22_25/0.4)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary motion-reduce:!transform-none ${
+        className={`group relative flex h-full flex-col border bg-surface transition-[transform,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-primary/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary motion-reduce:!transform-none ${
           flagship ? "border-primary/35" : "border-border/60"
         }`}
       >
@@ -160,13 +173,14 @@ function Card({ brand, model, flagship, isInView, revealDelayMs }: CardProps) {
             }}
           />
 
-          {/* reflexo de carbono — luz de estúdio a passar pela superfície, quase impercetível */}
+          {/* reflexo de carbono — luz de estúdio a passar pela superfície; dispara no hover
+              REAL do rato E sempre que o cartão chega ao centro (ver data-hero no rAF). */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 -translate-x-[130%] rotate-12 bg-gradient-to-r from-transparent via-white/8 to-transparent transition-transform duration-[1100ms] ease-out group-hover:translate-x-[130%] motion-reduce:hidden"
+            className="pointer-events-none absolute inset-0 -translate-x-[130%] rotate-12 bg-gradient-to-r from-transparent via-white/8 to-transparent transition-transform duration-[1100ms] ease-out group-hover:translate-x-[130%] group-data-[hero=true]/hero:translate-x-[130%] motion-reduce:hidden"
           />
 
-          <div className="absolute left-3 top-3 z-10 border border-primary/40 bg-background/80 px-2.5 py-1 text-[10px] uppercase tracking-[0.2em] text-primary backdrop-blur transition-transform duration-300 ease-out group-hover:scale-105">
+          <div className="absolute left-3 top-3 z-10 border border-primary/40 bg-background/80 px-2.5 py-1 text-[10px] uppercase tracking-[0.2em] text-primary backdrop-blur transition-[transform,border-color] duration-300 ease-out group-hover:scale-105 group-data-[hero=true]/hero:border-primary/80">
             {brand.name}
           </div>
           {model.status && (
@@ -203,36 +217,99 @@ function Card({ brand, model, flagship, isInView, revealDelayMs }: CardProps) {
   );
 }
 
-export function FeaturedWheels() {
+export function FeaturedProductsSection() {
   const items = useMemo(collectFeatured, []);
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const seamRef = useRef<HTMLDivElement>(null); // marca o início do conjunto duplicado
-  const [distance, setDistance] = useState<number | null>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const cardEls = useRef<(HTMLDivElement | null)[]>([]);
+  const rafId = useRef<number | null>(null);
+  const settleTimer = useRef<number | null>(null);
+  const nearestIndex = useRef(0);
   const [isInView, setIsInView] = useState(false);
+  const [atStart, setAtStart] = useState(true);
+  const [atEnd, setAtEnd] = useState(false);
+  const reducedMotion = usePrefersReducedMotion();
 
-  useEffect(() => {
-    const track = trackRef.current;
-    const seam = seamRef.current;
-    if (!track || !seam) return;
+  const dragging = useRef(false);
+  const dragStartX = useRef(0);
+  const dragStartScroll = useRef(0);
 
-    function measure() {
-      if (!track || !seam) return;
-      const trackLeft = track.getBoundingClientRect().left;
-      const seamLeft = seam.getBoundingClientRect().left;
-      const measured = seamLeft - trackLeft;
-      if (measured > 0) setDistance(measured);
+  const applyCoverflowStyles = useCallback(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    const scrollerRect = scroller.getBoundingClientRect();
+    const centerX = scrollerRect.left + scrollerRect.width / 2;
+
+    let minDist = Infinity;
+    let minIndex = 0;
+
+    cardEls.current.forEach((el, i) => {
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const cardCenter = rect.left + rect.width / 2;
+      const dist = Math.abs(cardCenter - centerX);
+      if (dist < minDist) {
+        minDist = dist;
+        minIndex = i;
+      }
+      const t = dist / (rect.width + GAP_PX); // 0 = centrado, 1 = ~um cartão de distância
+
+      const scale = lerp(1.12, 0.95, clamp(t / 1.4, 0, 1));
+      const opacityT = clamp(t / 2, 0, 1);
+      const opacity = lerp(1, 0.55, opacityT);
+      const blur = lerp(0, 2.2, clamp((t - 0.35) / 1.2, 0, 1));
+      const brightness = lerp(1, 0.78, opacityT);
+      const glow = clamp(1 - t / 0.55, 0, 1);
+      const zIndex = Math.round(50 - t * 10);
+      const isHero = t < 0.12;
+
+      el.style.transform = reducedMotion ? "" : `scale(${scale})`;
+      el.style.opacity = String(opacity);
+      el.style.filter = reducedMotion ? "" : `blur(${blur}px) brightness(${brightness})`;
+      el.style.zIndex = String(zIndex);
+      el.style.boxShadow =
+        glow > 0.05
+          ? `0 ${18 + glow * 26}px ${40 + glow * 40}px -20px rgba(0,0,0,${0.45 + glow * 0.2}), 0 0 ${
+              glow * 60
+            }px 0 oklch(0.6 0.23 32 / ${glow * 0.3})`
+          : "none";
+      el.dataset.hero = isHero ? "true" : "false";
+    });
+
+    nearestIndex.current = minIndex;
+  }, [reducedMotion]);
+
+  const scheduleUpdate = useCallback(() => {
+    if (rafId.current !== null) return;
+    rafId.current = requestAnimationFrame(() => {
+      rafId.current = null;
+      applyCoverflowStyles();
+    });
+  }, [applyCoverflowStyles]);
+
+  const handleScroll = useCallback(() => {
+    scheduleUpdate();
+    const scroller = scrollerRef.current;
+    if (scroller) {
+      setAtStart(scroller.scrollLeft < 8);
+      setAtEnd(scroller.scrollLeft > scroller.scrollWidth - scroller.clientWidth - 8);
     }
+    if (settleTimer.current !== null) window.clearTimeout(settleTimer.current);
+    settleTimer.current = window.setTimeout(() => {
+      const target = cardEls.current[nearestIndex.current];
+      target?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    }, 120);
+  }, [scheduleUpdate]);
 
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(track);
-    return () => ro.disconnect();
-  }, [items.length]);
-
-  // Entrada em cascata — dispara uma única vez quando a vitrine entra em vista.
   useEffect(() => {
-    const el = wrapperRef.current;
+    applyCoverflowStyles();
+    const onResize = () => applyCoverflowStyles();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [applyCoverflowStyles, items.length]);
+
+  useEffect(() => {
+    const el = sectionRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -247,61 +324,149 @@ export function FeaturedWheels() {
     return () => observer.disconnect();
   }, []);
 
+  const goTo = useCallback((index: number) => {
+    const clamped = clamp(index, 0, cardEls.current.length - 1);
+    cardEls.current[clamped]?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+  }, []);
+
+  const goPrev = useCallback(() => goTo(nearestIndex.current - 1), [goTo]);
+  const goNext = useCallback(() => goTo(nearestIndex.current + 1), [goTo]);
+
+  // Arrastar com o rato usa listeners nativos em `window` (não os props
+  // onPointerMove/onPointerUp do React) de propósito: com setPointerCapture
+  // ativo, o evento passa a ser entregue via o alvo capturado e o sistema
+  // de eventos sintéticos do React deixa, na prática, de o reencaminhar de
+  // forma fiável — o evento nativo chega, o synthetic não. Ouvir em
+  // `window` evita por completo essa reencaminhação e funciona sempre.
+  //
+  // `scroll-behavior: smooth` (necessário para o scrollIntoView do
+  // assentamento/setas) tem de ser desligado enquanto se arrasta: cada
+  // escrita de scrollLeft durante o arrasto ficava a competir com a
+  // animação suave da escrita anterior, e a posição nunca acompanhava o
+  // cursor. Volta a "smooth" só depois de soltar, para o assentamento final
+  // continuar suave.
+  const onPointerDown = useCallback((e: ReactPointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== "mouse") return; // toque/trackpad já têm scroll nativo
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    dragging.current = true;
+    dragStartX.current = e.clientX;
+    dragStartScroll.current = scroller.scrollLeft;
+    scroller.style.scrollSnapType = "none";
+    scroller.style.scrollBehavior = "auto";
+    scroller.style.cursor = "grabbing";
+
+    function onMove(ev: PointerEvent) {
+      if (!dragging.current || !scroller) return;
+      scroller.scrollLeft = dragStartScroll.current - (ev.clientX - dragStartX.current);
+      scheduleUpdate();
+    }
+
+    function onUp() {
+      if (!dragging.current) return;
+      dragging.current = false;
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+      if (!scroller) return;
+      scroller.style.cursor = "";
+      scroller.style.scrollSnapType = "";
+      scroller.style.scrollBehavior = "";
+      cardEls.current[nearestIndex.current]?.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
+    }
+
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
+  }, [scheduleUpdate]);
+
   if (items.length === 0) {
     return (
-      <div className="text-center py-20 border border-border/60 bg-surface/30">
-        <p className="text-muted-foreground">Sem produtos em destaque disponíveis.</p>
-      </div>
+      <section className="container-premium py-20 md:py-24">
+        <div className="text-center py-20 border border-border/60 bg-surface/30">
+          <p className="text-muted-foreground">Sem produtos em destaque disponíveis.</p>
+        </div>
+      </section>
     );
   }
 
-  // Duplicar a lista para permitir loop contínuo; a distância exata de translação
-  // é medida em runtime (ver useEffect acima), não assumida a partir do nº de itens.
-  const loop = [...items, ...items];
-  const durationSec = distance ? distance / MARQUEE_SPEED_PX_PER_SEC : undefined;
+  const revealClass = (delayMs: number) =>
+    isInView ? "animate-fade-up" : "opacity-0 motion-reduce:opacity-100";
+  const revealStyle = (delayMs: number) =>
+    isInView ? { animationDelay: `${delayMs}ms` } : undefined;
 
   return (
-    <div
-      ref={wrapperRef}
-      className="relative overflow-hidden group/marquee"
-      style={{
-        maskImage: "linear-gradient(to right, transparent, black 4%, black 96%, transparent)",
-        WebkitMaskImage: "linear-gradient(to right, transparent, black 4%, black 96%, transparent)",
-      }}
-      aria-label="Produtos em destaque"
-    >
+    <section ref={sectionRef} className="relative overflow-hidden py-20 md:py-24">
+      {/* atmosfera local — reforça (sem duplicar) o campo de luz ambiente da página */}
       <div
-        ref={trackRef}
-        className={
-          distance
-            ? "flex gap-6 w-max animate-marquee-x group-hover/marquee:[animation-play-state:paused] motion-reduce:[animation-play-state:paused] opacity-100 transition-opacity duration-500"
-            : "flex gap-6 w-max opacity-0"
-        }
-        style={
-          distance
-            ? ({
-                "--marquee-distance": `${distance}px`,
-                animationDuration: `${durationSec}s`,
-              } as React.CSSProperties)
-            : undefined
-        }
-      >
-        {loop.map(({ brand, model }, i) => (
-          <div
-            key={`${brand.slug}-${model.slug}-${i}`}
-            ref={i === items.length ? seamRef : undefined}
-            className="shrink-0 basis-[280px] sm:basis-[320px] lg:basis-[340px]"
-          >
-            <Card
-              brand={brand}
-              model={model}
-              flagship={model.slug === FLAGSHIP_SLUG}
-              isInView={isInView}
-              revealDelayMs={Math.min(i % items.length, 7) * 70}
-            />
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{
+          background: "radial-gradient(60% 55% at 50% 45%, oklch(0.6 0.23 32 / 0.05), transparent 72%)",
+        }}
+      />
+
+      <div className="container-premium">
+        <div className="flex items-end justify-between mb-12 md:mb-14">
+          <div>
+            <SectionEyebrow className={`mb-3 ${revealClass(0)}`} style={revealStyle(0)}>
+              Coleção
+            </SectionEyebrow>
+            <h2 className={`text-4xl md:text-5xl font-bold ${revealClass(110)}`} style={revealStyle(110)}>
+              Produtos em Destaque
+            </h2>
           </div>
-        ))}
+          <Link
+            to="/products"
+            className={`hidden md:inline-flex items-center text-sm font-medium hover:text-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 ${revealClass(
+              220,
+            )}`}
+            style={revealStyle(220)}
+          >
+            Ver todos <ArrowRight className="ml-2 h-4 w-4" />
+          </Link>
+        </div>
       </div>
-    </div>
+
+      {/* carril a sangrar até à borda do ecrã — o cabeçalho acima mantém-se alinhado
+          ao container normal, só o próprio carrossel "respira" para fora dele. */}
+      <div
+        className={`relative left-1/2 w-screen -translate-x-1/2 ${revealClass(320)}`}
+        style={revealStyle(320)}
+      >
+        <div className="relative">
+          <div
+            ref={scrollerRef}
+            onScroll={handleScroll}
+            onPointerDown={onPointerDown}
+            className="scrollbar-none flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth px-[calc(50%-140px)] py-10 motion-reduce:scroll-auto sm:px-[calc(50%-160px)] lg:px-[calc(50%-170px)]"
+            style={{ touchAction: "pan-y" }}
+            aria-label="Produtos em destaque — desliza ou arrasta para explorar"
+          >
+            {items.map((item, i) => (
+              <Card
+                key={`${item.brand.slug}-${item.model.slug}`}
+                brand={item.brand}
+                model={item.model}
+                flagship={item.model.slug === FLAGSHIP_SLUG}
+                isInView={isInView}
+                revealDelayMs={420 + Math.min(i, 7) * 60}
+                cardRef={(el) => {
+                  cardEls.current[i] = el;
+                }}
+              />
+            ))}
+          </div>
+
+          <div className="hidden sm:block">
+            <CarouselControls onPrev={goPrev} onNext={goNext} />
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }

@@ -2,6 +2,7 @@ type SectionEyebrowProps = {
   children: React.ReactNode;
   align?: "left" | "center";
   className?: string;
+  style?: React.CSSProperties;
 };
 
 /**
@@ -10,9 +11,10 @@ type SectionEyebrowProps = {
  * na secção Transformação, reutilizado aqui para dar continuidade visual à
  * medida que se desce a página (nunca redesenha a Transformação em si).
  */
-export function SectionEyebrow({ children, align = "left", className = "" }: SectionEyebrowProps) {
+export function SectionEyebrow({ children, align = "left", className = "", style }: SectionEyebrowProps) {
   return (
     <div
+      style={style}
       className={`flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-primary ${
         align === "center" ? "justify-center" : ""
       } ${className}`}
