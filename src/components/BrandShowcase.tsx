@@ -137,29 +137,19 @@ export function BrandShowcase() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
         >
-          {/* fundo desfocado — preenche a secção toda a partir da mesma foto, nunca aparece
-              como faixa vazia, seja qual for a proporção da fonte ou a altura da secção. */}
-          <img
-            src={active.image}
-            alt=""
-            aria-hidden="true"
-            className="absolute inset-0 h-full w-full scale-110 object-cover object-center blur-2xl brightness-[0.55] saturate-75"
-          />
-          {/* foto nítida, sempre inteira — object-contain garante que o volante se apresenta
-              a 100%, sem qualquer corte, imagem estática (sem zoom). */}
+          {/* preenche a secção de ponta a ponta — sem gaps laterais, imagem estática (sem zoom). */}
           <img
             src={active.image}
             alt={`Interior ${active.name} com volante REDLINE instalado`}
-            className="absolute inset-0 h-full w-full object-contain"
+            className="h-full w-full object-cover object-center"
           />
         </motion.div>
       </AnimatePresence>
 
-      {/* Escurece o rodapé — onde vivem o texto e a barra de progresso — e garante contraste
-          mesmo sobre a zona nítida da foto (object-contain nunca cobre o canto inferior-esquerdo
-          por inteiro, mas o gradiente cobre sempre, independentemente da proporção da imagem). */}
+      {/* Escurece o rodapé — onde vivem o texto e a barra de progresso — independentemente
+          da foto por baixo. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background from-0% via-background/55 via-45% to-transparent to-90%"
@@ -172,7 +162,7 @@ export function BrandShowcase() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="max-w-md"
           >
             <h2 className="text-2xl font-bold leading-[0.95] md:text-4xl">{active.headline}</h2>
