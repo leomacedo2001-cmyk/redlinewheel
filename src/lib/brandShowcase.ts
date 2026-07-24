@@ -1,8 +1,8 @@
 import { BRANDS } from "@/lib/brands";
-import bmwCockpit from "@/assets/brand-showcase/bmw-7-series-cockpit.jpg";
-import mercedesCockpit from "@/assets/brand-showcase/mercedes-s-class-cockpit.jpg";
-import audiCockpit from "@/assets/brand-showcase/audi-r8-cockpit.jpg";
-import porscheCockpit from "@/assets/brand-showcase/porsche-911-turbo-s-cockpit.avif";
+import bmwCockpit from "@/assets/brand-showcase/bmw-cockpit.png";
+import mercedesCockpit from "@/assets/brand-showcase/mercedes-cockpit.png";
+import audiCockpit from "@/assets/brand-showcase/audi-cockpit.png";
+import porscheCockpit from "@/assets/brand-showcase/porsche-cockpit.png";
 
 function brandImg(slug: string): string {
   return BRANDS.find((b) => b.slug === slug)?.img ?? "";
