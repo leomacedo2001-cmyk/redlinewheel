@@ -11,6 +11,7 @@ import bmwGBlueForgedStudio from "@/assets/bmw-g-blue-forged-studio-16x9.png";
 import audiGreenCamoStudio from "@/assets/audi-green-camo-studio-16x9.png";
 import audiRsSuedeStudio from "@/assets/audi-rs-suede-studio-16x9.png";
 import vwForgedCarbonStudio from "@/assets/vw-forged-carbon-studio-16x9.png";
+import bmwGBlackCarbonStudio from "@/assets/bmw-g-black-carbon-studio-16x9.png";
 
 /**
  * Produtos em Destaque — showroom curado com um Navegador de Produto: a
@@ -75,15 +76,14 @@ const HERO_ZOOM: Record<string, number> = {
  * saturate) pensados só para as fotos quadradas antigas mal-enquadradas
  * nesta caixa mais larga. Exclusivas desta secção: propositadamente não
  * entram em brands.ts, para nunca aparecerem na página de produto, no
- * catálogo ou em qualquer outro sítio do site. Falta a foto da BMW M
- * G-Series Black Carbon Signature — essa mantém a fotografia (e o
- * tratamento) que já tinha.
+ * catálogo ou em qualquer outro sítio do site.
  */
 const HERO_IMAGE_OVERRIDE: Record<string, string> = {
   "mercedes-benz-amg-red-forged-signature": mercedesAmgRedForgedStudio,
   "audi-rs-carbon-signature": audiRsCarbonStudio,
   "bmw-g-series-blue-forged": bmwGBlueForgedStudio,
   "audi-green-camo-signature": audiGreenCamoStudio,
+  "bmw-g-series-black-carbon": bmwGBlackCarbonStudio,
   "audi-rs-suede-signature": audiRsSuedeStudio,
   "volkswagen-forged-carbon-signature": vwForgedCarbonStudio,
 };
@@ -270,7 +270,7 @@ function NavigatorRow({
           aria-hidden="true"
           loading="lazy"
           decoding="async"
-          className={`absolute inset-0 h-full w-full object-contain p-1.5 transition-[filter,transform] duration-300 ease-out [filter:brightness(0.92)_contrast(1.08)] ${
+          className={`absolute inset-0 h-full w-full object-contain transition-[filter,transform] duration-300 ease-out [filter:brightness(0.92)_contrast(1.08)] ${
             active ? "scale-105 [filter:brightness(1)_contrast(1.14)]" : "opacity-80"
           }`}
         />
