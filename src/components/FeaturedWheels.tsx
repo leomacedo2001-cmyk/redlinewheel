@@ -135,12 +135,23 @@ function HeroDisplay({ item }: { item: ShowcaseItem }) {
   // como o scale do framer-motion abaixo é só um número em JS, não dá para
   // variar por breakpoint ali — por isso vive aqui, num wrapper CSS estático
   // à parte, multiplicando-se com o "pulso" da transição (1.03/1/0.98) em
-  // vez de o substituir. Valores = ratio da foto ÷ ratio da caixa em cada
-  // breakpoint (1.777/1.333≈1.333 mobile, 1.777/1.6≈1.111 desktop) — cortam
-  // só as laterais (a foto já batia a largura da caixa), nunca o topo/fundo;
-  // confirmado nas 7 fotos que sobra sempre mais de 23% de margem lateral
-  // face aos ~5–12.5% que este corte consome.
-  const fillZoomClass = studioOverride ? "absolute inset-0 scale-[1.333] md:scale-[1.111]" : "absolute inset-0";
+  // vez de o substituir.
+  //
+  // Medido pixel a pixel: no zoom exato que fecha a faixa (foto÷caixa —
+  // 1.333 mobile, 1.111 desktop), a caixa já fica 100% preenchida por
+  // pixels da própria foto — mas a foto tem um teto/chão de estúdio bem
+  // escuro por composição (confirmado: RGB≈5-20 nos primeiros ~90px), que
+  // continua a ler-se como "faixa preta" mesmo já sem gap nenhum. Como a
+  // foto é mais larga que a caixa nas duas orientações, QUALQUER zoom além
+  // do exato corta os 4 lados por igual (nunca só de um lado) — por isso um
+  // zoom extra (10%, aplicado aos valores acima) come proporcionalmente
+  // desse teto/chão escuro tal como come das laterais, sem precisar de
+  // deslocar o enquadramento. Verificado nas 7 fotos (perfil de brilho por
+  // linha): este corte adicional (~43px no topo/fundo, ~10–16% nas
+  // laterais) fica sempre dentro da margem antes do aro do volante começar.
+  const fillZoomClass = studioOverride
+    ? "absolute inset-0 [transform:scale(1.466)] md:[transform:scale(1.222)]"
+    : "absolute inset-0";
 
   return (
     <div className="relative">
