@@ -112,6 +112,20 @@ function HeroDisplay({ item }: { item: ShowcaseItem }) {
   // A foto de estúdio já vem em 16:9 bem enquadrada — sem corte de segurança nem grading extra.
   const zoom = studioOverride ? 1 : (HERO_ZOOM[key] ?? 1);
   const imgFilter = studioOverride ? undefined : "brightness(0.95) contrast(1.16) saturate(1.05)";
+  // As fotos de estúdio (16:9 = 1.777) são mais largas que as duas proporções
+  // da caixa (4:3 = 1.333 no mobile, 16:10 = 1.6 no desktop), por isso o
+  // object-contain encosta sempre à largura e sobra uma faixa preta em cima
+  // e em baixo — o rácio da CAIXA muda por breakpoint mas o da FOTO não, por
+  // isso este zoom (que fecha exatamente essa faixa) tem de ser responsivo;
+  // como o scale do framer-motion abaixo é só um número em JS, não dá para
+  // variar por breakpoint ali — por isso vive aqui, num wrapper CSS estático
+  // à parte, multiplicando-se com o "pulso" da transição (1.03/1/0.98) em
+  // vez de o substituir. Valores = ratio da foto ÷ ratio da caixa em cada
+  // breakpoint (1.777/1.333≈1.333 mobile, 1.777/1.6≈1.111 desktop) — cortam
+  // só as laterais (a foto já batia a largura da caixa), nunca o topo/fundo;
+  // confirmado nas 7 fotos que sobra sempre mais de 23% de margem lateral
+  // face aos ~5–12.5% que este corte consome.
+  const fillZoomClass = studioOverride ? "absolute inset-0 scale-[1.333] md:scale-[1.111]" : "absolute inset-0";
 
   return (
     <div className="relative">
@@ -141,28 +155,30 @@ function HeroDisplay({ item }: { item: ShowcaseItem }) {
           }}
         />
 
-        <AnimatePresence mode="wait">
-          <motion.img
-            key={key}
-            src={heroImg}
-            alt={model.name}
-            loading="eager"
-            decoding="async"
-            initial={
-              reducedMotion
-                ? { opacity: 0, scale: zoom, filter: blurGrade(0, imgFilter) }
-                : { opacity: 0, scale: zoom * 1.03, filter: blurGrade(6, imgFilter) }
-            }
-            animate={{ opacity: 1, scale: zoom, filter: blurGrade(0, imgFilter) }}
-            exit={
-              reducedMotion
-                ? { opacity: 0, scale: zoom, filter: blurGrade(0, imgFilter) }
-                : { opacity: 0, scale: zoom * 0.98, filter: blurGrade(4, imgFilter) }
-            }
-            transition={{ duration: reducedMotion ? 0.2 : 0.5, ease: EASE }}
-            className="absolute inset-0 h-full w-full object-contain p-3 md:p-5"
-          />
-        </AnimatePresence>
+        <div className={fillZoomClass}>
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={key}
+              src={heroImg}
+              alt={model.name}
+              loading="eager"
+              decoding="async"
+              initial={
+                reducedMotion
+                  ? { opacity: 0, scale: zoom, filter: blurGrade(0, imgFilter) }
+                  : { opacity: 0, scale: zoom * 1.03, filter: blurGrade(6, imgFilter) }
+              }
+              animate={{ opacity: 1, scale: zoom, filter: blurGrade(0, imgFilter) }}
+              exit={
+                reducedMotion
+                  ? { opacity: 0, scale: zoom, filter: blurGrade(0, imgFilter) }
+                  : { opacity: 0, scale: zoom * 0.98, filter: blurGrade(4, imgFilter) }
+              }
+              transition={{ duration: reducedMotion ? 0.2 : 0.5, ease: EASE }}
+              className="absolute inset-0 h-full w-full object-contain p-3 md:p-5"
+            />
+          </AnimatePresence>
+        </div>
 
         <span className="absolute left-5 top-5 z-10 bg-primary px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.58_0.22_25/0.7)]">
           Coleção Signature
