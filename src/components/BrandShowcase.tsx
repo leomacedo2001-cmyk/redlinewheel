@@ -23,8 +23,8 @@ type BrandShowcaseNavProps = {
  */
 function BrandShowcaseNav({ slides, activeIndex, onSelect, paused, onTogglePaused }: BrandShowcaseNavProps) {
   return (
-    <div className="flex items-center gap-6 sm:gap-8">
-      <div role="tablist" aria-label="Selecionar marca" className="flex flex-1 gap-4 sm:gap-6">
+    <div className="flex items-center gap-4 sm:gap-6">
+      <div role="tablist" aria-label="Selecionar marca" className="flex flex-1 gap-3 sm:gap-4">
         {slides.map((slide, i) => {
           const active = i === activeIndex;
           return (
@@ -119,7 +119,7 @@ export function BrandShowcase() {
   return (
     <section
       ref={sectionRef}
-      className="relative isolate flex h-[560px] flex-col justify-end overflow-hidden sm:h-[640px] md:h-[760px]"
+      className="relative isolate flex h-[420px] flex-col justify-end overflow-hidden sm:h-[480px] md:h-[560px]"
     >
       <AmbientGlow edge="top" />
 
@@ -139,23 +139,33 @@ export function BrandShowcase() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
         >
+          {/* fundo desfocado — preenche a secção toda a partir da mesma foto, nunca aparece
+              como faixa vazia, seja qual for a proporção da fonte ou a altura da secção. */}
+          <img
+            src={active.image}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full scale-110 object-cover object-center blur-2xl brightness-[0.55] saturate-75"
+          />
+          {/* foto nítida, sempre inteira — object-contain garante que o volante se apresenta
+              a 100%, sem qualquer corte, imagem estática (sem zoom). */}
           <img
             src={active.image}
             alt={`Interior ${active.name} com volante REDLINE instalado`}
-            className="h-full w-full origin-center object-cover animate-brand-ken-burns"
+            className="absolute inset-0 h-full w-full object-contain"
           />
         </motion.div>
       </AnimatePresence>
 
-      {/* Escurece toda a metade inferior — onde vivem o texto e a barra de progresso — o
-          suficiente para ler bem mesmo quando o volante da foto cai perto do centro (ex.: BMW),
-          sem depender de recortar/posicionar cada imagem de forma diferente. */}
+      {/* Escurece o rodapé — onde vivem o texto e a barra de progresso — e garante contraste
+          mesmo sobre a zona nítida da foto (object-contain nunca cobre o canto inferior-esquerdo
+          por inteiro, mas o gradiente cobre sempre, independentemente da proporção da imagem). */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background from-0% via-background/55 via-45% to-transparent to-90%"
       />
 
-      <div className="container-premium relative z-10 pb-10 md:pb-12">
+      <div className="container-premium relative z-10 pb-4 md:pb-5">
         <AnimatePresence>
           <motion.div
             key={active.slug}
@@ -165,12 +175,12 @@ export function BrandShowcase() {
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="max-w-md"
           >
-            <h2 className="text-3xl font-bold leading-[0.95] md:text-5xl">{active.headline}</h2>
-            <p className="mt-3 max-w-sm text-sm text-muted-foreground md:text-base">{active.subtitle}</p>
+            <h2 className="text-2xl font-bold leading-[0.95] md:text-4xl">{active.headline}</h2>
+            <p className="mt-2 max-w-sm text-sm text-muted-foreground md:text-base">{active.subtitle}</p>
             <Button
               asChild
               size="lg"
-              className="mt-6 h-12 rounded-none bg-primary px-7 text-sm uppercase tracking-wider hover:bg-primary/90"
+              className="mt-4 h-11 rounded-none bg-primary px-6 text-sm uppercase tracking-wider hover:bg-primary/90 md:h-12 md:px-7"
             >
               <Link to="/brand/$slug" params={{ slug: active.slug }}>
                 {active.ctaLabel} <ArrowRight className="ml-2 h-4 w-4" />
@@ -180,7 +190,10 @@ export function BrandShowcase() {
         </AnimatePresence>
       </div>
 
-      <div className="container-premium relative z-10 pb-6 md:pb-8">
+      {/* Barra de marcas — a única faixa que vai mesmo de ponta a ponta (sem
+          container-premium), a bater certo com a referência: segmentos e botão de
+          pausa colados às arestas do ecrã, não centrados num limite de 1400px. */}
+      <div className="relative z-10 px-4 pb-4 sm:px-6 md:pb-5 lg:px-8">
         <BrandShowcaseNav
           slides={slides}
           activeIndex={activeIndex}
@@ -188,7 +201,10 @@ export function BrandShowcase() {
           paused={paused}
           onTogglePaused={() => setPaused((p) => !p)}
         />
-        <div className="mt-5 text-right">
+      </div>
+
+      <div className="container-premium relative z-10 pb-3 md:pb-4">
+        <div className="text-right">
           <Link
             to="/marcas"
             className="group/link relative inline-flex items-center text-xs uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-300 hover:text-foreground"

@@ -178,21 +178,6 @@
   }
 }
 
-/* Zoom lento e contínuo sobre a foto ativa da vitrine de marcas — Ken Burns
-   subtil, nunca um pan (todas as fotos escolhidas já têm o volante
-   enquadrado, um deslocamento lateral seria artificial). Duração > que o
-   intervalo do autoplay para nunca se ver o "reset" caso o utilizador
-   demore mais tempo numa marca. */
-@keyframes brand-ken-burns {
-  from { transform: scale(1); }
-  to { transform: scale(1.03); }
-}
-
-@utility animate-brand-ken-burns {
-  animation: brand-ken-burns 9s ease-out both;
-  will-change: transform;
-}
-
 /* Barra de progresso do seletor de marcas — mesmo vocabulário de "stories"
    do Instagram/Apple: a barra ativa enche da esquerda para a direita ao
    ritmo do autoplay; scaleX em vez de width para animar no compositor. */
@@ -209,7 +194,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-brand-ken-burns,
   .animate-brand-segment-fill {
     animation: none;
   }

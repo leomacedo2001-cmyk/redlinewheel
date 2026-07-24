@@ -1,6 +1,6 @@
 import { BRANDS } from "@/lib/brands";
 import bmwCockpit from "@/assets/brand-showcase/bmw-7-series-cockpit.jpg";
-import mercedesCockpit from "@/assets/brand-showcase/mercedes-amg-gt-cockpit.webp";
+import mercedesCockpit from "@/assets/brand-showcase/mercedes-s-class-cockpit.jpg";
 import audiCockpit from "@/assets/brand-showcase/audi-r8-cockpit.jpg";
 import porscheCockpit from "@/assets/brand-showcase/porsche-911-turbo-s-cockpit.avif";
 
@@ -32,8 +32,8 @@ export const BRAND_SHOWCASE_SLIDES: BrandShowcaseSlide[] = [
   {
     slug: "mercedes-benz",
     name: "Mercedes-Benz",
-    headline: "Mercedes-AMG Collection",
-    subtitle: "Onde a adrenalina encontra o detalhe.",
+    headline: "Mercedes-Benz Interior Collection",
+    subtitle: "Elegância que se sente em cada detalhe.",
     ctaLabel: "Explorar Mercedes",
     image: mercedesCockpit,
     enabled: true,
