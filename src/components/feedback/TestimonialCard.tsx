@@ -42,26 +42,35 @@ export function TestimonialCard({ testimonial }: TestimonialCardProps) {
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/10 to-transparent opacity-90" />
       </div>
 
-      <div className="relative flex flex-col gap-3 p-5">
-        <div className="flex items-center gap-3">
-          <Avatar className="h-10 w-10 border border-border/60 ring-1 ring-primary/10">
+      <div className="relative flex flex-col gap-4 p-5">
+        {/* classificação — tom dourado discreto, propositadamente distinto do
+            vermelho da marca (esse é para ações; isto é um sinal de confiança) */}
+        <div className="flex items-center gap-1.5" aria-label={`${rating} de 5 estrelas`}>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Star
+              key={i}
+              className={`h-3.5 w-3.5 ${
+                i < rating
+                  ? "fill-[oklch(0.78_0.11_80)] text-[oklch(0.78_0.11_80)]"
+                  : "text-border"
+              }`}
+            />
+          ))}
+        </div>
+
+        <div className="flex items-center gap-3.5">
+          <Avatar className="h-11 w-11 shrink-0 border border-border/60 ring-1 ring-primary/10">
             <AvatarFallback className="bg-primary/10 text-xs font-semibold text-primary">
               {initials(name)}
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1">
-            <div className="truncate text-sm font-semibold leading-tight">{name}</div>
-            <div className="truncate text-xs text-muted-foreground">
-              {city}, {country}
+            <div className="truncate text-base font-semibold leading-tight tracking-tight">
+              {name}
             </div>
-          </div>
-          <div className="flex items-center gap-0.5" aria-label={`${rating} de 5 estrelas`}>
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star
-                key={i}
-                className={`h-3 w-3 ${i < rating ? "fill-primary text-primary" : "text-border"}`}
-              />
-            ))}
+            <div className="mt-1 truncate text-[10px] uppercase tracking-[0.16em] text-muted-foreground/60">
+              {city} • {country}
+            </div>
           </div>
         </div>
 
