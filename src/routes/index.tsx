@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Shield, Wrench, Truck, Star } from "lucide-react";
+import { ArrowRight, Shield, Wrench, Truck } from "lucide-react";
 import { FeaturedProductsSection } from "@/components/FeaturedWheels";
 import { BrandShowcase } from "@/components/BrandShowcase";
+import { CtaShowcase } from "@/components/CtaShowcase";
 
 import heroImg from "@/assets/hero-steering.jpg";
 import heroVideo from "@/assets/hero/hero-wheel-reveal.mp4";
@@ -144,32 +145,7 @@ function Home() {
 
       <BrandShowcase />
 
-      {/* CTA */}
-      <section className="relative isolate overflow-hidden border-t border-border/60 -mb-24">
-        <AmbientGlow edge="top" />
-        <AmbientGlow edge="bottom" />
-        <div className="container-premium relative py-20 md:py-24 text-center">
-          <div className="relative mx-auto mb-6 flex h-14 w-14 items-center justify-center">
-            <span className="absolute inset-0 rounded-full bg-primary/10 blur-xl" />
-            <Star className="relative h-8 w-8 text-primary" />
-          </div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Pronto para transformar o teu interior?
-          </h2>
-          <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
-            Explora a nossa coleção completa de volantes premium.
-          </p>
-          <Button
-            asChild
-            size="lg"
-            className="bg-primary hover:bg-primary/90 rounded-none h-14 px-10 uppercase tracking-wider text-sm"
-          >
-            <Link to="/products">
-              Comprar Agora <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
-        </div>
-      </section>
+      <CtaShowcase />
     </div>
   );
 }
