@@ -20,7 +20,7 @@ function initials(name: string): string {
  * nunca mostra `carModel`, mesmo quando o dado existe (ver testimonials.ts).
  */
 export function TestimonialCard({ testimonial }: TestimonialCardProps) {
-  const { name, city, country, rating, review, image } = testimonial;
+  const { name, city, country, rating, image } = testimonial;
 
   return (
     <article className="group relative flex h-full flex-col overflow-hidden border border-border/60 bg-surface transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-[0_32px_60px_-24px_rgba(0,0,0,0.65)]">
@@ -73,10 +73,6 @@ export function TestimonialCard({ testimonial }: TestimonialCardProps) {
             </div>
           </div>
         </div>
-
-        <p className="border-l border-primary/30 pl-3 text-sm leading-relaxed text-muted-foreground line-clamp-4">
-          {review}
-        </p>
       </div>
     </article>
   );
