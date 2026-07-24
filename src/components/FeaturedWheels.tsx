@@ -88,6 +88,21 @@ const HERO_IMAGE_OVERRIDE: Record<string, string> = {
   "volkswagen-forged-carbon-signature": vwForgedCarbonStudio,
 };
 
+/**
+ * Miniatura do Audi Green Camo — era o único produto onde a miniatura
+ * (model.img, a foto antiga em close-up) e o hero (a foto de estúdio nova,
+ * de corpo inteiro) mostravam composições visivelmente diferentes; nos
+ * outros 6, ambas as fotos — antiga e nova — já mostram o volante inteiro
+ * num ângulo semelhante, por isso a diferença não se nota. Corrigido só
+ * aqui: a miniatura passa a usar o mesmo ficheiro do hero. Zoom conservador
+ * (1.35x, não o 1.78x que preencheria o quadrado por completo) porque esta
+ * foto tem menos margem lateral do que as outras — preenche bem mais do
+ * quadrado sem chegar perto de cortar o aro.
+ */
+const THUMBNAIL_IMAGE_OVERRIDE: Record<string, string> = {
+  "audi-green-camo-signature": audiGreenCamoStudio,
+};
+
 type ShowcaseItem = { brand: Brand; model: BrandModel };
 
 function formatPrice(model: BrandModel): string | null {
@@ -259,6 +274,9 @@ function NavigatorRow({
 }) {
   const { brand, model } = item;
   const price = formatPrice(model);
+  const thumbOverride = THUMBNAIL_IMAGE_OVERRIDE[`${brand.slug}-${model.slug}`];
+  const thumbImg = thumbOverride ?? model.img;
+  const thumbFillClass = thumbOverride ? "absolute inset-0 scale-[1.35]" : "absolute inset-0";
 
   return (
     <button
@@ -280,16 +298,18 @@ function NavigatorRow({
         }`}
       />
       <div className="relative aspect-square w-16 shrink-0 overflow-hidden bg-gradient-to-b from-surface to-background">
-        <img
-          src={model.img}
-          alt=""
-          aria-hidden="true"
-          loading="lazy"
-          decoding="async"
-          className={`absolute inset-0 h-full w-full object-contain transition-[filter,transform] duration-300 ease-out [filter:brightness(0.92)_contrast(1.08)] ${
-            active ? "scale-105 [filter:brightness(1)_contrast(1.14)]" : "opacity-80"
-          }`}
-        />
+        <div className={thumbFillClass}>
+          <img
+            src={thumbImg}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            decoding="async"
+            className={`absolute inset-0 h-full w-full object-contain transition-[filter,transform] duration-300 ease-out [filter:brightness(0.92)_contrast(1.08)] ${
+              active ? "scale-105 [filter:brightness(1)_contrast(1.14)]" : "opacity-80"
+            }`}
+          />
+        </div>
       </div>
       <div className="min-w-0 flex-1">
         <div
