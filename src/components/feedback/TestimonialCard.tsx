@@ -1,19 +1,9 @@
 import { Star } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import type { Testimonial } from "@/lib/testimonials";
 
 type TestimonialCardProps = {
   testimonial: Testimonial;
 };
-
-function initials(name: string): string {
-  return name
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((w) => w[0]?.toUpperCase())
-    .join("");
-}
 
 /**
  * O destaque é a transformação, nunca o modelo de carro — por isso o cartão
@@ -58,19 +48,14 @@ export function TestimonialCard({ testimonial }: TestimonialCardProps) {
           ))}
         </div>
 
-        <div className="flex items-center gap-3.5">
-          <Avatar className="h-11 w-11 shrink-0 border border-border/60 ring-1 ring-primary/10">
-            <AvatarFallback className="bg-primary/10 text-xs font-semibold text-primary">
-              {initials(name)}
-            </AvatarFallback>
-          </Avatar>
-          <div className="min-w-0 flex-1">
-            <div className="truncate text-base font-semibold leading-tight tracking-tight">
-              {name}
-            </div>
-            <div className="mt-1 truncate text-[10px] uppercase tracking-[0.16em] text-muted-foreground/60">
-              {city} • {country}
-            </div>
+        {/* identidade — bloco editorial, sem avatar: o nome é o único elemento
+            primário (linguagem de brochura Porsche/Ferrari, não cartão de e-commerce). */}
+        <div className="min-w-0 border-t border-border/40 pt-4">
+          <div className="truncate text-lg font-semibold leading-tight tracking-tight">
+            {name}
+          </div>
+          <div className="mt-1.5 truncate text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60">
+            {city} • {country}
           </div>
         </div>
       </div>
