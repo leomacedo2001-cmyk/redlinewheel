@@ -1,149 +1,204 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { BRANDS } from "@/lib/brands";
-import { SectionEyebrow } from "@/components/SectionEyebrow";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowRight, Pause, Play } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { AmbientGlow } from "@/components/AmbientGlow";
+import { ACTIVE_BRAND_SHOWCASE_SLIDES, type BrandShowcaseSlide } from "@/lib/brandShowcase";
 
-import bmwIcon from "@/assets/brand-icons/bmw.png";
-import audiIcon from "@/assets/brand-icons/audi.png";
-import volkswagenIcon from "@/assets/brand-icons/volkswagen.png";
-import mercedesIcon from "@/assets/brand-icons/mercedes-benz.png";
-import porscheIcon from "@/assets/brand-icons/porsche.png";
-import toyotaIcon from "@/assets/brand-icons/toyota.png";
-import teslaIcon from "@/assets/brand-icons/tesla.png";
+const AUTOPLAY_INTERVAL_MS = 7000;
 
-/**
- * "Outras Marcas" não é uma marca real — fica sempre com o glifo de volante
- * (ver mais abaixo), nunca com uma ilustração de marca.
- */
-const BRAND_ICONS: Partial<Record<string, string>> = {
-  bmw: bmwIcon,
-  audi: audiIcon,
-  volkswagen: volkswagenIcon,
-  "mercedes-benz": mercedesIcon,
-  porsche: porscheIcon,
-  toyota: toyotaIcon,
-  tesla: teslaIcon,
+type BrandShowcaseNavProps = {
+  slides: BrandShowcaseSlide[];
+  activeIndex: number;
+  onSelect: (index: number) => void;
+  paused: boolean;
+  onTogglePaused: () => void;
 };
 
-function initials(name: string): string {
-  return name
-    .split(/[\s-]+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((w) => w[0]?.toUpperCase())
-    .join("");
+/**
+ * Barra de progresso segmentada (uma por marca) em vez de separadores em
+ * pílula — cada segmento enche ao ritmo do autoplay, como stories; clicar
+ * salta diretamente para essa marca.
+ */
+function BrandShowcaseNav({ slides, activeIndex, onSelect, paused, onTogglePaused }: BrandShowcaseNavProps) {
+  return (
+    <div className="flex items-center gap-6 sm:gap-8">
+      <div role="tablist" aria-label="Selecionar marca" className="flex flex-1 gap-4 sm:gap-6">
+        {slides.map((slide, i) => {
+          const active = i === activeIndex;
+          return (
+            <button
+              key={slide.slug}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              onClick={() => onSelect(i)}
+              className="group flex-1 cursor-pointer text-left focus:outline-none"
+            >
+              <span className="block h-[2px] w-full overflow-hidden bg-foreground/20">
+                <span
+                  key={active ? `${slide.slug}-active` : "idle"}
+                  className={`block h-full w-full bg-foreground ${active ? "animate-brand-segment-fill" : "scale-x-0"}`}
+                  style={
+                    active
+                      ? { animationDuration: `${AUTOPLAY_INTERVAL_MS}ms`, animationPlayState: paused ? "paused" : "running" }
+                      : undefined
+                  }
+                />
+              </span>
+              <span
+                className={`mt-2.5 block truncate text-[10px] uppercase tracking-[0.2em] transition-colors duration-300 ${
+                  active ? "text-foreground" : "text-muted-foreground group-hover:text-foreground/80"
+                }`}
+              >
+                {slide.name}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      <button
+        type="button"
+        onClick={onTogglePaused}
+        aria-label={paused ? "Retomar apresentação automática" : "Pausar apresentação automática"}
+        className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-foreground/25 text-foreground transition-colors duration-300 hover:border-foreground/60 hover:bg-foreground/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+      >
+        {paused ? <Play className="h-3.5 w-3.5 fill-current" /> : <Pause className="h-3.5 w-3.5 fill-current" />}
+      </button>
+    </div>
+  );
 }
 
-/** Glow/elevação partilhados por qualquer glifo (ilustração real, volante ou monograma). */
-const GLYPH_HOVER =
-  "transition-[transform,filter,opacity,color] duration-500 ease-out group-hover:-translate-y-1 group-hover:scale-105 group-hover:drop-shadow-[0_12px_28px_oklch(0.58_0.22_25_/_0.35)]";
-
 export function BrandShowcase() {
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const slides = ACTIVE_BRAND_SHOWCASE_SLIDES;
+  const [activeIndex, setActiveIndex] = useState(0);
   const [isInView, setIsInView] = useState(false);
+  const [paused, setPaused] = useState(false);
 
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const autoplayTimer = useRef<number | null>(null);
+
+  const clearAutoplay = useCallback(() => {
+    if (autoplayTimer.current !== null) {
+      window.clearInterval(autoplayTimer.current);
+      autoplayTimer.current = null;
+    }
+  }, []);
+
+  const restartAutoplay = useCallback(() => {
+    clearAutoplay();
+    if (!isInView || paused || slides.length <= 1) return;
+    autoplayTimer.current = window.setInterval(() => {
+      setActiveIndex((i) => (i + 1) % slides.length);
+    }, AUTOPLAY_INTERVAL_MS);
+  }, [clearAutoplay, isInView, paused, slides.length]);
+
+  // Pausa quando a secção sai do ecrã — poupa CPU/GPU sem qualquer benefício visual.
   useEffect(() => {
     const el = sectionRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(([entry]) => setIsInView(entry.isIntersecting), {
-      threshold: 0.2,
+      threshold: 0.3,
     });
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
+  // Único ponto de criação do timer — reinicia sempre que a marca ativa muda
+  // (manual ou automaticamente), nunca há mais do que um intervalo ativo.
+  useEffect(() => {
+    restartAutoplay();
+    return clearAutoplay;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [restartAutoplay, clearAutoplay, activeIndex]);
+
+  const active = slides[activeIndex];
+  if (!active) return null;
+
   return (
-    <section ref={sectionRef} className="relative isolate overflow-hidden border-y border-border/60 bg-surface/40 py-20 md:py-24">
+    <section
+      ref={sectionRef}
+      className="relative isolate flex h-[560px] flex-col justify-end overflow-hidden sm:h-[640px] md:h-[760px]"
+    >
       <AmbientGlow edge="top" />
-      <AmbientGlow edge="bottom" />
+
+      {/* pré-carregamento fora de ecrã — garante zero flash ao trocar de marca */}
+      <div aria-hidden="true" className="absolute h-px w-px overflow-hidden opacity-0">
+        {slides.map((s) => (
+          <img key={s.slug} src={s.image} alt="" loading="eager" decoding="async" />
+        ))}
+      </div>
+
+      <AnimatePresence>
+        <motion.div
+          key={active.slug}
+          className="absolute inset-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+        >
+          <img
+            src={active.image}
+            alt={`Interior ${active.name} com volante REDLINE instalado`}
+            className="h-full w-full origin-center object-cover animate-brand-ken-burns"
+          />
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Escurece toda a metade inferior — onde vivem o texto e a barra de progresso — o
+          suficiente para ler bem mesmo quando o volante da foto cai perto do centro (ex.: BMW),
+          sem depender de recortar/posicionar cada imagem de forma diferente. */}
       <div
-        className="pointer-events-none absolute inset-0 -z-10"
-        style={{
-          backgroundImage:
-            "linear-gradient(oklch(1 0 0 / 0.035) 1px, transparent 1px), linear-gradient(90deg, oklch(1 0 0 / 0.035) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-          maskImage: "radial-gradient(80% 80% at 50% 40%, black, transparent)",
-        }}
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background from-0% via-background/55 via-45% to-transparent to-90%"
       />
 
-      <div className="container-premium relative">
-        <div className={`text-center mb-12 md:mb-14 ${isInView ? "animate-fade-up" : "opacity-0"}`}>
-          <SectionEyebrow align="center" className="mb-3">Marcas</SectionEyebrow>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">Encontra a Tua Marca.</h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">
-            Compatibilidade OEM para dezenas de modelos, com o acabamento que só a REDLINE oferece.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-16 md:gap-x-10 md:gap-y-24">
-          {BRANDS.map((b, i) => {
-            const icon = BRAND_ICONS[b.slug];
-            const delay = isInView ? `${i * 70}ms` : undefined;
-            return (
-              <Link
-                key={b.slug}
-                to="/brand/$slug"
-                params={{ slug: b.slug }}
-                aria-label={`Ver volantes compatíveis com ${b.name}`}
-                className="group flex cursor-pointer flex-col items-center gap-6 rounded-sm transition-transform duration-150 active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
-              >
-                <div className="flex h-24 w-full items-end justify-center sm:h-28 md:h-36">
-                  {icon ? (
-                    <img
-                      src={icon}
-                      alt=""
-                      aria-hidden="true"
-                      loading="lazy"
-                      decoding="async"
-                      draggable={false}
-                      style={{ animationDelay: delay }}
-                      className={`h-full w-auto max-w-44 object-contain opacity-80 group-hover:opacity-100 ${GLYPH_HOVER} ${
-                        isInView ? "animate-draw-in" : "opacity-0"
-                      }`}
-                    />
-                  ) : b.slug === "outras-marcas" ? (
-                    <svg
-                      viewBox="0 0 100 100"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={4}
-                      strokeLinecap="round"
-                      aria-hidden="true"
-                      style={{ animationDelay: delay }}
-                      className={`h-20 w-20 text-foreground/55 group-hover:text-foreground sm:h-24 sm:w-24 md:h-28 md:w-28 ${GLYPH_HOVER} ${
-                        isInView ? "animate-draw-in" : "opacity-0"
-                      }`}
-                    >
-                      <circle cx="50" cy="50" r="36" />
-                      <circle cx="50" cy="50" r="9" />
-                      <line x1="50" y1="41" x2="50" y2="14" />
-                      <line x1="42.2" y1="54.5" x2="18.8" y2="68" />
-                      <line x1="57.8" y1="54.5" x2="81.2" y2="68" />
-                    </svg>
-                  ) : (
-                    <span
-                      aria-hidden="true"
-                      style={{ animationDelay: delay }}
-                      className={`text-4xl font-semibold leading-none text-foreground/55 group-hover:text-foreground ${GLYPH_HOVER} ${
-                        isInView ? "animate-draw-in" : "opacity-0"
-                      }`}
-                    >
-                      {initials(b.name)}
-                    </span>
-                  )}
-                </div>
-                <span
-                  style={{ animationDelay: delay }}
-                  className={`text-xs uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-500 group-hover:text-foreground ${
-                    isInView ? "animate-fade-up" : "opacity-0"
-                  }`}
-                >
-                  {b.name}
-                </span>
+      <div className="container-premium relative z-10 pb-10 md:pb-12">
+        <AnimatePresence>
+          <motion.div
+            key={active.slug}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="max-w-md"
+          >
+            <h2 className="text-3xl font-bold leading-[0.95] md:text-5xl">{active.headline}</h2>
+            <p className="mt-3 max-w-sm text-sm text-muted-foreground md:text-base">{active.subtitle}</p>
+            <Button
+              asChild
+              size="lg"
+              className="mt-6 h-12 rounded-none bg-primary px-7 text-sm uppercase tracking-wider hover:bg-primary/90"
+            >
+              <Link to="/brand/$slug" params={{ slug: active.slug }}>
+                {active.ctaLabel} <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
-            );
-          })}
+            </Button>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      <div className="container-premium relative z-10 pb-6 md:pb-8">
+        <BrandShowcaseNav
+          slides={slides}
+          activeIndex={activeIndex}
+          onSelect={setActiveIndex}
+          paused={paused}
+          onTogglePaused={() => setPaused((p) => !p)}
+        />
+        <div className="mt-5 text-right">
+          <Link
+            to="/marcas"
+            className="group/link relative inline-flex items-center text-xs uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-300 hover:text-foreground"
+          >
+            Explorar todas as marcas compatíveis
+            <span
+              aria-hidden="true"
+              className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-primary transition-transform duration-300 ease-out group-hover/link:scale-x-100"
+            />
+          </Link>
         </div>
       </div>
     </section>
