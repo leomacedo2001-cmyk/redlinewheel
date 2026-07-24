@@ -94,10 +94,10 @@ const HERO_IMAGE_OVERRIDE: Record<string, string> = {
  * de corpo inteiro) mostravam composições visivelmente diferentes; nos
  * outros 6, ambas as fotos — antiga e nova — já mostram o volante inteiro
  * num ângulo semelhante, por isso a diferença não se nota. Corrigido só
- * aqui: a miniatura passa a usar o mesmo ficheiro do hero. Zoom conservador
- * (1.35x, não o 1.78x que preencheria o quadrado por completo) porque esta
- * foto tem menos margem lateral do que as outras — preenche bem mais do
- * quadrado sem chegar perto de cortar o aro.
+ * aqui: a miniatura passa a usar o mesmo ficheiro do hero. Zoom = rácio da
+ * foto (1672/941 ≈ 1.777) — o valor exato que preenche o quadrado da
+ * miniatura por completo, sem sobrar nenhuma margem, mantendo o aro
+ * completo (a foto tem folga lateral suficiente para este corte).
  */
 const THUMBNAIL_IMAGE_OVERRIDE: Record<string, string> = {
   "audi-green-camo-signature": audiGreenCamoStudio,
@@ -276,7 +276,7 @@ function NavigatorRow({
   const price = formatPrice(model);
   const thumbOverride = THUMBNAIL_IMAGE_OVERRIDE[`${brand.slug}-${model.slug}`];
   const thumbImg = thumbOverride ?? model.img;
-  const thumbFillClass = thumbOverride ? "absolute inset-0 scale-[1.35]" : "absolute inset-0";
+  const thumbFillClass = thumbOverride ? "absolute inset-0 scale-[1.777]" : "absolute inset-0";
 
   return (
     <button
