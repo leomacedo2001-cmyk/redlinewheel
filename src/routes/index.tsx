@@ -92,11 +92,11 @@ function Home() {
         </div>
       </section>
 
-      <TransformationShowcase />
-
       <FeaturedProductsSection />
 
       <CustomProductsSection />
+
+      <TransformationShowcase />
 
       <BrandShowcase />
 
