@@ -155,7 +155,13 @@ export function BrandShowcase() {
         className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background from-0% via-background/55 via-45% to-transparent to-90%"
       />
 
-      <div className="container-premium relative z-10 pb-4 md:pb-5">
+      {/* Nota: não usar `container-premium` aqui — o seu `margin-inline: auto`
+          entra em conflito com este contentor flex em coluna (as margens
+          automáticas no eixo cruzado ganham a `align-items: stretch` e
+          forçam a caixa a encolher-se e a centrar-se, seja qual for o
+          alinhamento pedido ao conteúdo lá dentro). Mesmo padding do resto
+          da secção (edge-to-edge, sem limite de 1400px). */}
+      <div className="relative z-10 px-4 pb-4 sm:px-6 md:pb-5 lg:px-8">
         <AnimatePresence>
           <motion.div
             key={active.slug}
@@ -163,10 +169,10 @@ export function BrandShowcase() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="max-w-md"
+            className="ml-auto max-w-md text-right"
           >
             <h2 className="text-2xl font-bold leading-[0.95] md:text-4xl">{active.headline}</h2>
-            <p className="mt-2 max-w-sm text-sm text-muted-foreground md:text-base">{active.subtitle}</p>
+            <p className="ml-auto mt-2 max-w-sm text-sm text-muted-foreground md:text-base">{active.subtitle}</p>
             <Button
               asChild
               size="lg"
@@ -193,7 +199,7 @@ export function BrandShowcase() {
         />
       </div>
 
-      <div className="container-premium relative z-10 pb-3 md:pb-4">
+      <div className="relative z-10 px-4 pb-3 sm:px-6 md:pb-4 lg:px-8">
         <div className="text-right">
           <Link
             to="/marcas"
