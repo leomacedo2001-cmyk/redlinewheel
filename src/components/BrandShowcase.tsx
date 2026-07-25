@@ -137,7 +137,7 @@ export function BrandShowcase() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
           {/* preenche a secção de ponta a ponta — sem gaps laterais, imagem estática (sem zoom). */}
           <img
@@ -164,15 +164,20 @@ export function BrandShowcase() {
       {/* Título/subtítulo — canto superior-esquerdo. Posição independente do
           resto do conteúdo (que continua ancorado ao fundo), por isso vive
           fora do fluxo flex da secção, tal como a imagem e os overlays. */}
-      <div className="absolute inset-x-0 top-0 z-10 px-4 pt-5 sm:px-6 sm:pt-6 lg:px-8 lg:pt-8">
+      <div className="absolute inset-x-0 top-0 z-10">
         <AnimatePresence>
+          {/* O próprio motion.div tem de estar posicionado em absoluto — caso
+              contrário, durante o crossfade, a cópia que está a sair e a que
+              está a entrar ocupam as duas o fluxo normal (uma por cima da
+              outra em vez de sobrepostas no mesmo lugar), o que dava o
+              "salto"/bug ligeiro no texto ao mudar de marca. */}
           <motion.div
             key={active.slug}
             initial={{ opacity: 0, y: -16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 8 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="max-w-md"
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-x-0 top-0 max-w-md px-4 pt-5 sm:px-6 sm:pt-6 lg:px-8 lg:pt-8"
           >
             <h2 className="text-2xl font-bold leading-[0.95] md:text-4xl">{active.headline}</h2>
             <p className="mt-2 max-w-sm text-sm text-muted-foreground md:text-base">{active.subtitle}</p>
@@ -186,15 +191,19 @@ export function BrandShowcase() {
           forçam a caixa a encolher-se e a centrar-se, seja qual for o
           alinhamento pedido ao conteúdo lá dentro). Mesmo padding do resto
           da secção (edge-to-edge, sem limite de 1400px). */}
-      <div className="relative z-10 px-4 pb-4 sm:px-6 md:pb-5 lg:px-8">
+      <div className="relative z-10 h-11 px-4 pb-4 sm:px-6 md:h-12 md:pb-5 lg:px-8">
         <AnimatePresence>
+          {/* Mesma correção do bloco de título: motion.div em absoluto para a
+              cópia a sair e a entrar ficarem sobrepostas, não empilhadas. A
+              altura fixa acima (h-11/md:h-12, igual à do botão) garante que a
+              barra de marcas por baixo nunca salta durante a transição. */}
           <motion.div
             key={active.slug}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="ml-auto max-w-md text-right"
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute right-4 top-0 sm:right-6 lg:right-8"
           >
             <Button
               asChild
