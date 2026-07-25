@@ -190,20 +190,29 @@ export function BrandShowcase() {
           automáticas no eixo cruzado ganham a `align-items: stretch` e
           forçam a caixa a encolher-se e a centrar-se, seja qual for o
           alinhamento pedido ao conteúdo lá dentro). Mesmo padding do resto
-          da secção (edge-to-edge, sem limite de 1400px). */}
-      <div className="relative z-10 h-11 px-4 pb-4 sm:px-6 md:h-12 md:pb-5 lg:px-8">
+          da secção (edge-to-edge, sem limite de 1400px).
+
+          Altura fixa (h-11/md:h-12, igual à do botão) + margin-bottom (não
+          padding — misturar padding com uma altura fixa em border-box "come"
+          o espaço em vez de o somar, e foi por isso que o botão ficava colado
+          à barra de marcas por baixo). A margem empurra o grupo inteiro para
+          cima dentro do flex-col justify-end, "subindo" o botão como pedido. */}
+      <div className="relative z-10 mb-6 h-11 px-4 sm:px-6 md:mb-8 md:h-12 lg:px-8">
         <AnimatePresence>
           {/* Mesma correção do bloco de título: motion.div em absoluto para a
-              cópia a sair e a entrar ficarem sobrepostas, não empilhadas. A
-              altura fixa acima (h-11/md:h-12, igual à do botão) garante que a
-              barra de marcas por baixo nunca salta durante a transição. */}
+              cópia a sair e a entrar ficarem sobrepostas, não empilhadas.
+              Alinhado ao fim da barra de marcas (fim do último separador,
+              "Porsche"), não à borda exterior — a mesma lógica usada para
+              calcular o recuo do botão de pausa (padding + gap + 36px do
+              botão redondo), só que aplicada ao lado do texto em vez do
+              lado do ícone. */}
           <motion.div
             key={active.slug}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute right-4 top-0 sm:right-6 lg:right-8"
+            className="absolute right-[68px] top-0 sm:right-[84px] lg:right-[92px]"
           >
             <Button
               asChild
