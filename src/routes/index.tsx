@@ -1,17 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Shield, Wrench, Truck } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { FeaturedProductsSection } from "@/components/FeaturedWheels";
 import { BrandShowcase } from "@/components/BrandShowcase";
 import { CtaShowcase } from "@/components/CtaShowcase";
+import { RedlineDifference } from "@/components/RedlineDifference";
 
 import heroImg from "@/assets/hero-steering.jpg";
 import heroVideo from "@/assets/hero/hero-wheel-reveal.mp4";
 import { CustomProductsSection } from "@/components/CustomProductsSection";
 import { FeedbackShowcase } from "@/components/feedback/FeedbackShowcase";
 import { TransformationShowcase } from "@/components/transformation/TransformationShowcase";
-import { SectionEyebrow } from "@/components/SectionEyebrow";
-import { AmbientGlow } from "@/components/AmbientGlow";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -102,48 +101,7 @@ function Home() {
 
       <FeedbackShowcase />
 
-      {/* BENEFITS */}
-      <section className="relative isolate overflow-hidden bg-surface/40 py-20 md:py-24">
-        <AmbientGlow edge="top" />
-        <AmbientGlow edge="bottom" />
-        <div className="container-premium relative">
-          <div className="text-center mb-12 md:mb-14">
-            <SectionEyebrow align="center" className="mb-3">
-              A Diferença REDLINE
-            </SectionEyebrow>
-            <h2 className="text-4xl md:text-5xl font-bold">Construído para entusiastas.</h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-px bg-border">
-            {[
-              {
-                icon: Wrench,
-                t: "Personalização Total",
-                d: "Escolhe materiais, cores e acabamentos. Cada volante é construído à medida do teu carro.",
-              },
-              {
-                icon: Shield,
-                t: "Qualidade Premium",
-                d: "Alcantara, fibra de carbono real e couro nappa italiano. Garantia de 2 anos em todos os produtos.",
-              },
-              {
-                icon: Truck,
-                t: "Entrega Europeia",
-                d: "Envio rápido para toda a Europa. Embalagem premium, instalação opcional.",
-              },
-            ].map(({ icon: Icon, t, d }) => (
-              <div
-                key={t}
-                className="group relative bg-surface p-10 transition-colors duration-500 hover:bg-surface-elevated"
-              >
-                <span className="absolute inset-x-0 top-0 h-px origin-left scale-x-0 bg-gradient-to-r from-primary to-transparent transition-transform duration-500 ease-out group-hover:scale-x-100" />
-                <Icon className="h-8 w-8 text-primary mb-6 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-0.5" />
-                <h3 className="text-xl font-bold mb-3">{t}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{d}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <RedlineDifference />
 
       <CtaShowcase />
     </div>

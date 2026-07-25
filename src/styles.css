@@ -114,6 +114,18 @@
   animation: fade-up 0.8s ease-out both;
 }
 
+/* Revelação muito contida, para "A Diferença REDLINE" — 5px, não os 20px do
+   fade-up genérico. Esta secção pede restrição ("less is more"), não o
+   mesmo peso de entrada usado no Hero ou nas secções de showcase. */
+@keyframes feature-reveal {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@utility animate-feature-reveal {
+  animation: feature-reveal 700ms ease-out both;
+}
+
 /* Revela da esquerda para a direita, como uma cortina a abrir — usado nos
    ícones de marca para evocar "a ser desenhado" sem precisar de vetores. */
 @keyframes draw-in {
