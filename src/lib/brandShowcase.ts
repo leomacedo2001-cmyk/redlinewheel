@@ -32,7 +32,7 @@ export const BRAND_SHOWCASE_SLIDES: BrandShowcaseSlide[] = [
   {
     slug: "mercedes-benz",
     name: "Mercedes-Benz",
-    headline: "Mercedes-Benz Interior Collection",
+    headline: "Mercedes-AMG Performance",
     subtitle: "Elegância que se sente em cada detalhe.",
     ctaLabel: "Explorar Mercedes",
     image: mercedesCockpit,
@@ -41,7 +41,7 @@ export const BRAND_SHOWCASE_SLIDES: BrandShowcaseSlide[] = [
   {
     slug: "audi",
     name: "Audi",
-    headline: "Audi RS Interior Collection",
+    headline: "Audi RS Performance",
     subtitle: "Minimalismo com intenção.",
     ctaLabel: "Explorar Audi",
     image: audiCockpit,
@@ -50,7 +50,7 @@ export const BRAND_SHOWCASE_SLIDES: BrandShowcaseSlide[] = [
   {
     slug: "porsche",
     name: "Porsche",
-    headline: "Porsche 911 Turbo S",
+    headline: "Porsche GT Performance",
     subtitle: "Cada detalhe, uma decisão de engenharia.",
     ctaLabel: "Explorar Porsche",
     image: porscheCockpit,

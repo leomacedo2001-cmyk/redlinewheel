@@ -155,6 +155,31 @@ export function BrandShowcase() {
         className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background from-0% via-background/55 via-45% to-transparent to-90%"
       />
 
+      {/* Escurece também o topo — é onde o título/subtítulo agora vivem. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/70 via-background/10 to-transparent"
+      />
+
+      {/* Título/subtítulo — canto superior-esquerdo. Posição independente do
+          resto do conteúdo (que continua ancorado ao fundo), por isso vive
+          fora do fluxo flex da secção, tal como a imagem e os overlays. */}
+      <div className="absolute inset-x-0 top-0 z-10 px-4 pt-5 sm:px-6 sm:pt-6 lg:px-8 lg:pt-8">
+        <AnimatePresence>
+          <motion.div
+            key={active.slug}
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="max-w-md"
+          >
+            <h2 className="text-2xl font-bold leading-[0.95] md:text-4xl">{active.headline}</h2>
+            <p className="mt-2 max-w-sm text-sm text-muted-foreground md:text-base">{active.subtitle}</p>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
       {/* Nota: não usar `container-premium` aqui — o seu `margin-inline: auto`
           entra em conflito com este contentor flex em coluna (as margens
           automáticas no eixo cruzado ganham a `align-items: stretch` e
@@ -171,12 +196,10 @@ export function BrandShowcase() {
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="ml-auto max-w-md text-right"
           >
-            <h2 className="text-2xl font-bold leading-[0.95] md:text-4xl">{active.headline}</h2>
-            <p className="ml-auto mt-2 max-w-sm text-sm text-muted-foreground md:text-base">{active.subtitle}</p>
             <Button
               asChild
               size="lg"
-              className="mt-4 h-11 rounded-none bg-primary px-6 text-sm uppercase tracking-wider hover:bg-primary/90 md:h-12 md:px-7"
+              className="h-11 rounded-none bg-primary px-6 text-sm uppercase tracking-wider hover:bg-primary/90 md:h-12 md:px-7"
             >
               <Link to="/brand/$slug" params={{ slug: active.slug }}>
                 {active.ctaLabel} <ArrowRight className="ml-2 h-4 w-4" />

@@ -98,6 +98,10 @@ function Home() {
 
       <CustomProductsSection />
 
+      <BrandShowcase />
+
+      <FeedbackShowcase />
+
       {/* BENEFITS */}
       <section className="relative isolate overflow-hidden bg-surface/40 py-20 md:py-24">
         <AmbientGlow edge="top" />
@@ -140,10 +144,6 @@ function Home() {
           </div>
         </div>
       </section>
-
-      <FeedbackShowcase />
-
-      <BrandShowcase />
 
       <CtaShowcase />
     </div>
