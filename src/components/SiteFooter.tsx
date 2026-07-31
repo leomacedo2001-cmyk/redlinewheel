@@ -142,10 +142,7 @@ export function SiteFooter() {
             <ColumnLabel>Navegação</ColumnLabel>
             <ul className="space-y-4">
               <li>
-                <FooterLink to="/">Home</FooterLink>
-              </li>
-              <li>
-                <FooterLink to="/configurator">Configurador</FooterLink>
+                <FooterLink to="/">Início</FooterLink>
               </li>
               <li>
                 <FooterLink to="/marcas">Marcas</FooterLink>
@@ -154,31 +151,36 @@ export function SiteFooter() {
                 <FooterLink to="/products">Produtos</FooterLink>
               </li>
               <li>
-                <FooterLink to="/galeria">Galeria</FooterLink>
+                <FooterLink to="/configurator">Personalizações</FooterLink>
               </li>
               <li>
-                <FooterLink to="/contact">Contacto</FooterLink>
+                <FooterLink to="/acessorios">Acessórios</FooterLink>
+              </li>
+              <li>
+                <FooterLink to="/c/$slug" params={{ slug: "patilhas" }}>
+                  PaddleShift
+                </FooterLink>
               </li>
             </ul>
           </div>
 
           <div className={`lg:border-l lg:border-white/6 lg:pl-8 ${reveal()}`} style={revealStyle(80)}>
-            <ColumnLabel>Empresa</ColumnLabel>
+            <ColumnLabel>Redline</ColumnLabel>
             <ul className="space-y-4">
               <li>
                 <FooterLink to="/about">Sobre Nós</FooterLink>
               </li>
               <li>
-                <FooterLink to="/about">O Processo</FooterLink>
+                <FooterLink to="/about">O Nosso Processo</FooterLink>
+              </li>
+              <li>
+                <FooterLink to="/about">Qualidade</FooterLink>
               </li>
               <li>
                 <FooterLink to="/about">Garantia</FooterLink>
               </li>
               <li>
-                <FooterLink to="/about">FAQ</FooterLink>
-              </li>
-              <li>
-                <FooterLink to="/privacidade">Política</FooterLink>
+                <FooterLink to="/about">FAQs</FooterLink>
               </li>
             </ul>
           </div>
@@ -192,9 +194,9 @@ export function SiteFooter() {
               <li>
                 <FooterAnchor href="tel:+351910123456">+351 910 123 456</FooterAnchor>
               </li>
-              <li className="text-[15px] text-muted-foreground">Portugal</li>
+              <li className="text-[15px] text-muted-foreground">Vila Nova de Gaia, Portugal</li>
             </ul>
-            <FooterCta to="/contact">Falar Connosco</FooterCta>
+            <FooterCta to="/contact">Fala connosco</FooterCta>
           </div>
 
           <div className={`lg:border-l lg:border-white/6 lg:pl-8 ${reveal()}`} style={revealStyle(240)}>
@@ -211,13 +213,13 @@ export function SiteFooter() {
                 </FooterAnchor>
               </li>
               <li>
-                <FooterAnchor href="https://tiktok.com/@redlineperformance" external>
-                  TikTok
+                <FooterAnchor href="https://youtube.com/@redlineperformance" external>
+                  YouTube
                 </FooterAnchor>
               </li>
               <li>
-                <FooterAnchor href="https://youtube.com/@redlineperformance" external>
-                  YouTube
+                <FooterAnchor href="https://tiktok.com/@redlineperformance" external>
+                  TikTok
                 </FooterAnchor>
               </li>
             </ul>
@@ -235,7 +237,7 @@ export function SiteFooter() {
               style={{ transform: isInView ? "scaleY(1)" : "scaleY(0)" }}
             />
             <span className="self-end whitespace-nowrap pb-0.5 text-xs uppercase tracking-[0.28em] text-muted-foreground">
-              08<span className="mx-1 text-muted-foreground/40">/</span>
+              07<span className="mx-1 text-muted-foreground/40">/</span>
               <span className="text-primary">REDLINE</span>
             </span>
           </div>
@@ -273,12 +275,13 @@ export function SiteFooter() {
 
       {/* ASSINATURA REDLINE — faixa panorâmica, mesmo container do resto do
           footer (alinha com as colunas acima). Crop, nunca resize: altura
-          dada por aspect-ratio (1416/295, a proporção pedida), largura
-          sempre 100% — nunca corta lateralmente, só topo/base via
-          object-cover. Sem padding, sem margem, sem fundo extra: o único
-          elemento entre o footer e a imagem é o fio divisor acima. */}
+          dada por aspect-ratio (1716/492 — a proporção medida diretamente
+          na referência enviada), largura sempre 100% — nunca corta
+          lateralmente, só topo/base via object-cover. Sem padding, sem
+          margem, sem fundo extra: o único elemento entre o footer e a
+          imagem é o fio divisor acima. */}
       <div className={`container-premium ${reveal()}`} style={revealStyle(400)}>
-        <div className="relative w-full overflow-hidden" style={{ aspectRatio: "1416 / 295" }}>
+        <div className="relative w-full overflow-hidden" style={{ aspectRatio: "1716 / 492" }}>
           <img
             src={signatureImage}
             alt="REDLINE"
