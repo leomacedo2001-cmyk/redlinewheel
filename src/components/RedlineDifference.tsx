@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { Cog, Gem, Hammer, type LucideIcon, PackageCheck, ShieldCheck } from "lucide-react";
 import { SectionEyebrow } from "@/components/SectionEyebrow";
 
-import stitchingTexture from "@/assets/custom-costuras-catalog.jpg";
 import carbonTexture from "@/assets/product-carbono.jpg";
 
 const FEATURES = [
@@ -60,10 +59,11 @@ function HexIcon({ icon: Icon }: { icon: LucideIcon }) {
 }
 
 /**
- * "A Diferença REDLINE" — a secção mais contida da homepage a seguir ao
- * Hero: fundo quase todo preto, duas texturas macro (costura vermelha em
- * Alcântara / carbono forjado) apenas percetíveis nas bordas, um único
- * brilho ambiente ao centro. O conteúdo nunca compete com o fundo.
+ * "A Diferença REDLINE" — pausa visual antes do vídeo/CTA final: preto
+ * profundo quase liso, uma única textura de carbono a 5% de opacidade (só
+ * profundidade, nunca reconhecível como objeto) e um glow vermelho contido
+ * atrás do título. O fundo nunca deve competir com os cartões nem com a
+ * secção de vídeo a seguir.
  */
 export function RedlineDifference() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -83,44 +83,21 @@ export function RedlineDifference() {
   const revealStyle = (index: number) => (isInView ? { animationDelay: `${index * 90}ms` } : undefined);
 
   return (
-    <section ref={sectionRef} className="relative isolate overflow-hidden bg-background pt-[110px] pb-[110px]">
-      {/* Texturas macro — apenas percetíveis junto às bordas; o centro (onde
-          vive o conteúdo) é sempre preto puro, nunca compete com o texto. */}
-      <img
-        src={stitchingTexture}
-        alt=""
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 left-0 h-full w-[45%] object-cover opacity-[0.11] blur-[3px]"
-      />
+    <section ref={sectionRef} className="relative isolate overflow-hidden bg-[#050505] pt-[110px] pb-[110px]">
+      {/* Textura única, quase impercetível — só profundidade, nunca uma
+          imagem legível (nunca leria como volante/interior/carro). */}
       <img
         src={carbonTexture}
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 right-0 h-full w-[45%] object-cover opacity-[0.11] blur-[3px]"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[0.05] blur-[6px]"
       />
-      {/* Desvanece as duas texturas para preto em todas as direções — só
-          resta um resíduo de textura nos cantos, nunca uma imagem legível. */}
+      {/* Glow vermelho contido, só atrás do título — não alcança os cartões. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
         style={{
-          background: "radial-gradient(ellipse 75% 65% at 50% 50%, var(--background) 0%, transparent 55%)",
-        }}
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 90% 90% at 50% 50%, transparent 60%, var(--background) 100%)",
-        }}
-      />
-      {/* Brilho ambiente — vermelho/laranja muito ténue, só atrás do conteúdo central. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background: "radial-gradient(ellipse 50% 60% at 50% 40%, oklch(0.58 0.22 25 / 0.1) 0%, transparent 70%)",
+          background: "radial-gradient(ellipse 42% 30% at 50% 20%, oklch(0.58 0.22 25 / 0.07) 0%, transparent 72%)",
         }}
       />
 
