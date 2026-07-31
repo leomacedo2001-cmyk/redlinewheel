@@ -271,23 +271,20 @@ export function SiteFooter() {
           "profundidade sem gradiente forte" usado no resto do footer. */}
       <div aria-hidden="true" className="h-px w-full bg-white/6" />
 
-      {/* ASSINATURA REDLINE — continuação do footer, não uma secção nova:
-          mesmo fundo #050505, sem container/max-width (full-bleed, fora do
-          container-premium de propósito), escala ligeiramente acima de
-          100% (scale-110%) para as letras da esquerda/direita saírem de
-          cena ~5% cada, cortadas pelo overflow-hidden do <footer> — o
-          "quase excede o viewport" pedido. Um gradiente para preto por
-          baixo dissolve a base/reflexo sem aresta visível. */}
-      <div className={`relative w-full overflow-hidden pb-10 ${reveal()}`} style={revealStyle(400)}>
-        <img
-          src={signatureImage}
-          alt="REDLINE"
-          className="block h-auto w-full origin-center scale-110 select-none"
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-b from-transparent to-[#050505]"
-        />
+      {/* ASSINATURA REDLINE — faixa panorâmica, mesmo container do resto do
+          footer (alinha com as colunas acima). Crop, nunca resize: altura
+          dada por aspect-ratio (1416/295, a proporção pedida), largura
+          sempre 100% — nunca corta lateralmente, só topo/base via
+          object-cover. Sem padding, sem margem, sem fundo extra: o único
+          elemento entre o footer e a imagem é o fio divisor acima. */}
+      <div className={`container-premium ${reveal()}`} style={revealStyle(400)}>
+        <div className="relative w-full overflow-hidden" style={{ aspectRatio: "1416 / 295" }}>
+          <img
+            src={signatureImage}
+            alt="REDLINE"
+            className="absolute inset-0 h-full w-full object-cover object-center select-none"
+          />
+        </div>
       </div>
     </footer>
   );
