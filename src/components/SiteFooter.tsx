@@ -278,7 +278,11 @@ export function SiteFooter() {
           largura (clamp, satura em 388px — a mesma altura que já estava
           "perfeita" com o container) para esticar só para os lados, nunca
           na vertical. object-cover preenche a largura toda sem cortar
-          lateralmente, cortando um pouco mais de topo/base em vez disso. */}
+          lateralmente. object-position deslocado para 40% (em vez do
+          center/50% por omissão) — a janela de recorte é mais pequena que
+          a marca inteira, por isso a posição vertical foi afinada à mão
+          para nunca cortar o topo das letras (o que as tornava com um
+          aspeto "achatado"), sacrificando o reflexo do chão em vez disso. */}
       <div
         className={`relative w-full overflow-hidden ${reveal()}`}
         style={{ height: "clamp(140px, 24vw, 388px)", ...revealStyle(400) }}
@@ -286,7 +290,7 @@ export function SiteFooter() {
         <img
           src={signatureImage}
           alt="REDLINE"
-          className="absolute inset-0 h-full w-full object-cover object-center select-none"
+          className="absolute inset-0 h-full w-full object-cover object-[50%_40%] select-none"
         />
       </div>
     </footer>
