@@ -290,7 +290,7 @@ export function SiteFooter() {
         <img
           src={signatureImage}
           alt="REDLINE"
-          className="absolute inset-0 h-full w-full object-cover object-[50%_40%] select-none [filter:brightness(1.22)_contrast(1.3)_saturate(1.2)_drop-shadow(0_0_5px_rgba(255,40,40,0.35))]"
+          className="absolute inset-0 h-full w-full object-cover object-[50%_40%] select-none [filter:brightness(1.32)_contrast(1.4)_saturate(1.3)_drop-shadow(0_0_7px_rgba(255,50,50,0.45))]"
         />
       </div>
     </footer>
