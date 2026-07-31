@@ -273,21 +273,21 @@ export function SiteFooter() {
           "profundidade sem gradiente forte" usado no resto do footer. */}
       <div aria-hidden="true" className="h-px w-full bg-white/6" />
 
-      {/* ASSINATURA REDLINE — faixa panorâmica, mesmo container do resto do
-          footer (alinha com as colunas acima). Crop, nunca resize: altura
-          dada por aspect-ratio (1716/492 — a proporção medida diretamente
-          na referência enviada), largura sempre 100% — nunca corta
-          lateralmente, só topo/base via object-cover. Sem padding, sem
-          margem, sem fundo extra: o único elemento entre o footer e a
-          imagem é o fio divisor acima. */}
-      <div className={`container-premium ${reveal()}`} style={revealStyle(400)}>
-        <div className="relative w-full overflow-hidden" style={{ aspectRatio: "1716 / 492" }}>
-          <img
-            src={signatureImage}
-            alt="REDLINE"
-            className="absolute inset-0 h-full w-full object-cover object-center select-none"
-          />
-        </div>
+      {/* ASSINATURA REDLINE — faixa panorâmica full-bleed: largura sempre
+          100vw (sem container, sem gaps laterais), altura independente da
+          largura (clamp, satura em 388px — a mesma altura que já estava
+          "perfeita" com o container) para esticar só para os lados, nunca
+          na vertical. object-cover preenche a largura toda sem cortar
+          lateralmente, cortando um pouco mais de topo/base em vez disso. */}
+      <div
+        className={`relative w-full overflow-hidden ${reveal()}`}
+        style={{ height: "clamp(140px, 24vw, 388px)", ...revealStyle(400) }}
+      >
+        <img
+          src={signatureImage}
+          alt="REDLINE"
+          className="absolute inset-0 h-full w-full object-cover object-center select-none"
+        />
       </div>
     </footer>
   );
