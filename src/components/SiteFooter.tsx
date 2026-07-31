@@ -2,10 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { Link, type LinkProps } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 
-import postFooterImage from "@/assets/footer/post-footer-wordmark.jpg";
+import signatureImage from "@/assets/footer/post-footer-wordmark.jpg";
 
 const EASE = "cubic-bezier(0.22,1,0.36,1)";
-const POST_FOOTER_ASPECT = "1717 / 916";
 
 /** Curva/duração partilhadas por todo o footer — pedido explícito de
  * consistência absoluta entre entrada, hover de link e hover de coluna. */
@@ -102,56 +101,6 @@ function Equalizer() {
         />
       ))}
     </span>
-  );
-}
-
-/**
- * Wordmark gigante "REDLINE" — outline puro via -webkit-text-stroke (sem
- * preenchimento), com um reflexo desvanecido por baixo (a mesma técnica
- * espelhada + máscara de fade) e um glow vermelho contido atrás, para
- * evocar a referência (letras 3D iluminadas sobre piso de estúdio) sem
- * depender de uma imagem — o wordmark continua a ser texto real. O
- * contentor tem altura fixa e overflow escondido: a base das letras é
- * cortada, exatamente como na referência.
- */
-function GiantWordmark() {
-  const strokeStyle = {
-    fontSize: "clamp(44px, 20vw, 460px)",
-    letterSpacing: "-0.02em",
-    WebkitTextStroke: "1.5px oklch(0.58 0.22 25)",
-  } as const;
-
-  return (
-    <div
-      aria-hidden="true"
-      className="relative w-full select-none overflow-hidden"
-      style={{ height: "clamp(170px, 30vw, 380px)" }}
-    >
-      {/* Ambient glow contido, só na base — nunca compete com o wordmark. */}
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3"
-        style={{
-          background: "radial-gradient(ellipse 55% 100% at 50% 100%, oklch(0.58 0.22 25 / 0.16) 0%, transparent 70%)",
-        }}
-      />
-      <span
-        className="absolute inset-x-0 top-0 block whitespace-nowrap text-center font-black leading-none text-transparent"
-        style={strokeStyle}
-      >
-        REDLINE
-      </span>
-      {/* Reflexo — cópia espelhada, desfocada e a desvanecer, como o piso da referência. */}
-      <span
-        className="absolute inset-x-0 top-full block -translate-y-3 scale-y-[-1] whitespace-nowrap text-center font-black leading-none text-transparent opacity-[0.14] blur-[2px]"
-        style={{
-          ...strokeStyle,
-          maskImage: "linear-gradient(to bottom, black, transparent 65%)",
-          WebkitMaskImage: "linear-gradient(to bottom, black, transparent 65%)",
-        }}
-      >
-        REDLINE
-      </span>
-    </div>
   );
 }
 
@@ -318,20 +267,24 @@ export function SiteFooter() {
         </div>
       </div>
 
-      {/* ELEMENTO PRINCIPAL — o wordmark gigante. */}
-      <GiantWordmark />
+      {/* Linha separadora — o mesmo fio quase invisível já usado acima. */}
+      <div
+        aria-hidden="true"
+        className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent"
+      />
 
-      {/* PÓS-FOOTER — imagem edge-to-edge fornecida, sem margens/padding,
-          altura dada pelo aspect-ratio real do ficheiro (nunca corta nada:
-          "cover" e o aspect-ratio do contentor coincidem exatamente). */}
-      <div className="relative w-full overflow-hidden" style={{ aspectRatio: POST_FOOTER_ASPECT }}>
+      {/* ASSINATURA REDLINE — um único elemento, a imagem fornecida, sem
+          cortes (aspect-ratio nativo preservado via largura contida, não
+          "cover" a full-bleed — é isso que evitava mostrar as letras
+          cortadas) e com uma largura que lhe dá o mesmo impacto visual do
+          wordmark que existia antes, sem duplicar nada nem parecer uma
+          nova secção/página. */}
+      <div className={`container-premium flex justify-center py-14 md:py-20 ${reveal()}`} style={revealStyle(400)}>
         <img
-          src={postFooterImage}
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover object-center"
+          src={signatureImage}
+          alt="REDLINE"
+          className="h-auto w-full max-w-[820px] select-none"
         />
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-black/10" />
       </div>
     </footer>
   );
