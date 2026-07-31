@@ -16,6 +16,8 @@ import { SiteHeader } from "../components/SiteHeader";
 import { SiteFooter } from "../components/SiteFooter";
 import { CookieConsentBanner } from "../components/CookieConsentBanner";
 import { GoogleAnalytics } from "../components/GoogleAnalytics";
+import { SitePreloader } from "../components/SitePreloader";
+import { PageTransition } from "../components/PageTransition";
 import { useCartSync } from "../hooks/useCartSync";
 
 function NotFoundComponent() {
@@ -141,9 +143,12 @@ function AppShell() {
   useCartSync();
   return (
     <div className="flex min-h-screen flex-col">
+      <SitePreloader />
       <SiteHeader />
       <main className="flex-1 min-w-0">
-        <Outlet />
+        <PageTransition>
+          <Outlet />
+        </PageTransition>
       </main>
       <SiteFooter />
       <Toaster theme="dark" position="top-right" />
