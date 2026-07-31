@@ -135,9 +135,15 @@ export function SiteFooter() {
         className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"
       />
 
-      {/* ZONA SUPERIOR — 5 colunas em desktop, 2 em tablet, 1 em mobile. */}
+      {/* ZONA SUPERIOR — 4 colunas em desktop (proporção 1.3/1/1/1.5 — as
+          duas centrais iguais, as exteriores maiores, tal como a
+          referência), 2 em tablet, 1 em mobile. O indicador "07/REDLINE"
+          NÃO é uma 5ª coluna dividida — na referência não há barra a
+          separá-lo de "Siga-nos"; vive fora deste grid (ver abaixo) para
+          poder alinhar-se com a largura total da página, não com o
+          container limitado a 1400px. */}
       <div className="container-premium relative py-20 md:py-24">
-        <div className="grid grid-cols-1 gap-y-14 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-y-14 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1.5fr]">
           <div className={reveal()} style={revealStyle(0)}>
             <ColumnLabel>Navegação</ColumnLabel>
             <ul className="space-y-4">
@@ -225,27 +231,42 @@ export function SiteFooter() {
             </ul>
           </div>
 
-          {/* Coluna direita — sem divisor antes dela (na referência esta
-              marca não tem barra a separá-la de "Siga-nos", ao contrário
-              das restantes colunas). A linha vertical acompanha só a
-              altura da própria lista de "Siga-nos" (não a linha inteira da
-              grelha, que é ditada pela coluna mais alta — Navegação) — por
-              isso o offset lg:pt-10 (alinha com o topo de "Instagram") e a
-              altura fixa lg:h-32 no lugar de um stretch ao nível da grid. */}
-          <div className={`lg:pt-10 ${reveal()}`} style={revealStyle(320)}>
-            <div className="flex items-stretch justify-start gap-4 lg:h-32 lg:justify-end">
-              <span
-                aria-hidden="true"
-                className="w-px origin-top bg-primary/70 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
-                style={{ transform: isInView ? "scaleY(1)" : "scaleY(0)" }}
-              />
-              <span className="self-end whitespace-nowrap pb-0.5 text-xs uppercase tracking-[0.28em] text-muted-foreground">
-                07<span className="mx-1 text-muted-foreground/40">/</span>
-                <span className="text-primary">REDLINE</span>
-              </span>
-            </div>
+          {/* Indicador "07/REDLINE" — versão mobile/tablet, em fluxo normal
+              logo a seguir à grid (abaixo de lg a versão precisa fica
+              escondida, ver mais abaixo). */}
+          <div className={`flex items-center gap-4 lg:hidden ${reveal()}`} style={revealStyle(320)}>
+            <span className="whitespace-nowrap text-xs uppercase tracking-[0.28em] text-muted-foreground">
+              07<span className="mx-1 text-muted-foreground/40">/</span>
+              <span className="text-primary">REDLINE</span>
+            </span>
+            <span
+              aria-hidden="true"
+              className="h-[2px] w-10 origin-left bg-[#D1111B] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              style={{ transform: isInView ? "scaleX(1)" : "scaleX(0)" }}
+            />
           </div>
         </div>
+      </div>
+
+      {/* Indicador "07/REDLINE" — versão desktop precisa: fora do
+          container-premium (que satura a 1400px) de propósito, para o
+          eixo da barra acompanhar a largura real da página em qualquer
+          monitor — exatamente como a assinatura por baixo, que também é
+          full-bleed. "right" em % (não px) para o alinhamento com a última
+          letra "E" da assinatura se manter em qualquer largura de ecrã. */}
+      <div
+        className={`pointer-events-none absolute right-[3.4%] top-[136px] hidden items-center gap-4 lg:flex ${reveal()}`}
+        style={revealStyle(320)}
+      >
+        <span className="whitespace-nowrap text-xs uppercase tracking-[0.28em] text-muted-foreground">
+          07<span className="mx-1 text-muted-foreground/40">/</span>
+          <span className="text-primary">REDLINE</span>
+        </span>
+        <span
+          aria-hidden="true"
+          className="h-32 w-[2px] origin-top bg-[#D1111B] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+          style={{ transform: isInView ? "scaleY(1)" : "scaleY(0)" }}
+        />
       </div>
 
       {/* Separador premium — quase invisível, com um leve tom quente ao centro. */}
