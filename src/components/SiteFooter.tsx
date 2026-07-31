@@ -274,15 +274,19 @@ export function SiteFooter() {
       <div aria-hidden="true" className="h-px w-full bg-white/6" />
 
       {/* ASSINATURA REDLINE — faixa panorâmica full-bleed: largura sempre
-          100vw (sem container, sem gaps laterais). Altura pela proporção
-          nativa da imagem (aspect-ratio real do ficheiro) em vez de um
-          crop mais agressivo — mostra a marca "REDLINE" na íntegra, sem
-          cortar topo/base, mantendo a largura sempre 100% preenchida. */}
-      <div className={`relative w-full overflow-hidden ${reveal()}`} style={revealStyle(400)}>
+          100vw (sem container, sem gaps laterais), altura independente da
+          largura (clamp, satura em 388px — a mesma altura que já estava
+          "perfeita" com o container) para esticar só para os lados, nunca
+          na vertical. object-cover preenche a largura toda sem cortar
+          lateralmente, cortando um pouco mais de topo/base em vez disso. */}
+      <div
+        className={`relative w-full overflow-hidden ${reveal()}`}
+        style={{ height: "clamp(140px, 24vw, 388px)", ...revealStyle(400) }}
+      >
         <img
           src={signatureImage}
           alt="REDLINE"
-          className="block h-auto w-full select-none"
+          className="absolute inset-0 h-full w-full object-cover object-center select-none"
         />
       </div>
     </footer>
