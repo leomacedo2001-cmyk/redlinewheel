@@ -1,16 +1,29 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, type LinkProps } from "@tanstack/react-router";
-import { BRANDS } from "@/lib/brands";
+import { ArrowRight } from "lucide-react";
 
-/** "Outras Marcas" não é uma marca real — mesmo critério já usado no resto do site. */
-const NAV_BRANDS = BRANDS.filter((b) => b.slug !== "outras-marcas");
+import postFooterImage from "@/assets/footer/post-footer-wordmark.jpg";
 
-/**
- * Link do footer — sem sublinhado por omissão; ao passar o rato, uma linha
- * fina cresce da esquerda, o mesmo vocabulário de hover já usado nos
- * cartões da Diferença REDLINE e nos testemunhos, agora aplicado aqui para
- * que a interação pareça da mesma família em toda a página.
- */
+const EASE = "cubic-bezier(0.22,1,0.36,1)";
+const POST_FOOTER_ASPECT = "1717 / 916";
+
+/** Curva/duração partilhadas por todo o footer — pedido explícito de
+ * consistência absoluta entre entrada, hover de link e hover de coluna. */
+const linkTransition = `transition-all duration-300 ease-[${EASE}]`;
+
+/** Label pequeno acima de cada coluna — maiúsculas, tracking largo, ponto
+ * vermelho ao lado, exatamente como na referência. */
+function ColumnLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="mb-6 flex items-center gap-2 text-xs uppercase tracking-[0.28em] text-[#b3b3b3]">
+      {children}
+      <span aria-hidden="true" className="h-1 w-1 shrink-0 rounded-full bg-primary" />
+    </div>
+  );
+}
+
+/** Link de navegação interna do footer: no hover desloca 4px para a direita,
+ * o texto passa a branco e um sublinhado vermelho fino cresce da esquerda. */
 function FooterLink({
   className = "",
   children,
@@ -19,22 +32,125 @@ function FooterLink({
   return (
     <Link
       {...linkProps}
-      className={`group/link relative inline-flex w-fit items-center text-sm text-muted-foreground transition-colors duration-300 ease-out hover:text-foreground ${className}`}
+      className={`group/link relative inline-flex w-fit items-center text-[15px] text-muted-foreground ${linkTransition} hover:translate-x-1 hover:text-foreground ${className}`}
     >
       {children}
       <span
         aria-hidden="true"
-        className="absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 bg-primary transition-transform duration-[280ms] ease-out group-hover/link:scale-x-100"
+        className={`absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 bg-primary ${linkTransition} group-hover/link:scale-x-100`}
       />
     </Link>
   );
 }
 
-function FooterColumn({ title, children }: { title: string; children: React.ReactNode }) {
+/** Mesma interação do FooterLink, para endereços externos/mailto/tel — que
+ * não passam pelo router. */
+function FooterAnchor({
+  href,
+  external = false,
+  className = "",
+  children,
+}: {
+  href: string;
+  external?: boolean;
+  className?: string;
+  children: React.ReactNode;
+}) {
   return (
-    <div>
-      <h4 className="mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-foreground/90">{title}</h4>
-      <ul className="space-y-3">{children}</ul>
+    <a
+      href={href}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noopener noreferrer" : undefined}
+      className={`group/link relative inline-flex w-fit items-center text-[15px] text-muted-foreground ${linkTransition} hover:translate-x-1 hover:text-foreground ${className}`}
+    >
+      {children}
+      <span
+        aria-hidden="true"
+        className={`absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 bg-primary ${linkTransition} group-hover/link:scale-x-100`}
+      />
+    </a>
+  );
+}
+
+/** O único CTA vermelho do footer — mesma mecânica de deslocamento, mas sem
+ * sublinhado (já se distingue pela cor) e com a seta a acompanhar o hover. */
+function FooterCta({ to, children }: { to: LinkProps["to"]; children: React.ReactNode }) {
+  return (
+    <Link
+      to={to}
+      className={`group/link mt-7 inline-flex w-fit items-center gap-1.5 text-[15px] font-medium text-primary ${linkTransition} hover:translate-x-1`}
+    >
+      {children}
+      <ArrowRight
+        className={`h-3.5 w-3.5 ${linkTransition} group-hover/link:translate-x-1`}
+      />
+    </Link>
+  );
+}
+
+/** Equalizer minimalista — cinco barras vermelhas com um pulsar
+ * extremamente subtil, nunca chamativo. */
+function Equalizer() {
+  const bars = [45, 75, 100, 60, 85];
+  return (
+    <span aria-hidden="true" className="inline-flex h-3.5 items-end gap-[3px]">
+      {bars.map((h, i) => (
+        <span
+          key={i}
+          className="w-[2.5px] origin-bottom animate-eq-bar rounded-full bg-primary"
+          style={{ height: `${h}%`, animationDelay: `${i * 140}ms` }}
+        />
+      ))}
+    </span>
+  );
+}
+
+/**
+ * Wordmark gigante "REDLINE" — outline puro via -webkit-text-stroke (sem
+ * preenchimento), com um reflexo desvanecido por baixo (a mesma técnica
+ * espelhada + máscara de fade) e um glow vermelho contido atrás, para
+ * evocar a referência (letras 3D iluminadas sobre piso de estúdio) sem
+ * depender de uma imagem — o wordmark continua a ser texto real. O
+ * contentor tem altura fixa e overflow escondido: a base das letras é
+ * cortada, exatamente como na referência.
+ */
+function GiantWordmark() {
+  const strokeStyle = {
+    fontSize: "clamp(44px, 20vw, 460px)",
+    letterSpacing: "-0.02em",
+    WebkitTextStroke: "1.5px oklch(0.58 0.22 25)",
+  } as const;
+
+  return (
+    <div
+      aria-hidden="true"
+      className="relative w-full select-none overflow-hidden"
+      style={{ height: "clamp(170px, 30vw, 380px)" }}
+    >
+      {/* Ambient glow contido, só na base — nunca compete com o wordmark. */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3"
+        style={{
+          background: "radial-gradient(ellipse 55% 100% at 50% 100%, oklch(0.58 0.22 25 / 0.16) 0%, transparent 70%)",
+        }}
+      />
+      <span
+        className="absolute inset-x-0 top-0 block whitespace-nowrap text-center font-black leading-none text-transparent"
+        style={strokeStyle}
+      >
+        REDLINE
+      </span>
+      {/* Reflexo — cópia espelhada, desfocada e a desvanecer, como o piso da referência. */}
+      <span
+        className="absolute inset-x-0 top-full block -translate-y-3 scale-y-[-1] whitespace-nowrap text-center font-black leading-none text-transparent opacity-[0.14] blur-[2px]"
+        style={{
+          ...strokeStyle,
+          maskImage: "linear-gradient(to bottom, black, transparent 65%)",
+          WebkitMaskImage: "linear-gradient(to bottom, black, transparent 65%)",
+        }}
+      >
+        REDLINE
+      </span>
     </div>
   );
 }
@@ -59,93 +175,120 @@ export function SiteFooter() {
     return () => observer.disconnect();
   }, []);
 
-  const reveal = (delayMs: number) =>
-    isInView ? "animate-footer-reveal" : "opacity-0";
+  const reveal = () => (isInView ? "animate-footer-reveal" : "opacity-0");
   const revealStyle = (delayMs: number) => (isInView ? { animationDelay: `${delayMs}ms` } : undefined);
 
   return (
-    <footer
-      ref={footerRef}
-      className="relative overflow-hidden border-t border-border/60 bg-surface mt-24"
-    >
-      {/* O website termina aqui — sem luz própria. A pequena transição vem só
-          do halo inferior da última secção (CTA), já dentro dela mesma; o
-          footer em si é preto sólido, sem gradientes nem pseudo-elementos.
-          A única "profundidade" permitida é este fio de luz neutro (não
-          laranja) mesmo no topo — o brilho quase impercetível de um bordo a
-          apanhar luz, não um glow. */}
+    <footer ref={footerRef} className="relative overflow-hidden border-t border-white/6 bg-[#050505] mt-24">
+      {/* Fio de luz neutro no topo — mesma "profundidade sem gradiente" já usada antes. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"
       />
 
+      {/* ZONA SUPERIOR — 5 colunas em desktop, 2 em tablet, 1 em mobile. */}
       <div className="container-premium relative py-20 md:py-24">
-        <div className="grid grid-cols-1 gap-y-14 gap-x-10 sm:grid-cols-2 lg:grid-cols-12 lg:gap-x-12">
-          {/* Âncora: a marca */}
-          <div className={`sm:col-span-2 lg:col-span-4 ${reveal(0)}`} style={revealStyle(0)}>
-            <Link to="/" className="inline-flex items-baseline gap-2.5">
-              <span className="text-3xl font-bold tracking-tight">
-                REDLINE<span className="text-primary">.</span>
-              </span>
-              <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Automotive</span>
-            </Link>
-            <p className="mt-5 max-w-[30ch] text-sm leading-relaxed text-muted-foreground/90">
-              Volantes premium personalizados para uma experiência de condução única.
-            </p>
-          </div>
-
-          {/* Loja / Empresa / Marcas */}
-          <div
-            className={`grid grid-cols-2 gap-x-8 gap-y-10 sm:col-span-2 sm:grid-cols-3 lg:col-span-5 lg:gap-x-10 ${reveal(80)}`}
-            style={revealStyle(80)}
-          >
-            <FooterColumn title="Loja">
+        <div className="grid grid-cols-1 gap-y-14 sm:grid-cols-2 lg:grid-cols-5">
+          <div className={reveal()} style={revealStyle(0)}>
+            <ColumnLabel>Navegação</ColumnLabel>
+            <ul className="space-y-4">
               <li>
-                <FooterLink to="/products">Todos os Produtos</FooterLink>
+                <FooterLink to="/">Home</FooterLink>
               </li>
               <li>
-                <FooterLink to="/products">Volantes</FooterLink>
+                <FooterLink to="/configurator">Configurador</FooterLink>
               </li>
               <li>
-                <FooterLink to="/acessorios">Acessórios</FooterLink>
+                <FooterLink to="/marcas">Marcas</FooterLink>
               </li>
-            </FooterColumn>
-            <FooterColumn title="Empresa">
               <li>
-                <FooterLink to="/about">Sobre Nós</FooterLink>
+                <FooterLink to="/products">Produtos</FooterLink>
+              </li>
+              <li>
+                <FooterLink to="/galeria">Galeria</FooterLink>
               </li>
               <li>
                 <FooterLink to="/contact">Contacto</FooterLink>
               </li>
-            </FooterColumn>
-            <div className="col-span-2 sm:col-span-1">
-              <h4 className="mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-foreground/90">
-                Marcas
-              </h4>
-              <div className="flex flex-wrap gap-x-4 gap-y-2.5">
-                {NAV_BRANDS.map((b) => (
-                  <FooterLink key={b.slug} to="/brand/$slug" params={{ slug: b.slug }}>
-                    {b.name}
-                  </FooterLink>
-                ))}
-              </div>
-            </div>
+            </ul>
           </div>
 
-          {/* Assinatura de marca */}
-          <div
-            className={`lg:col-span-3 lg:border-l lg:border-border/30 lg:pl-10 ${reveal(160)}`}
-            style={revealStyle(160)}
-          >
-            <div className="text-xs font-semibold uppercase tracking-[0.25em] text-primary">
-              Manufatura Redline
-            </div>
-            <ul className="mt-5 space-y-2.5 text-sm text-muted-foreground/90">
-              <li>Feito à Mão em Portugal</li>
-              <li>Garantia Premium de 2 Anos</li>
-              <li>Compatibilidade OEM</li>
-              <li>Entrega Europeia</li>
+          <div className={`lg:border-l lg:border-white/6 lg:pl-8 ${reveal()}`} style={revealStyle(80)}>
+            <ColumnLabel>Empresa</ColumnLabel>
+            <ul className="space-y-4">
+              <li>
+                <FooterLink to="/about">Sobre Nós</FooterLink>
+              </li>
+              <li>
+                <FooterLink to="/about">O Processo</FooterLink>
+              </li>
+              <li>
+                <FooterLink to="/about">Garantia</FooterLink>
+              </li>
+              <li>
+                <FooterLink to="/about">FAQ</FooterLink>
+              </li>
+              <li>
+                <FooterLink to="/privacidade">Política</FooterLink>
+              </li>
             </ul>
+          </div>
+
+          <div className={`lg:border-l lg:border-white/6 lg:pl-8 ${reveal()}`} style={revealStyle(160)}>
+            <ColumnLabel>Contacto</ColumnLabel>
+            <ul className="space-y-4">
+              <li>
+                <FooterAnchor href="mailto:info@redlinewheels.com">info@redlinewheels.com</FooterAnchor>
+              </li>
+              <li>
+                <FooterAnchor href="tel:+351910123456">+351 910 123 456</FooterAnchor>
+              </li>
+              <li className="text-[15px] text-muted-foreground">Portugal</li>
+            </ul>
+            <FooterCta to="/contact">Falar Connosco</FooterCta>
+          </div>
+
+          <div className={`lg:border-l lg:border-white/6 lg:pl-8 ${reveal()}`} style={revealStyle(240)}>
+            <ColumnLabel>Siga-nos</ColumnLabel>
+            <ul className="space-y-4">
+              <li>
+                <FooterAnchor href="https://instagram.com/redlineperformance" external>
+                  Instagram
+                </FooterAnchor>
+              </li>
+              <li>
+                <FooterAnchor href="https://facebook.com/redlineperformance" external>
+                  Facebook
+                </FooterAnchor>
+              </li>
+              <li>
+                <FooterAnchor href="https://tiktok.com/@redlineperformance" external>
+                  TikTok
+                </FooterAnchor>
+              </li>
+              <li>
+                <FooterAnchor href="https://youtube.com/@redlineperformance" external>
+                  YouTube
+                </FooterAnchor>
+              </li>
+            </ul>
+          </div>
+
+          {/* Coluna direita — elemento minimalista com linha vertical vermelha,
+              que cresce (scaleY 0→1) só quando o footer entra em viewport. */}
+          <div
+            className={`flex items-stretch justify-start gap-4 lg:justify-end lg:border-l lg:border-white/6 lg:pl-8 ${reveal()}`}
+            style={revealStyle(320)}
+          >
+            <span
+              aria-hidden="true"
+              className="w-px origin-top bg-primary/70 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              style={{ transform: isInView ? "scaleY(1)" : "scaleY(0)" }}
+            />
+            <span className="self-end whitespace-nowrap pb-0.5 text-xs uppercase tracking-[0.28em] text-muted-foreground">
+              08<span className="mx-1 text-muted-foreground/40">/</span>
+              <span className="text-primary">REDLINE</span>
+            </span>
           </div>
         </div>
       </div>
@@ -156,19 +299,39 @@ export function SiteFooter() {
         className="h-px w-full bg-gradient-to-r from-transparent via-primary/15 to-transparent"
       />
 
+      {/* ZONA INFERIOR — copyright / tagline / assinatura de performance. */}
       <div className="container-premium py-7">
         <div
-          className={`grid grid-cols-1 gap-3 text-xs text-muted-foreground sm:grid-cols-3 sm:items-center ${reveal(220)}`}
-          style={revealStyle(220)}
+          className={`grid grid-cols-1 gap-4 text-xs text-muted-foreground sm:grid-cols-3 sm:items-center ${reveal()}`}
+          style={revealStyle(380)}
         >
           <span className="sm:text-left">
-            © {new Date().getFullYear()} REDLINE Performance. Todos os direitos reservados.
+            © REDLINE Performance. Todos os direitos reservados.
           </span>
-          <FooterLink to="/privacidade" className="sm:mx-auto">
-            Política de Privacidade
-          </FooterLink>
-          <span className="sm:text-right">Made with precision in Portugal</span>
+          <span className="font-medium uppercase tracking-[0.3em] text-primary sm:text-center">
+            / Built to Perform /
+          </span>
+          <span className="flex items-center gap-2.5 sm:justify-end sm:text-right">
+            Desempenho. Precisão. Personalização.
+            <Equalizer />
+          </span>
         </div>
+      </div>
+
+      {/* ELEMENTO PRINCIPAL — o wordmark gigante. */}
+      <GiantWordmark />
+
+      {/* PÓS-FOOTER — imagem edge-to-edge fornecida, sem margens/padding,
+          altura dada pelo aspect-ratio real do ficheiro (nunca corta nada:
+          "cover" e o aspect-ratio do contentor coincidem exatamente). */}
+      <div className="relative w-full overflow-hidden" style={{ aspectRatio: POST_FOOTER_ASPECT }}>
+        <img
+          src={postFooterImage}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover object-center"
+        />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-black/10" />
       </div>
     </footer>
   );
