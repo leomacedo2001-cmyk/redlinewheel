@@ -128,7 +128,7 @@ export function SiteFooter() {
   const revealStyle = (delayMs: number) => (isInView ? { animationDelay: `${delayMs}ms` } : undefined);
 
   return (
-    <footer ref={footerRef} className="relative overflow-hidden border-t border-white/6 bg-[#050505] mt-24">
+    <footer ref={footerRef} className="relative overflow-hidden border-t border-white/6 bg-black mt-24">
       {/* Fio de luz neutro no topo — mesma "profundidade sem gradiente" já usada antes. */}
       <div
         aria-hidden="true"
