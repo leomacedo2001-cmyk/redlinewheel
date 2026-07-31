@@ -278,7 +278,7 @@ export function SiteFooter() {
           cena ~5% cada, cortadas pelo overflow-hidden do <footer> — o
           "quase excede o viewport" pedido. Um gradiente para preto por
           baixo dissolve a base/reflexo sem aresta visível. */}
-      <div className={`relative w-full overflow-hidden pt-12 pb-10 ${reveal()}`} style={revealStyle(400)}>
+      <div className={`relative w-full overflow-hidden pb-10 ${reveal()}`} style={revealStyle(400)}>
         <img
           src={signatureImage}
           alt="REDLINE"
