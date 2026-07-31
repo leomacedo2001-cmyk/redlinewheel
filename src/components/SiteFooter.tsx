@@ -225,21 +225,25 @@ export function SiteFooter() {
             </ul>
           </div>
 
-          {/* Coluna direita — elemento minimalista com linha vertical vermelha,
-              que cresce (scaleY 0→1) só quando o footer entra em viewport. */}
-          <div
-            className={`flex items-stretch justify-start gap-4 lg:justify-end lg:border-l lg:border-white/6 lg:pl-8 ${reveal()}`}
-            style={revealStyle(320)}
-          >
-            <span
-              aria-hidden="true"
-              className="w-px origin-top bg-primary/70 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
-              style={{ transform: isInView ? "scaleY(1)" : "scaleY(0)" }}
-            />
-            <span className="self-end whitespace-nowrap pb-0.5 text-xs uppercase tracking-[0.28em] text-muted-foreground">
-              07<span className="mx-1 text-muted-foreground/40">/</span>
-              <span className="text-primary">REDLINE</span>
-            </span>
+          {/* Coluna direita — sem divisor antes dela (na referência esta
+              marca não tem barra a separá-la de "Siga-nos", ao contrário
+              das restantes colunas). A linha vertical acompanha só a
+              altura da própria lista de "Siga-nos" (não a linha inteira da
+              grelha, que é ditada pela coluna mais alta — Navegação) — por
+              isso o offset lg:pt-10 (alinha com o topo de "Instagram") e a
+              altura fixa lg:h-32 no lugar de um stretch ao nível da grid. */}
+          <div className={`lg:pt-10 ${reveal()}`} style={revealStyle(320)}>
+            <div className="flex items-stretch justify-start gap-4 lg:h-32 lg:justify-end">
+              <span
+                aria-hidden="true"
+                className="w-px origin-top bg-primary/70 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                style={{ transform: isInView ? "scaleY(1)" : "scaleY(0)" }}
+              />
+              <span className="self-end whitespace-nowrap pb-0.5 text-xs uppercase tracking-[0.28em] text-muted-foreground">
+                07<span className="mx-1 text-muted-foreground/40">/</span>
+                <span className="text-primary">REDLINE</span>
+              </span>
+            </div>
           </div>
         </div>
       </div>
