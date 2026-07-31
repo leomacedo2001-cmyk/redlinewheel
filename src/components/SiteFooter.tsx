@@ -171,16 +171,16 @@ export function SiteFooter() {
                 <FooterLink to="/about">Sobre Nós</FooterLink>
               </li>
               <li>
-                <FooterLink to="/about">O Nosso Processo</FooterLink>
+                <FooterLink to="/processo">O Nosso Processo</FooterLink>
               </li>
               <li>
-                <FooterLink to="/about">Qualidade</FooterLink>
+                <FooterLink to="/qualidade">Qualidade</FooterLink>
               </li>
               <li>
-                <FooterLink to="/about">Garantia</FooterLink>
+                <FooterLink to="/garantia">Garantia</FooterLink>
               </li>
               <li>
-                <FooterLink to="/about">FAQs</FooterLink>
+                <FooterLink to="/faqs">FAQs</FooterLink>
               </li>
             </ul>
           </div>
