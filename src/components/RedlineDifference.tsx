@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Cog, Gem, Hammer, type LucideIcon, PackageCheck, ShieldCheck } from "lucide-react";
+import { Cog, Gem, Hammer, type LucideIcon, Palette, PackageCheck, ShieldCheck } from "lucide-react";
 import { SectionEyebrow } from "@/components/SectionEyebrow";
 
 import carbonTexture from "@/assets/product-carbono.jpg";
@@ -30,6 +30,12 @@ const FEATURES = [
     title: "Entrega Segura",
     description: "Envio protegido para toda a Europa com embalagem reforçada.",
   },
+  {
+    icon: Palette,
+    title: "Personalização Exclusiva",
+    description:
+      "Cada volante é desenvolvido à medida, permitindo combinar materiais, costuras, cores e acabamentos para criar um resultado verdadeiramente único.",
+  },
 ];
 
 /** Vértices de um hexágono "deitado" (achatado nos lados), a apontar para
@@ -39,20 +45,25 @@ const HEX_CLIP = "polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0%
 /**
  * Contorno hexagonal sem SVG: duas camadas com o mesmo clip-path, a de trás
  * um pouco maior e da cor do traço, a da frente encolhida por 1.5px e da cor
- * do fundo — o que sobra entre as duas lê-se como um contorno fino.
+ * do cartão (não do fundo da secção — o ícone vive dentro do cartão). No
+ * hover: leve rotação (não scale, para não somar com o scale do cartão) e
+ * brilho adicional atrás — a única "abordagem de ícone" escolhida.
  */
 function HexIcon({ icon: Icon }: { icon: LucideIcon }) {
   return (
     <span className="relative flex h-12 w-12 shrink-0 items-center justify-center">
       <span
         aria-hidden="true"
-        className="absolute inset-0 bg-primary/0 blur-lg transition-colors duration-500 group-hover:bg-primary/20"
+        className="absolute inset-0 bg-primary/0 blur-lg transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:bg-primary/20"
       />
       <span className="absolute inset-0 bg-primary/55" style={{ clipPath: HEX_CLIP }} />
-      <span className="absolute inset-[1.5px] bg-background" style={{ clipPath: HEX_CLIP }} />
+      <span
+        className="absolute inset-[1.5px] bg-[rgb(12,12,12)] transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:bg-[rgb(18,18,18)]"
+        style={{ clipPath: HEX_CLIP }}
+      />
       <Icon
         strokeWidth={1.5}
-        className="relative h-5 w-5 text-primary/80 transition-colors duration-500 group-hover:text-primary"
+        className="relative h-5 w-5 text-primary/80 transition-[color,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:rotate-3 group-hover:text-primary"
       />
     </span>
   );
@@ -62,8 +73,9 @@ function HexIcon({ icon: Icon }: { icon: LucideIcon }) {
  * "A Diferença REDLINE" — pausa visual antes do vídeo/CTA final: preto
  * profundo quase liso, uma única textura de carbono a 5% de opacidade (só
  * profundidade, nunca reconhecível como objeto) e um glow vermelho contido
- * atrás do título. O fundo nunca deve competir com os cartões nem com a
- * secção de vídeo a seguir.
+ * atrás do título. Seis cartões de dimensões idênticas (grelha 3×2 em
+ * desktop, 2 colunas em tablet, 1 em mobile), com entrada em cascata e um
+ * hover discreto — nunca compete com os cartões nem com a secção seguinte.
  */
 export function RedlineDifference() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -78,9 +90,6 @@ export function RedlineDifference() {
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
-
-  const reveal = (index: number) => (isInView ? "animate-feature-reveal" : "opacity-0");
-  const revealStyle = (index: number) => (isInView ? { animationDelay: `${index * 90}ms` } : undefined);
 
   return (
     <section ref={sectionRef} className="relative isolate overflow-hidden bg-[#050505] pt-[110px] pb-[110px]">
@@ -102,33 +111,42 @@ export function RedlineDifference() {
       />
 
       <div className="relative z-10 mx-auto max-w-[1600px] px-6">
-        <div className={`mb-16 text-center md:mb-20 ${reveal(0)}`} style={revealStyle(0)}>
+        <div className={`mb-16 text-center md:mb-20 ${isInView ? "animate-feature-reveal" : "opacity-0"}`}>
           <SectionEyebrow align="center" className="mb-4">
             Porque Escolher a REDLINE
           </SectionEyebrow>
           <h2 className="text-4xl font-bold tracking-tight md:text-6xl">Excelência em cada detalhe.</h2>
         </div>
 
-        {/* Divisores verticais só na grelha de 5 colunas — a 2 colunas os 5
-            itens quebram de forma desigual (2/2/1) e uma borda vertical fixa
-            ficaria desalinhada com o conteúdo por baixo, o que contrariaria
-            o pedido de "alinhamento perfeito". A 1/2 colunas o espaçamento
-            generoso já basta ("less is more"). */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
+        {/* Grelha premium: 3 colunas × 2 linhas em desktop, 2 em tablet, 1
+            em mobile — todos os cartões com o mesmo tamanho (h-full dentro
+            de uma grelha CSS, que já estica cada linha à altura do maior
+            item). Espaçamento na escala de 8px (gap-6 = 24px, p-8 = 32px). */}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map(({ icon, title, description }, i) => (
             <div
               key={title}
-              className={`group relative flex items-center gap-4 px-6 py-6 transition-transform duration-500 ease-out hover:scale-[1.01] lg:px-6 lg:py-2 ${
-                i > 0 ? "lg:border-l lg:border-foreground/10" : ""
-              } ${reveal(i + 1)}`}
-              style={revealStyle(i + 1)}
+              className={`group relative isolate flex h-full min-h-[232px] cursor-pointer flex-col gap-6 rounded-sm border border-white/10 bg-[rgb(12,12,12)] p-8 transition-[transform,background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:scale-[1.015] hover:border-primary/50 hover:bg-[rgb(18,18,18)] hover:shadow-[0_24px_48px_-28px_oklch(0.58_0.22_25_/_0.35)] ${
+                isInView ? "animate-feature-reveal" : "opacity-0"
+              }`}
+              style={isInView ? { animationDelay: `${i * 70}ms` } : undefined}
             >
+              {/* Glow interno muito subtil — só aparece no hover, nunca no estado normal. */}
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 rounded-sm opacity-0 transition-opacity duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-100"
+                style={{
+                  background: "radial-gradient(circle at 30% 15%, oklch(0.58 0.22 25 / 0.08), transparent 65%)",
+                }}
+              />
               <HexIcon icon={icon} />
-              <div className="min-w-0">
-                <h3 className="text-sm font-semibold text-foreground/90 transition-colors duration-500 group-hover:text-foreground">
+              <div>
+                <h3 className="text-base font-semibold text-foreground/90 transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:text-white">
                   {title}
                 </h3>
-                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{description}</p>
+                <p className="mt-2 min-h-[72px] text-sm leading-relaxed text-muted-foreground transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:text-foreground/70">
+                  {description}
+                </p>
               </div>
             </div>
           ))}
