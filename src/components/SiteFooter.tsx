@@ -267,23 +267,26 @@ export function SiteFooter() {
         </div>
       </div>
 
-      {/* Linha separadora — o mesmo fio quase invisível já usado acima. */}
-      <div
-        aria-hidden="true"
-        className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent"
-      />
+      {/* Linha separadora — o mesmo fio quase invisível, mesmo mote de
+          "profundidade sem gradiente forte" usado no resto do footer. */}
+      <div aria-hidden="true" className="h-px w-full bg-white/6" />
 
-      {/* ASSINATURA REDLINE — um único elemento, a imagem fornecida, sem
-          cortes (aspect-ratio nativo preservado via largura contida, não
-          "cover" a full-bleed — é isso que evitava mostrar as letras
-          cortadas) e com uma largura que lhe dá o mesmo impacto visual do
-          wordmark que existia antes, sem duplicar nada nem parecer uma
-          nova secção/página. */}
-      <div className={`container-premium flex justify-center py-14 md:py-20 ${reveal()}`} style={revealStyle(400)}>
+      {/* ASSINATURA REDLINE — continuação do footer, não uma secção nova:
+          mesmo fundo #050505, sem container/max-width (full-bleed, fora do
+          container-premium de propósito), escala ligeiramente acima de
+          100% (scale-110%) para as letras da esquerda/direita saírem de
+          cena ~5% cada, cortadas pelo overflow-hidden do <footer> — o
+          "quase excede o viewport" pedido. Um gradiente para preto por
+          baixo dissolve a base/reflexo sem aresta visível. */}
+      <div className={`relative w-full overflow-hidden pt-12 pb-10 ${reveal()}`} style={revealStyle(400)}>
         <img
           src={signatureImage}
           alt="REDLINE"
-          className="h-auto w-full max-w-[820px] select-none"
+          className="block h-auto w-full origin-center scale-110 select-none"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-b from-transparent to-[#050505]"
         />
       </div>
     </footer>
