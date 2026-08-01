@@ -6,6 +6,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Button } from "@/components/ui/button";
 import { AmbientGlow } from "@/components/AmbientGlow";
+import { SectionEyebrow } from "@/components/SectionEyebrow";
 import { ACTIVE_BRAND_SHOWCASE_SLIDES } from "@/lib/brandShowcase";
 
 /**
@@ -29,6 +30,18 @@ import { ACTIVE_BRAND_SHOWCASE_SLIDES } from "@/lib/brandShowcase";
 
 const BOUNDARY = 0.7;
 const MIN_SEGMENT_PX = 560;
+/** Opacidade máxima da cortina de fundo — nunca 1 (opaco): a secção
+ * "Transformação" (por cima) continua visível, só desvanecida, nunca
+ * desaparece por completo. */
+const BACKDROP_MAX_OPACITY = 0.55;
+/** Opacidade máxima da pré-visualização de "Comunidade REDLINE" (por
+ * baixo). O GSAP pin-spacer ocupa toda a distância de scroll das 4 marcas
+ * — o DOM real da secção seguinte só entra no ecrã depois do pin libertar,
+ * nunca durante ele, por isso não há "conteúdo real" nenhum para desvanecer
+ * ali (confirmado via elementFromPoint: aquele ponto cai sempre dentro do
+ * próprio pin-spacer). Esta legenda é uma antevisão deliberada — mesmo
+ * texto da abertura de FeedbackShowcase — não a secção real a espreitar. */
+const BOTTOM_PREVIEW_MAX_OPACITY = 0.6;
 
 function easeInOutCubic(t: number): number {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
@@ -62,6 +75,7 @@ export function BrandShowcase() {
   const buttonWrapRefs = useRef<(HTMLDivElement | null)[]>([]);
   const barFillRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const backdropRef = useRef<HTMLDivElement>(null);
+  const bottomPreviewRef = useRef<HTMLDivElement>(null);
   const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
   const activeIndexRef = useRef(0);
 
@@ -84,8 +98,9 @@ export function BrandShowcase() {
 
       const fadeBackdrop = (visible: boolean) => {
         const el = backdropRef.current;
-        if (!el) return;
-        gsap.to(el, { opacity: visible ? 1 : 0, duration: reduced ? 0 : 0.4, overwrite: true });
+        if (el) gsap.to(el, { opacity: visible ? BACKDROP_MAX_OPACITY : 0, duration: reduced ? 0 : 0.4, overwrite: true });
+        const preview = bottomPreviewRef.current;
+        if (preview) gsap.to(preview, { opacity: visible ? BOTTOM_PREVIEW_MAX_OPACITY : 0, duration: reduced ? 0 : 0.4, overwrite: true });
       };
 
       const st = ScrollTrigger.create({
@@ -219,14 +234,17 @@ export function BrandShowcase() {
       </div>
 
       {/* Cortina de fundo — cobre o ecrã inteiro (não só a caixa pinada de
-          560px) enquanto a secção está pinada, desvanecendo o que ainda
-          estivesse visível das secções vizinhas (fim de "Transformação",
-          início de "Comunidade REDLINE") assim que o pin arranca. Fica
-          sempre por baixo do cabeçalho (z-20 < header z-50) e por baixo da
-          própria caixa pinada (z-30). O ambient light nos dois gaps (por
-          cima/baixo da caixa pinada, mais estreita que o ecrã) vive dentro
-          desta cortina — herda de graça o mesmo fade in/out do pin, sem
-          precisar de lógica própria. */}
+          560px) enquanto a secção está pinada, desvanecendo (nunca
+          escondendo por completo — só até BACKDROP_MAX_OPACITY) o que
+          ainda estivesse visível das secções vizinhas (fim de
+          "Transformação", início de "Comunidade REDLINE") assim que o pin
+          arranca. O foco principal continua nas Marcas, mas o contexto à
+          volta mantém-se legível, só apagado. Fica sempre por baixo do
+          cabeçalho (z-20 < header z-50) e por baixo da própria caixa
+          pinada (z-30). O ambient light nos dois gaps (por cima/baixo da
+          caixa pinada, mais estreita que o ecrã) vive dentro desta cortina
+          — herda de graça o mesmo fade in/out do pin, sem precisar de
+          lógica própria. */}
       <div ref={backdropRef} aria-hidden="true" className="pointer-events-none fixed inset-0 z-20 isolate overflow-hidden bg-background opacity-0">
         {/* O halo "top" da AmbientGlow ancora ao próprio topo do elemento
             que o contém — sem este deslocamento, o seu pico ficaria
@@ -237,6 +255,16 @@ export function BrandShowcase() {
           <AmbientGlow edge="top" />
         </div>
         <AmbientGlow edge="bottom" />
+
+        {/* Antevisão de "Comunidade REDLINE" — o pin-spacer do GSAP ocupa
+            toda a distância de scroll das 4 marcas, por isso o DOM real
+            desta secção nunca está no ecrã enquanto Marcas está pinada (só
+            depois do pin libertar). Mesmo texto de abertura de
+            FeedbackShowcase.tsx, a antever o que vem a seguir. */}
+        <div ref={bottomPreviewRef} className="absolute inset-x-0 bottom-0 px-4 pb-8 text-center opacity-0 sm:px-6 sm:pb-10 lg:px-8">
+          <SectionEyebrow align="center">Comunidade REDLINE</SectionEyebrow>
+          <h2 className="mt-3 text-2xl font-bold md:text-3xl">Confiança que se vê ao volante.</h2>
+        </div>
       </div>
 
       {/* elemento pinado — overflow-hidden aqui é seguro (é o próprio
