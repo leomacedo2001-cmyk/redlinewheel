@@ -357,7 +357,7 @@ export function SiteFooter() {
           <motion.img
             src={signatureImage}
             alt="REDLINE"
-            className="h-full w-full select-none object-cover object-center [filter:brightness(1.42)_contrast(1.5)_saturate(1.4)_drop-shadow(0_0_9px_rgba(255,60,60,0.55))]"
+            className="h-full w-full select-none object-cover object-center"
             style={{ y: parallaxY, willChange: "transform" }}
           />
         </motion.div>
