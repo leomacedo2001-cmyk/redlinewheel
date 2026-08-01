@@ -351,12 +351,12 @@ export function SiteFooter() {
       {/* ASSINATURA REDLINE — nasce diretamente do footer: mesmo fundo
           preto, sem linha, sem sombra, sem gap. Fade puro (sem
           translateY) em 1400ms, com o seu próprio gatilho de viewport.
-          object-position 50% 23% (em vez de center) — a center a "perna
-          superior" do E (e o topo das restantes letras) ficava cortada;
-          este valor foi afinado visualmente (22%→23%, em ecrãs fullscreen
-          largos a janela de recorte encolhe e o corte de baixo tornava-se
-          mais visível que o de cima) até as 3 pernas do E ficarem visíveis
-          com uma margem simétrica por cima e por baixo. Parallax
+          object-position center (50% 50%) — pedido explícito de simetria
+          absoluta: o corte de cima e o corte de baixo têm de ser
+          exatamente iguais, o que "center" garante matematicamente (o
+          object-cover fica sempre centrado na imagem fonte, logo o
+          excedente cortado divide-se em partes iguais para cada lado).
+          Parallax
           extremamente subtil (±4px) ligado ao scroll, e uma respiração de
           brilho quase impercetível (98%→100%) via CSS — nunca glow, nunca
           neon. */}
@@ -370,7 +370,7 @@ export function SiteFooter() {
           <motion.img
             src={signatureImage}
             alt="REDLINE"
-            className="h-full w-full select-none object-cover object-[50%_23%]"
+            className="h-full w-full select-none object-cover object-center"
             style={{ y: parallaxY, willChange: "transform" }}
           />
         </motion.div>
