@@ -30,6 +30,14 @@ import { ACTIVE_BRAND_SHOWCASE_SLIDES } from "@/lib/brandShowcase";
 
 const BOUNDARY = 0.7;
 const MIN_SEGMENT_PX = 560;
+/** Altura do cabeçalho fixo (SiteHeader, h-16). Centrar a caixa pinada no
+ * VIEWPORT inteiro (`center center`) dava um gap de cima mais pequeno que
+ * o de baixo em qualquer altura de ecrã — o cabeçalho "come" 64px só do
+ * lado de cima, nunca do lado de baixo. Deslocar o ponto de centragem
+ * metade dessa altura (32px) para baixo faz a caixa centrar-se no espaço
+ * ABAIXO do cabeçalho, não no ecrã inteiro — os dois gaps ficam iguais,
+ * qualquer que seja a altura da janela (a prova está em baixo, no `start`). */
+const HEADER_HEIGHT_PX = 64;
 /** Opacidade máxima da cortina de fundo — nunca 1 (opaco): a secção
  * "Transformação" (por cima) continua visível, só desvanecida, nunca
  * desaparece por completo. */
@@ -105,12 +113,17 @@ export function BrandShowcase() {
 
       const st = ScrollTrigger.create({
         trigger: pinRef.current,
-        // "center center" — a secção pina assim que se apresenta centrada
-        // no ecrã (não só quando o topo encosta ao cabeçalho), tal como
-        // pedido. Como o pin fixa o elemento exatamente onde estava no
-        // instante do disparo, a posição final passa a ser essa mesma
-        // composição centrada, em vez de "encostada" ao cabeçalho.
-        start: "center center",
+        // A secção pina assim que se apresenta centrada no ecrã (não só
+        // quando o topo encosta ao cabeçalho). "center+=HEADER/2" desloca
+        // esse centro para o meio do espaço ABAIXO do cabeçalho (ver
+        // HEADER_HEIGHT_PX acima) — sem isto, o gap de cima ficava sempre
+        // 64px mais pequeno que o de baixo, e em ecrãs mais baixos
+        // desaparecia por completo (era exatamente isso que faltava
+        // ver no fim de "Transformação"). Como o pin fixa o elemento
+        // exatamente onde estava no instante do disparo, a posição final
+        // passa a ser essa composição centrada (com os dois gaps iguais),
+        // em vez de "encostada" ao cabeçalho.
+        start: `center center+=${HEADER_HEIGHT_PX / 2}`,
         end: () => `+=${n * getSegmentPx()}`,
         pin: true,
         scrub: true,
