@@ -351,18 +351,20 @@ export function SiteFooter() {
       {/* ASSINATURA REDLINE — nasce diretamente do footer: mesmo fundo
           preto, sem linha, sem sombra, sem gap. Fade puro (sem
           translateY) em 1400ms, com o seu próprio gatilho de viewport.
-          object-position center (50% 50%) — pedido explícito de simetria
-          absoluta: o corte de cima e o corte de baixo têm de ser
-          exatamente iguais, o que "center" garante matematicamente (o
-          object-cover fica sempre centrado na imagem fonte, logo o
-          excedente cortado divide-se em partes iguais para cada lado).
-          Parallax
+          Afinação fina sobre a simetria matemática (center): +0.5% no eixo
+          Y ("subir" a imagem) para corrigir o resíduo que o corte 100%
+          simétrico ainda deixava. A imagem em si fica 0.5% menor que a
+          própria caixa (inset em vez de inset-0), o que dá um ligeiro
+          corte extra nas letras nas quatro arestas — a margem resultante
+          é preenchida com a mesma cor de fundo do footer (#050505), nunca
+          com o próprio conteúdo da foto, por isso nunca aparece como uma
+          "moldura" visível, só como fundo a continuar. Parallax
           extremamente subtil (±4px) ligado ao scroll, e uma respiração de
           brilho quase impercetível (98%→100%) via CSS — nunca glow, nunca
           neon. */}
       <div ref={signatureRef} className="relative w-full overflow-hidden" style={{ height: "clamp(140px, 24vw, 388px)" }}>
         <motion.div
-          className={`absolute inset-0 ${prefersReducedMotion ? "" : "animate-signature-breathe"}`}
+          className={`absolute inset-0 bg-[#050505] ${prefersReducedMotion ? "" : "animate-signature-breathe"}`}
           initial={{ opacity: 0 }}
           animate={signatureInView ? { opacity: 1 } : {}}
           transition={{ duration: 1.4, ease: "easeOut" }}
@@ -370,8 +372,16 @@ export function SiteFooter() {
           <motion.img
             src={signatureImage}
             alt="REDLINE"
-            className="h-full w-full select-none object-cover object-center"
-            style={{ y: parallaxY, willChange: "transform" }}
+            className="absolute select-none object-cover"
+            style={{
+              top: "0.5%",
+              left: "0.5%",
+              width: "calc(100% - 1%)",
+              height: "calc(100% - 1%)",
+              objectPosition: "50% 50.5%",
+              y: parallaxY,
+              willChange: "transform",
+            }}
           />
         </motion.div>
       </div>
