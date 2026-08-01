@@ -223,8 +223,21 @@ export function BrandShowcase() {
           estivesse visível das secções vizinhas (fim de "Transformação",
           início de "Comunidade REDLINE") assim que o pin arranca. Fica
           sempre por baixo do cabeçalho (z-20 < header z-50) e por baixo da
-          própria caixa pinada (z-30). */}
-      <div ref={backdropRef} aria-hidden="true" className="pointer-events-none fixed inset-0 z-20 bg-background opacity-0" />
+          própria caixa pinada (z-30). O ambient light nos dois gaps (por
+          cima/baixo da caixa pinada, mais estreita que o ecrã) vive dentro
+          desta cortina — herda de graça o mesmo fade in/out do pin, sem
+          precisar de lógica própria. */}
+      <div ref={backdropRef} aria-hidden="true" className="pointer-events-none fixed inset-0 z-20 isolate overflow-hidden bg-background opacity-0">
+        {/* O halo "top" da AmbientGlow ancora ao próprio topo do elemento
+            que o contém — sem este deslocamento, o seu pico ficaria
+            escondido atrás do cabeçalho fixo (64px), sobrando só a cauda já
+            bastante esvaída do gradiente. Este wrapper de altura zero só
+            desloca esse ponto de ancoragem para logo abaixo do cabeçalho. */}
+        <div className="absolute inset-x-0 top-16">
+          <AmbientGlow edge="top" />
+        </div>
+        <AmbientGlow edge="bottom" />
+      </div>
 
       {/* elemento pinado — overflow-hidden aqui é seguro (é o próprio
           elemento fixo, não um ancestral dele), e contém o ligeiríssimo
