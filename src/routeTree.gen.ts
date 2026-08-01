@@ -10,17 +10,13 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as QualidadeRouteImport } from './routes/qualidade'
 import { Route as ProductsRouteImport } from './routes/products'
-import { Route as ProcessoRouteImport } from './routes/processo'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as MarcasRouteImport } from './routes/marcas'
-import { Route as GarantiaRouteImport } from './routes/garantia'
 import { Route as GaleriaRouteImport } from './routes/galeria'
 import { Route as FiltrosRouteImport } from './routes/filtros'
 import { Route as FavoritosRouteImport } from './routes/favoritos'
-import { Route as FaqsRouteImport } from './routes/faqs'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ConfiguratorRouteImport } from './routes/configurator'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -44,19 +40,9 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
-const QualidadeRoute = QualidadeRouteImport.update({
-  id: '/qualidade',
-  path: '/qualidade',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ProductsRoute = ProductsRouteImport.update({
   id: '/products',
   path: '/products',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProcessoRoute = ProcessoRouteImport.update({
-  id: '/processo',
-  path: '/processo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacidadeRoute = PrivacidadeRouteImport.update({
@@ -74,11 +60,6 @@ const MarcasRoute = MarcasRouteImport.update({
   path: '/marcas',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GarantiaRoute = GarantiaRouteImport.update({
-  id: '/garantia',
-  path: '/garantia',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const GaleriaRoute = GaleriaRouteImport.update({
   id: '/galeria',
   path: '/galeria',
@@ -92,11 +73,6 @@ const FiltrosRoute = FiltrosRouteImport.update({
 const FavoritosRoute = FavoritosRouteImport.update({
   id: '/favoritos',
   path: '/favoritos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FaqsRoute = FaqsRouteImport.update({
-  id: '/faqs',
-  path: '/faqs',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -195,17 +171,13 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/configurator': typeof ConfiguratorRoute
   '/contact': typeof ContactRoute
-  '/faqs': typeof FaqsRoute
   '/favoritos': typeof FavoritosRoute
   '/filtros': typeof FiltrosRoute
   '/galeria': typeof GaleriaRoute
-  '/garantia': typeof GarantiaRoute
   '/marcas': typeof MarcasRoute
   '/mcp': typeof McpRoute
   '/privacidade': typeof PrivacidadeRoute
-  '/processo': typeof ProcessoRoute
   '/products': typeof ProductsRoute
-  '/qualidade': typeof QualidadeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -225,17 +197,13 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/configurator': typeof ConfiguratorRoute
   '/contact': typeof ContactRoute
-  '/faqs': typeof FaqsRoute
   '/favoritos': typeof FavoritosRoute
   '/filtros': typeof FiltrosRoute
   '/galeria': typeof GaleriaRoute
-  '/garantia': typeof GarantiaRoute
   '/marcas': typeof MarcasRoute
   '/mcp': typeof McpRoute
   '/privacidade': typeof PrivacidadeRoute
-  '/processo': typeof ProcessoRoute
   '/products': typeof ProductsRoute
-  '/qualidade': typeof QualidadeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -257,17 +225,13 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/configurator': typeof ConfiguratorRoute
   '/contact': typeof ContactRoute
-  '/faqs': typeof FaqsRoute
   '/favoritos': typeof FavoritosRoute
   '/filtros': typeof FiltrosRoute
   '/galeria': typeof GaleriaRoute
-  '/garantia': typeof GarantiaRoute
   '/marcas': typeof MarcasRoute
   '/mcp': typeof McpRoute
   '/privacidade': typeof PrivacidadeRoute
-  '/processo': typeof ProcessoRoute
   '/products': typeof ProductsRoute
-  '/qualidade': typeof QualidadeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -290,17 +254,13 @@ export interface FileRouteTypes {
     | '/auth'
     | '/configurator'
     | '/contact'
-    | '/faqs'
     | '/favoritos'
     | '/filtros'
     | '/galeria'
-    | '/garantia'
     | '/marcas'
     | '/mcp'
     | '/privacidade'
-    | '/processo'
     | '/products'
-    | '/qualidade'
     | '/sitemap.xml'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
@@ -320,17 +280,13 @@ export interface FileRouteTypes {
     | '/auth'
     | '/configurator'
     | '/contact'
-    | '/faqs'
     | '/favoritos'
     | '/filtros'
     | '/galeria'
-    | '/garantia'
     | '/marcas'
     | '/mcp'
     | '/privacidade'
-    | '/processo'
     | '/products'
-    | '/qualidade'
     | '/sitemap.xml'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
@@ -351,17 +307,13 @@ export interface FileRouteTypes {
     | '/auth'
     | '/configurator'
     | '/contact'
-    | '/faqs'
     | '/favoritos'
     | '/filtros'
     | '/galeria'
-    | '/garantia'
     | '/marcas'
     | '/mcp'
     | '/privacidade'
-    | '/processo'
     | '/products'
-    | '/qualidade'
     | '/sitemap.xml'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
@@ -383,17 +335,13 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ConfiguratorRoute: typeof ConfiguratorRoute
   ContactRoute: typeof ContactRoute
-  FaqsRoute: typeof FaqsRoute
   FavoritosRoute: typeof FavoritosRoute
   FiltrosRoute: typeof FiltrosRoute
   GaleriaRoute: typeof GaleriaRoute
-  GarantiaRoute: typeof GarantiaRoute
   MarcasRoute: typeof MarcasRoute
   McpRoute: typeof McpRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
-  ProcessoRoute: typeof ProcessoRoute
   ProductsRoute: typeof ProductsRoute
-  QualidadeRoute: typeof QualidadeRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -415,25 +363,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/qualidade': {
-      id: '/qualidade'
-      path: '/qualidade'
-      fullPath: '/qualidade'
-      preLoaderRoute: typeof QualidadeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/products': {
       id: '/products'
       path: '/products'
       fullPath: '/products'
       preLoaderRoute: typeof ProductsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/processo': {
-      id: '/processo'
-      path: '/processo'
-      fullPath: '/processo'
-      preLoaderRoute: typeof ProcessoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacidade': {
@@ -457,13 +391,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarcasRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/garantia': {
-      id: '/garantia'
-      path: '/garantia'
-      fullPath: '/garantia'
-      preLoaderRoute: typeof GarantiaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/galeria': {
       id: '/galeria'
       path: '/galeria'
@@ -483,13 +410,6 @@ declare module '@tanstack/react-router' {
       path: '/favoritos'
       fullPath: '/favoritos'
       preLoaderRoute: typeof FavoritosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/faqs': {
-      id: '/faqs'
-      path: '/faqs'
-      fullPath: '/faqs'
-      preLoaderRoute: typeof FaqsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -635,17 +555,13 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ConfiguratorRoute: ConfiguratorRoute,
   ContactRoute: ContactRoute,
-  FaqsRoute: FaqsRoute,
   FavoritosRoute: FavoritosRoute,
   FiltrosRoute: FiltrosRoute,
   GaleriaRoute: GaleriaRoute,
-  GarantiaRoute: GarantiaRoute,
   MarcasRoute: MarcasRoute,
   McpRoute: McpRoute,
   PrivacidadeRoute: PrivacidadeRoute,
-  ProcessoRoute: ProcessoRoute,
   ProductsRoute: ProductsRoute,
-  QualidadeRoute: QualidadeRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:

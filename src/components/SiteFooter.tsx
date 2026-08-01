@@ -214,19 +214,29 @@ export function SiteFooter() {
             <ColumnLabel>Redline</ColumnLabel>
             <ul className="space-y-4">
               <li>
-                <FooterLink to="/about">Sobre Nós</FooterLink>
+                <FooterLink to="/about" hash="sobre-nos">
+                  Sobre Nós
+                </FooterLink>
               </li>
               <li>
-                <FooterLink to="/processo">O Nosso Processo</FooterLink>
+                <FooterLink to="/about" hash="processo">
+                  O Nosso Processo
+                </FooterLink>
               </li>
               <li>
-                <FooterLink to="/qualidade">Qualidade</FooterLink>
+                <FooterLink to="/about" hash="qualidade">
+                  Qualidade
+                </FooterLink>
               </li>
               <li>
-                <FooterLink to="/garantia">Garantia</FooterLink>
+                <FooterLink to="/about" hash="garantia">
+                  Garantia
+                </FooterLink>
               </li>
               <li>
-                <FooterLink to="/faqs">FAQs</FooterLink>
+                <FooterLink to="/about" hash="faq">
+                  FAQs
+                </FooterLink>
               </li>
             </ul>
           </motion.div>
