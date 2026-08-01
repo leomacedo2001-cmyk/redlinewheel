@@ -208,8 +208,7 @@ export function BrandShowcase() {
           overflow da imagem quando o zoom sobe acima de 100%. */}
       <div
         ref={pinRef}
-        className="relative flex w-full flex-col justify-end overflow-hidden"
-        style={{ height: `calc(100vh - ${HEADER_OFFSET_PX}px)` }}
+        className="relative flex h-[420px] w-full flex-col justify-end overflow-hidden sm:h-[480px] md:h-[560px]"
       >
         {slides.map((slide, i) => (
           <div
