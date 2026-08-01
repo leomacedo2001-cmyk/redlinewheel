@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Cog, Gem, Hammer, type LucideIcon, Palette, PackageCheck, ShieldCheck } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { ArrowRight, Cog, Gem, Hammer, type LucideIcon, Palette, PackageCheck, ShieldCheck } from "lucide-react";
 import { SectionEyebrow } from "@/components/SectionEyebrow";
 import { AmbientGlow } from "@/components/AmbientGlow";
 
@@ -74,9 +75,9 @@ function HexIcon({ icon: Icon }: { icon: LucideIcon }) {
  * "A Diferença REDLINE" — pausa visual antes do vídeo/CTA final: preto
  * profundo quase liso, uma única textura de carbono a 5% de opacidade (só
  * profundidade, nunca reconhecível como objeto) e um glow vermelho contido
- * atrás do título. Seis cartões de dimensões idênticas (grelha 3×2 em
- * desktop, 2 colunas em tablet, 1 em mobile), com entrada em cascata e um
- * hover discreto — nunca compete com os cartões nem com a secção seguinte.
+ * atrás do título. Layout editorial de duas colunas (título+descrição à
+ * esquerda, grelha compacta 3×2 de cartões à direita) — mesmos seis
+ * cartões, nomes e textos de sempre, só a disposição muda.
  */
 export function RedlineDifference() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -109,55 +110,71 @@ export function RedlineDifference() {
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[0.05] blur-[6px]"
       />
-      {/* Glow vermelho contido, só atrás do título — não alcança os cartões. */}
+      {/* Glow vermelho contido, agora atrás do título à esquerda (o
+          layout deixou de ser centrado) — não alcança os cartões. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
         style={{
-          background: "radial-gradient(ellipse 42% 30% at 50% 20%, oklch(0.58 0.22 25 / 0.07) 0%, transparent 72%)",
+          background: "radial-gradient(ellipse 32% 40% at 18% 30%, oklch(0.58 0.22 25 / 0.07) 0%, transparent 72%)",
         }}
       />
 
       <div className="relative z-10 mx-auto max-w-[1600px] px-6">
-        <div className={`mb-16 text-center md:mb-20 ${isInView ? "animate-feature-reveal" : "opacity-0"}`}>
-          <SectionEyebrow align="center" className="mb-4">
-            Porque Escolher a REDLINE
-          </SectionEyebrow>
-          <h2 className="text-4xl font-bold tracking-tight md:text-6xl">Excelência em cada detalhe.</h2>
-        </div>
-
-        {/* Grelha premium: 3 colunas × 2 linhas em desktop, 2 em tablet, 1
-            em mobile — todos os cartões com o mesmo tamanho (h-full dentro
-            de uma grelha CSS, que já estica cada linha à altura do maior
-            item). Espaçamento na escala de 8px (gap-6 = 24px, p-8 = 32px). */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map(({ icon, title, description }, i) => (
-            <div
-              key={title}
-              className={`group relative isolate flex h-full min-h-[232px] cursor-pointer flex-col gap-6 rounded-sm border border-white/10 bg-[rgb(12,12,12)] p-8 transition-[transform,background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:scale-[1.015] hover:border-primary/50 hover:bg-[rgb(18,18,18)] hover:shadow-[0_24px_48px_-28px_oklch(0.58_0.22_25_/_0.35)] ${
-                isInView ? "animate-feature-reveal" : "opacity-0"
-              }`}
-              style={isInView ? { animationDelay: `${i * 70}ms` } : undefined}
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[2fr_3fr] lg:gap-16">
+          {/* Coluna esquerda — eyebrow, título (com a palavra-chave em
+              destaque, itálico + vermelho, mesma família tipográfica do
+              site) e a nova descrição de apoio, seguidos de um CTA. */}
+          <div className={`lg:pt-2 ${isInView ? "animate-feature-reveal" : "opacity-0"}`}>
+            <SectionEyebrow className="mb-4">Porque Escolher a REDLINE</SectionEyebrow>
+            <h2 className="text-4xl font-bold tracking-tight md:text-5xl">
+              Excelência em cada <span className="italic text-primary">detalhe</span>.
+            </h2>
+            <p className="mt-5 max-w-[38ch] text-sm leading-relaxed text-muted-foreground">
+              Da seleção dos materiais ao controlo de qualidade final, cuidamos de cada etapa para que o
+              resultado iguale a exigência dos automóveis que personalizamos.
+            </p>
+            <Link
+              to="/products"
+              className="group/link mt-7 inline-flex w-fit items-center gap-1.5 text-sm font-medium text-primary transition-[transform,filter] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:translate-x-1 hover:brightness-125"
             >
-              {/* Glow interno muito subtil — só aparece no hover, nunca no estado normal. */}
-              <span
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 rounded-sm opacity-0 transition-opacity duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-100"
-                style={{
-                  background: "radial-gradient(circle at 30% 15%, oklch(0.58 0.22 25 / 0.08), transparent 65%)",
-                }}
-              />
-              <HexIcon icon={icon} />
-              <div>
-                <h3 className="text-base font-semibold text-foreground/90 transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:text-white">
-                  {title}
-                </h3>
-                <p className="mt-2 min-h-[72px] text-sm leading-relaxed text-muted-foreground transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:text-foreground/70">
-                  {description}
-                </p>
+              Explorar a Coleção
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/link:translate-x-1" />
+            </Link>
+          </div>
+
+          {/* Grelha compacta 3×2 à direita — mesmos seis cartões, agora mais
+              contidos (h-full dentro de uma grelha CSS, que já estica cada
+              linha à altura do maior item). */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {FEATURES.map(({ icon, title, description }, i) => (
+              <div
+                key={title}
+                className={`group relative isolate flex h-full min-h-[168px] cursor-pointer flex-col gap-4 rounded-sm border border-white/10 bg-[rgb(12,12,12)] p-6 transition-[transform,background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:scale-[1.015] hover:border-primary/50 hover:bg-[rgb(18,18,18)] hover:shadow-[0_24px_48px_-28px_oklch(0.58_0.22_25_/_0.35)] ${
+                  isInView ? "animate-feature-reveal" : "opacity-0"
+                }`}
+                style={isInView ? { animationDelay: `${i * 70}ms` } : undefined}
+              >
+                {/* Glow interno muito subtil — só aparece no hover, nunca no estado normal. */}
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 rounded-sm opacity-0 transition-opacity duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-100"
+                  style={{
+                    background: "radial-gradient(circle at 30% 15%, oklch(0.58 0.22 25 / 0.08), transparent 65%)",
+                  }}
+                />
+                <HexIcon icon={icon} />
+                <div>
+                  <h3 className="text-sm font-semibold text-foreground/90 transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:text-white">
+                    {title}
+                  </h3>
+                  <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:text-foreground/70">
+                    {description}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>
