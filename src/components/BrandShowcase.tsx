@@ -267,14 +267,28 @@ export function BrandShowcase() {
 
             {/* Escurece só a faixa onde o texto/CTA/barra realmente vivem
                 (fundo e topo), não a foto inteira — as cores/contraste
-                originais da fotografia ficam intactos no miolo da imagem. */}
+                originais da fotografia ficam intactos no miolo da imagem.
+                Gradiente com várias paragens (não from/via/to de 3 pontos)
+                para a cauda ficar longa e gradual — com só 2-3 paragens a
+                opacidade caía para zero de forma demasiado linear/abrupta,
+                o que revelava uma "linha" visível nas fotos cuja própria
+                aresta não é já naturalmente escura (Audi, Porsche), embora
+                fosse impercetível nas que já eram (BMW, Mercedes). */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background from-0% via-background/55 via-16% to-transparent to-40%"
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(to top, oklch(0.12 0.005 250 / 1) 0%, oklch(0.12 0.005 250 / 0.62) 10%, oklch(0.12 0.005 250 / 0.36) 20%, oklch(0.12 0.005 250 / 0.20) 28%, oklch(0.12 0.005 250 / 0.10) 34%, oklch(0.12 0.005 250 / 0.04) 40%, transparent 46%)",
+              }}
             />
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/65 from-0% to-transparent to-30%"
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(to bottom, oklch(0.12 0.005 250 / 0.65) 0%, oklch(0.12 0.005 250 / 0.42) 8%, oklch(0.12 0.005 250 / 0.24) 16%, oklch(0.12 0.005 250 / 0.13) 22%, oklch(0.12 0.005 250 / 0.05) 28%, transparent 34%)",
+              }}
             />
 
             <div className="absolute inset-x-0 top-0 z-10 max-w-md px-4 pt-5 sm:px-6 sm:pt-6 lg:px-8 lg:pt-8">
