@@ -1,0 +1,259 @@
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Link } from "@tanstack/react-router";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowRight, Pause, Play } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { AmbientGlow } from "@/components/AmbientGlow";
+import { ACTIVE_BRAND_SHOWCASE_SLIDES, type BrandShowcaseSlide } from "@/lib/brandShowcase";
+
+const AUTOPLAY_INTERVAL_MS = 7000;
+
+type BrandShowcaseNavProps = {
+  slides: BrandShowcaseSlide[];
+  activeIndex: number;
+  onSelect: (index: number) => void;
+  paused: boolean;
+  onTogglePaused: () => void;
+};
+
+/**
+ * Barra de progresso segmentada (uma por marca) em vez de separadores em
+ * pílula — cada segmento enche ao ritmo do autoplay, como stories; clicar
+ * salta diretamente para essa marca.
+ */
+function BrandShowcaseNav({ slides, activeIndex, onSelect, paused, onTogglePaused }: BrandShowcaseNavProps) {
+  return (
+    <div className="flex items-center gap-4 sm:gap-6">
+      <div role="tablist" aria-label="Selecionar marca" className="flex flex-1 gap-3 sm:gap-4">
+        {slides.map((slide, i) => {
+          const active = i === activeIndex;
+          return (
+            <button
+              key={slide.slug}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              onClick={() => onSelect(i)}
+              className="group flex-1 cursor-pointer text-left focus:outline-none"
+            >
+              <span className="block h-[2px] w-full overflow-hidden bg-foreground/20">
+                <span
+                  key={active ? `${slide.slug}-active` : "idle"}
+                  className={`block h-full w-full bg-foreground ${active ? "animate-brand-segment-fill" : "scale-x-0"}`}
+                  style={
+                    active
+                      ? { animationDuration: `${AUTOPLAY_INTERVAL_MS}ms`, animationPlayState: paused ? "paused" : "running" }
+                      : undefined
+                  }
+                />
+              </span>
+              <span
+                className={`mt-2.5 block truncate text-[10px] uppercase tracking-[0.2em] transition-colors duration-300 ${
+                  active ? "text-foreground" : "text-muted-foreground group-hover:text-foreground/80"
+                }`}
+              >
+                {slide.name}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      <button
+        type="button"
+        onClick={onTogglePaused}
+        aria-label={paused ? "Retomar apresentação automática" : "Pausar apresentação automática"}
+        className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-foreground/25 text-foreground transition-colors duration-300 hover:border-foreground/60 hover:bg-foreground/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+      >
+        {paused ? <Play className="h-3.5 w-3.5 fill-current" /> : <Pause className="h-3.5 w-3.5 fill-current" />}
+      </button>
+    </div>
+  );
+}
+
+export function BrandShowcase() {
+  const slides = ACTIVE_BRAND_SHOWCASE_SLIDES;
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isInView, setIsInView] = useState(false);
+  const [paused, setPaused] = useState(false);
+
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const autoplayTimer = useRef<number | null>(null);
+
+  const clearAutoplay = useCallback(() => {
+    if (autoplayTimer.current !== null) {
+      window.clearInterval(autoplayTimer.current);
+      autoplayTimer.current = null;
+    }
+  }, []);
+
+  const restartAutoplay = useCallback(() => {
+    clearAutoplay();
+    if (!isInView || paused || slides.length <= 1) return;
+    autoplayTimer.current = window.setInterval(() => {
+      setActiveIndex((i) => (i + 1) % slides.length);
+    }, AUTOPLAY_INTERVAL_MS);
+  }, [clearAutoplay, isInView, paused, slides.length]);
+
+  // Pausa quando a secção sai do ecrã — poupa CPU/GPU sem qualquer benefício visual.
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => setIsInView(entry.isIntersecting), {
+      threshold: 0.3,
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  // Único ponto de criação do timer — reinicia sempre que a marca ativa muda
+  // (manual ou automaticamente), nunca há mais do que um intervalo ativo.
+  useEffect(() => {
+    restartAutoplay();
+    return clearAutoplay;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [restartAutoplay, clearAutoplay, activeIndex]);
+
+  const active = slides[activeIndex];
+  if (!active) return null;
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative isolate flex h-[420px] flex-col justify-end overflow-hidden sm:h-[480px] md:h-[560px]"
+    >
+      <AmbientGlow edge="top" />
+
+      {/* pré-carregamento fora de ecrã — garante zero flash ao trocar de marca */}
+      <div aria-hidden="true" className="absolute h-px w-px overflow-hidden opacity-0">
+        {slides.map((s) => (
+          <img key={s.slug} src={s.image} alt="" loading="eager" decoding="async" />
+        ))}
+      </div>
+
+      <AnimatePresence>
+        <motion.div
+          key={active.slug}
+          className="absolute inset-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        >
+          {/* preenche a secção de ponta a ponta — sem gaps laterais, imagem estática (sem zoom). */}
+          <img
+            src={active.image}
+            alt={`Interior ${active.name} com volante REDLINE instalado`}
+            className="h-full w-full object-cover object-center"
+          />
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Escurece o rodapé — onde vivem o texto e a barra de progresso — independentemente
+          da foto por baixo. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background from-0% via-background/55 via-45% to-transparent to-90%"
+      />
+
+      {/* Escurece também o topo — é onde o título/subtítulo agora vivem. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/70 via-background/10 to-transparent"
+      />
+
+      {/* Título/subtítulo — canto superior-esquerdo. Posição independente do
+          resto do conteúdo (que continua ancorado ao fundo), por isso vive
+          fora do fluxo flex da secção, tal como a imagem e os overlays. */}
+      <div className="absolute inset-x-0 top-0 z-10">
+        <AnimatePresence>
+          {/* O próprio motion.div tem de estar posicionado em absoluto — caso
+              contrário, durante o crossfade, a cópia que está a sair e a que
+              está a entrar ocupam as duas o fluxo normal (uma por cima da
+              outra em vez de sobrepostas no mesmo lugar), o que dava o
+              "salto"/bug ligeiro no texto ao mudar de marca. */}
+          <motion.div
+            key={active.slug}
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-x-0 top-0 max-w-md px-4 pt-5 sm:px-6 sm:pt-6 lg:px-8 lg:pt-8"
+          >
+            <h2 className="text-2xl font-bold leading-[0.95] md:text-4xl">{active.headline}</h2>
+            <p className="mt-2 max-w-sm text-sm text-muted-foreground md:text-base">{active.subtitle}</p>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Nota: não usar `container-premium` aqui — o seu `margin-inline: auto`
+          entra em conflito com este contentor flex em coluna (as margens
+          automáticas no eixo cruzado ganham a `align-items: stretch` e
+          forçam a caixa a encolher-se e a centrar-se, seja qual for o
+          alinhamento pedido ao conteúdo lá dentro). Mesmo padding do resto
+          da secção (edge-to-edge, sem limite de 1400px).
+
+          Altura fixa (h-11/md:h-12, igual à do botão) + margin-bottom (não
+          padding — misturar padding com uma altura fixa em border-box "come"
+          o espaço em vez de o somar, e foi por isso que o botão ficava colado
+          à barra de marcas por baixo). A margem empurra o grupo inteiro para
+          cima dentro do flex-col justify-end, "subindo" o botão como pedido. */}
+      <div className="relative z-10 mb-6 h-11 px-4 sm:px-6 md:mb-8 md:h-12 lg:px-8">
+        <AnimatePresence>
+          {/* Mesma correção do bloco de título: motion.div em absoluto para a
+              cópia a sair e a entrar ficarem sobrepostas, não empilhadas.
+              Alinhado ao fim da barra de marcas (fim do último separador,
+              "Porsche"), não à borda exterior — a mesma lógica usada para
+              calcular o recuo do botão de pausa (padding + gap + 36px do
+              botão redondo), só que aplicada ao lado do texto em vez do
+              lado do ícone. */}
+          <motion.div
+            key={active.slug}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute right-[68px] top-0 sm:right-[84px] lg:right-[92px]"
+          >
+            <Button
+              asChild
+              size="lg"
+              className="h-11 rounded-none bg-primary px-6 text-sm uppercase tracking-wider hover:bg-primary/90 md:h-12 md:px-7"
+            >
+              <Link to="/brand/$slug" params={{ slug: active.slug }}>
+                {active.ctaLabel} <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Barra de marcas — a única faixa que vai mesmo de ponta a ponta (sem
+          container-premium), a bater certo com a referência: segmentos e botão de
+          pausa colados às arestas do ecrã, não centrados num limite de 1400px. */}
+      <div className="relative z-10 px-4 pb-4 sm:px-6 md:pb-5 lg:px-8">
+        <BrandShowcaseNav
+          slides={slides}
+          activeIndex={activeIndex}
+          onSelect={setActiveIndex}
+          paused={paused}
+          onTogglePaused={() => setPaused((p) => !p)}
+        />
+      </div>
+
+      <div className="relative z-10 px-4 pb-3 sm:px-6 md:pb-4 lg:px-8">
+        <div className="text-right">
+          <Link
+            to="/marcas"
+            className="group/link relative inline-flex items-center text-xs uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-300 hover:text-foreground"
+          >
+            Explorar todas as marcas compatíveis
+            <span
+              aria-hidden="true"
+              className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-primary transition-transform duration-300 ease-out group-hover/link:scale-x-100"
+            />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}

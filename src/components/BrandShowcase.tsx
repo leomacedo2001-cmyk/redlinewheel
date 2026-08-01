@@ -1,257 +1,335 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, Pause, Play } from "lucide-react";
+import { useReducedMotion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Button } from "@/components/ui/button";
 import { AmbientGlow } from "@/components/AmbientGlow";
-import { ACTIVE_BRAND_SHOWCASE_SLIDES, type BrandShowcaseSlide } from "@/lib/brandShowcase";
-
-const AUTOPLAY_INTERVAL_MS = 7000;
-
-type BrandShowcaseNavProps = {
-  slides: BrandShowcaseSlide[];
-  activeIndex: number;
-  onSelect: (index: number) => void;
-  paused: boolean;
-  onTogglePaused: () => void;
-};
+import { ACTIVE_BRAND_SHOWCASE_SLIDES } from "@/lib/brandShowcase";
 
 /**
- * Barra de progresso segmentada (uma por marca) em vez de separadores em
- * pílula — cada segmento enche ao ritmo do autoplay, como stories; clicar
- * salta diretamente para essa marca.
+ * Secção "Marcas" — configurador cinematográfico controlado 100% por
+ * scroll (sem autoplay, sem slider, sem timers). A secção fica pinada
+ * (GSAP ScrollTrigger, `pin: true`) enquanto o utilizador percorre cada
+ * marca; o scroll é traduzido em progresso contínuo — nunca há um "salto"
+ * entre marcas nem entre scroll para cima/baixo, porque tudo deriva do
+ * mesmo valor contínuo (`self.progress`), incluindo o comportamento
+ * inverso (que por isso não precisa de nenhuma lógica própria: é a mesma
+ * matemática, só que a decrescer).
+ *
+ * Cada marca "vive" numa fatia igual do scroll total (`1/N`). Dentro de
+ * cada fatia: os primeiros `BOUNDARY` (70%) enchem a barra dessa marca
+ * (imagem/texto continuam assentes, só uma respiração muito subtil ligada
+ * a `barT`); os últimos 30% são a transição cinematográfica para a marca
+ * seguinte (fade, blur, zoom-out, rotação ~1°, parallax) — sempre
+ * derivada da posição de scroll, nunca de um timer, por isso é
+ * perfeitamente reversível a qualquer instante.
  */
-function BrandShowcaseNav({ slides, activeIndex, onSelect, paused, onTogglePaused }: BrandShowcaseNavProps) {
-  return (
-    <div className="flex items-center gap-4 sm:gap-6">
-      <div role="tablist" aria-label="Selecionar marca" className="flex flex-1 gap-3 sm:gap-4">
-        {slides.map((slide, i) => {
-          const active = i === activeIndex;
-          return (
-            <button
-              key={slide.slug}
-              type="button"
-              role="tab"
-              aria-selected={active}
-              onClick={() => onSelect(i)}
-              className="group flex-1 cursor-pointer text-left focus:outline-none"
-            >
-              <span className="block h-[2px] w-full overflow-hidden bg-foreground/20">
-                <span
-                  key={active ? `${slide.slug}-active` : "idle"}
-                  className={`block h-full w-full bg-foreground ${active ? "animate-brand-segment-fill" : "scale-x-0"}`}
-                  style={
-                    active
-                      ? { animationDuration: `${AUTOPLAY_INTERVAL_MS}ms`, animationPlayState: paused ? "paused" : "running" }
-                      : undefined
-                  }
-                />
-              </span>
-              <span
-                className={`mt-2.5 block truncate text-[10px] uppercase tracking-[0.2em] transition-colors duration-300 ${
-                  active ? "text-foreground" : "text-muted-foreground group-hover:text-foreground/80"
-                }`}
-              >
-                {slide.name}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-      <button
-        type="button"
-        onClick={onTogglePaused}
-        aria-label={paused ? "Retomar apresentação automática" : "Pausar apresentação automática"}
-        className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-foreground/25 text-foreground transition-colors duration-300 hover:border-foreground/60 hover:bg-foreground/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
-      >
-        {paused ? <Play className="h-3.5 w-3.5 fill-current" /> : <Pause className="h-3.5 w-3.5 fill-current" />}
-      </button>
-    </div>
-  );
+
+const HEADER_OFFSET_PX = 64;
+const BOUNDARY = 0.7;
+const MIN_SEGMENT_PX = 560;
+
+function easeInOutCubic(t: number): number {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+/** Remapeia `t` (0–1) para a janela [a,b], sujeito a clamp — usado para dar
+ * a cada elemento (imagem/título/descrição/botão) a sua própria janela
+ * dentro da fase de transição, em vez de todos desvanecerem sobre a mesma
+ * janela inteira (o que sobrepunha o texto a sair com o texto a entrar,
+ * ilegível a meio da transição). */
+function remap01(t: number, a: number, b: number): number {
+  if (a === b) return t < a ? 0 : 1;
+  return Math.max(0, Math.min(1, (t - a) / (b - a)));
+}
+
+type GsapVars = Parameters<typeof gsap.set>[1];
+function setEl(el: Element | null, vars: GsapVars) {
+  if (el) gsap.set(el, vars);
 }
 
 export function BrandShowcase() {
   const slides = ACTIVE_BRAND_SHOWCASE_SLIDES;
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isInView, setIsInView] = useState(false);
-  const [paused, setPaused] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   const sectionRef = useRef<HTMLDivElement>(null);
-  const autoplayTimer = useRef<number | null>(null);
+  const pinRef = useRef<HTMLDivElement>(null);
+  const imageWrapRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const titleRefs = useRef<(HTMLHeadingElement | null)[]>([]);
+  const descRefs = useRef<(HTMLParagraphElement | null)[]>([]);
+  const buttonWrapRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const barFillRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
+  const activeIndexRef = useRef(0);
 
-  const clearAutoplay = useCallback(() => {
-    if (autoplayTimer.current !== null) {
-      window.clearInterval(autoplayTimer.current);
-      autoplayTimer.current = null;
-    }
-  }, []);
-
-  const restartAutoplay = useCallback(() => {
-    clearAutoplay();
-    if (!isInView || paused || slides.length <= 1) return;
-    autoplayTimer.current = window.setInterval(() => {
-      setActiveIndex((i) => (i + 1) % slides.length);
-    }, AUTOPLAY_INTERVAL_MS);
-  }, [clearAutoplay, isInView, paused, slides.length]);
-
-  // Pausa quando a secção sai do ecrã — poupa CPU/GPU sem qualquer benefício visual.
   useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(([entry]) => setIsInView(entry.isIntersecting), {
-      threshold: 0.3,
-    });
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+    if (typeof window === "undefined" || !pinRef.current || slides.length === 0) return;
+    gsap.registerPlugin(ScrollTrigger);
 
-  // Único ponto de criação do timer — reinicia sempre que a marca ativa muda
-  // (manual ou automaticamente), nunca há mais do que um intervalo ativo.
-  useEffect(() => {
-    restartAutoplay();
-    return clearAutoplay;
+    const n = slides.length;
+    const reduced = !!prefersReducedMotion;
+    const getSegmentPx = () => Math.max(window.innerHeight, MIN_SEGMENT_PX);
+
+    const ctx = gsap.context(() => {
+      slides.forEach((_, i) => {
+        setEl(imageWrapRefs.current[i], { opacity: i === 0 ? 1 : 0, scale: 1, rotate: 0, y: 0, filter: "blur(0px)" });
+        setEl(titleRefs.current[i], { opacity: i === 0 ? 1 : 0, y: 0, filter: "blur(0px)" });
+        setEl(descRefs.current[i], { opacity: i === 0 ? 1 : 0 });
+        setEl(buttonWrapRefs.current[i], { opacity: i === 0 ? 1 : 0, scale: 1 });
+        setEl(barFillRefs.current[i], { scaleX: 0 });
+      });
+
+      const st = ScrollTrigger.create({
+        trigger: pinRef.current,
+        start: `top top+=${HEADER_OFFSET_PX}`,
+        end: () => `+=${n * getSegmentPx()}`,
+        pin: true,
+        scrub: true,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          const scaled = self.progress * n;
+          const idx = Math.min(n - 1, Math.floor(scaled));
+          const localT = Math.min(1, scaled - idx);
+          const barT = Math.min(1, localT / BOUNDARY);
+          const hasNext = idx < n - 1;
+          const rawTransT = hasNext ? Math.max(0, Math.min(1, (localT - BOUNDARY) / (1 - BOUNDARY))) : 0;
+          const ease = (t: number) => (reduced ? t : easeInOutCubic(t));
+          const eImg = ease(rawTransT);
+          // Cada elemento tem a sua própria janela dentro da transição (nunca
+          // a mesma janela inteira para todos) — o texto/botão a sair
+          // termina ANTES do seguinte começar a entrar, para nunca haver
+          // dupla-exposição ilegível a meio da troca. Ordem: botão (mais
+          // rápido, "arruma-se" primeiro) → descrição → título (a âncora,
+          // o que mais tempo fica visível sozinho).
+          const eTitleOut = ease(remap01(rawTransT, 0, 0.6));
+          const eTitleIn = ease(remap01(rawTransT, 0.45, 1));
+          const eDescOut = ease(remap01(rawTransT, 0, 0.5));
+          const eDescIn = ease(remap01(rawTransT, 0.5, 1));
+          const eBtnOut = ease(remap01(rawTransT, 0, 0.4));
+          const eBtnIn = ease(remap01(rawTransT, 0.6, 1));
+
+          // A aba "ativa" (a bold/preenchida) acompanha qual das duas marcas
+          // está visualmente dominante neste instante (opacidade da
+          // imagem > 50%), não o momento exato em que a fatia de scroll
+          // termina — caso contrário a aba ainda diria "Mercedes-Benz" numa
+          // altura em que o ecrã já mostra sobretudo a Audi a entrar.
+          const displayIndex = hasNext && eImg > 0.5 ? idx + 1 : idx;
+          if (displayIndex !== activeIndexRef.current) {
+            activeIndexRef.current = displayIndex;
+            setActiveIndex(displayIndex);
+          }
+
+          slides.forEach((_, i) => {
+            if (i === idx) {
+              setEl(imageWrapRefs.current[i], {
+                opacity: 1 - eImg,
+                scale: reduced ? 1 : 1 + barT * 0.015 - eImg * 0.03,
+                rotate: reduced ? 0 : -eImg,
+                y: reduced ? 0 : -barT * 6 - eImg * 4,
+                filter: reduced ? "blur(0px)" : `blur(${eImg * 6}px)`,
+              });
+              setEl(titleRefs.current[i], {
+                opacity: 1 - eTitleOut,
+                y: reduced ? 0 : -eTitleOut * 28,
+                filter: reduced ? "blur(0px)" : `blur(${eTitleOut * 6}px)`,
+              });
+              setEl(descRefs.current[i], { opacity: 1 - eDescOut });
+              setEl(buttonWrapRefs.current[i], { opacity: 1 - eBtnOut, scale: reduced ? 1 : 1 - eBtnOut * 0.06 });
+              setEl(barFillRefs.current[i], { scaleX: barT });
+            } else if (hasNext && i === idx + 1) {
+              setEl(imageWrapRefs.current[i], {
+                opacity: eImg,
+                scale: reduced ? 1 : 1.03 - eImg * 0.03,
+                rotate: reduced ? 0 : 1 - eImg,
+                y: reduced ? 0 : (1 - eImg) * 10,
+                filter: reduced ? "blur(0px)" : `blur(${(1 - eImg) * 6}px)`,
+              });
+              setEl(titleRefs.current[i], {
+                opacity: eTitleIn,
+                y: reduced ? 0 : (1 - eTitleIn) * 28,
+                filter: reduced ? "blur(0px)" : `blur(${(1 - eTitleIn) * 6}px)`,
+              });
+              setEl(descRefs.current[i], { opacity: eDescIn });
+              setEl(buttonWrapRefs.current[i], { opacity: eBtnIn, scale: reduced ? 1 : 0.94 + eBtnIn * 0.06 });
+              setEl(barFillRefs.current[i], { scaleX: 0 });
+            } else {
+              setEl(imageWrapRefs.current[i], { opacity: 0 });
+              setEl(titleRefs.current[i], { opacity: 0 });
+              setEl(descRefs.current[i], { opacity: 0 });
+              setEl(buttonWrapRefs.current[i], { opacity: 0 });
+              setEl(barFillRefs.current[i], { scaleX: i < idx ? 1 : 0 });
+            }
+          });
+        },
+      });
+
+      scrollTriggerRef.current = st;
+    }, sectionRef);
+
+    return () => ctx.revert();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [restartAutoplay, clearAutoplay, activeIndex]);
+  }, [slides.length]);
 
-  const active = slides[activeIndex];
-  if (!active) return null;
+  if (slides.length === 0) return null;
+
+  function handleTabClick(i: number) {
+    const st = scrollTriggerRef.current;
+    if (!st) return;
+    const total = st.end - st.start;
+    const segmentPx = total / slides.length;
+    window.scrollTo({ top: st.start + i * segmentPx + 1, behavior: "smooth" });
+  }
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative isolate flex h-[420px] flex-col justify-end overflow-hidden sm:h-[480px] md:h-[560px]"
-    >
-      <AmbientGlow edge="top" />
+    <section ref={sectionRef} className="relative isolate">
+      {/* wrapper próprio (não o `section`, ancestral do elemento pinado) para
+          o `overflow-hidden` — um `overflow-hidden` num ancestral de um
+          elemento `position: fixed` (o que o GSAP usa para pinar) recorta-o
+          de forma imprevisível nas arestas do pin; a mesma lição já
+          aprendida com `position: sticky` em FeaturedWheels.tsx, agora
+          aplicada ao equivalente para `position: fixed`. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[150px] overflow-hidden">
+        <AmbientGlow edge="top" />
+      </div>
 
-      {/* pré-carregamento fora de ecrã — garante zero flash ao trocar de marca */}
+      {/* pré-carregamento fora de ecrã — garante zero flash ao cruzar marcas */}
       <div aria-hidden="true" className="absolute h-px w-px overflow-hidden opacity-0">
         {slides.map((s) => (
           <img key={s.slug} src={s.image} alt="" loading="eager" decoding="async" />
         ))}
       </div>
 
-      <AnimatePresence>
-        <motion.div
-          key={active.slug}
-          className="absolute inset-0"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        >
-          {/* preenche a secção de ponta a ponta — sem gaps laterais, imagem estática (sem zoom). */}
-          <img
-            src={active.image}
-            alt={`Interior ${active.name} com volante REDLINE instalado`}
-            className="h-full w-full object-cover object-center"
-          />
-        </motion.div>
-      </AnimatePresence>
-
-      {/* Escurece o rodapé — onde vivem o texto e a barra de progresso — independentemente
-          da foto por baixo. */}
+      {/* elemento pinado — overflow-hidden aqui é seguro (é o próprio
+          elemento fixo, não um ancestral dele), e contém o ligeiríssimo
+          overflow da imagem quando o zoom sobe acima de 100%. */}
       <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background from-0% via-background/55 via-45% to-transparent to-90%"
-      />
-
-      {/* Escurece também o topo — é onde o título/subtítulo agora vivem. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/70 via-background/10 to-transparent"
-      />
-
-      {/* Título/subtítulo — canto superior-esquerdo. Posição independente do
-          resto do conteúdo (que continua ancorado ao fundo), por isso vive
-          fora do fluxo flex da secção, tal como a imagem e os overlays. */}
-      <div className="absolute inset-x-0 top-0 z-10">
-        <AnimatePresence>
-          {/* O próprio motion.div tem de estar posicionado em absoluto — caso
-              contrário, durante o crossfade, a cópia que está a sair e a que
-              está a entrar ocupam as duas o fluxo normal (uma por cima da
-              outra em vez de sobrepostas no mesmo lugar), o que dava o
-              "salto"/bug ligeiro no texto ao mudar de marca. */}
-          <motion.div
-            key={active.slug}
-            initial={{ opacity: 0, y: -16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 8 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute inset-x-0 top-0 max-w-md px-4 pt-5 sm:px-6 sm:pt-6 lg:px-8 lg:pt-8"
+        ref={pinRef}
+        className="relative flex w-full flex-col justify-end overflow-hidden"
+        style={{ height: `calc(100vh - ${HEADER_OFFSET_PX}px)` }}
+      >
+        {slides.map((slide, i) => (
+          <div
+            key={slide.slug}
+            className={`absolute inset-0 ${i === activeIndex ? "pointer-events-auto" : "pointer-events-none"}`}
           >
-            <h2 className="text-2xl font-bold leading-[0.95] md:text-4xl">{active.headline}</h2>
-            <p className="mt-2 max-w-sm text-sm text-muted-foreground md:text-base">{active.subtitle}</p>
-          </motion.div>
-        </AnimatePresence>
-      </div>
-
-      {/* Nota: não usar `container-premium` aqui — o seu `margin-inline: auto`
-          entra em conflito com este contentor flex em coluna (as margens
-          automáticas no eixo cruzado ganham a `align-items: stretch` e
-          forçam a caixa a encolher-se e a centrar-se, seja qual for o
-          alinhamento pedido ao conteúdo lá dentro). Mesmo padding do resto
-          da secção (edge-to-edge, sem limite de 1400px).
-
-          Altura fixa (h-11/md:h-12, igual à do botão) + margin-bottom (não
-          padding — misturar padding com uma altura fixa em border-box "come"
-          o espaço em vez de o somar, e foi por isso que o botão ficava colado
-          à barra de marcas por baixo). A margem empurra o grupo inteiro para
-          cima dentro do flex-col justify-end, "subindo" o botão como pedido. */}
-      <div className="relative z-10 mb-6 h-11 px-4 sm:px-6 md:mb-8 md:h-12 lg:px-8">
-        <AnimatePresence>
-          {/* Mesma correção do bloco de título: motion.div em absoluto para a
-              cópia a sair e a entrar ficarem sobrepostas, não empilhadas.
-              Alinhado ao fim da barra de marcas (fim do último separador,
-              "Porsche"), não à borda exterior — a mesma lógica usada para
-              calcular o recuo do botão de pausa (padding + gap + 36px do
-              botão redondo), só que aplicada ao lado do texto em vez do
-              lado do ícone. */}
-          <motion.div
-            key={active.slug}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute right-[68px] top-0 sm:right-[84px] lg:right-[92px]"
-          >
-            <Button
-              asChild
-              size="lg"
-              className="h-11 rounded-none bg-primary px-6 text-sm uppercase tracking-wider hover:bg-primary/90 md:h-12 md:px-7"
+            <div
+              ref={(el) => {
+                imageWrapRefs.current[i] = el;
+              }}
+              className={`absolute inset-0 ${i === 0 ? "" : "opacity-0"}`}
+              style={{ willChange: "transform, opacity, filter" }}
             >
-              <Link to="/brand/$slug" params={{ slug: active.slug }}>
-                {active.ctaLabel} <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </motion.div>
-        </AnimatePresence>
-      </div>
+              <img
+                src={slide.image}
+                alt={`Interior ${slide.name} com volante REDLINE instalado`}
+                className="h-full w-full object-cover object-center"
+              />
+            </div>
 
-      {/* Barra de marcas — a única faixa que vai mesmo de ponta a ponta (sem
-          container-premium), a bater certo com a referência: segmentos e botão de
-          pausa colados às arestas do ecrã, não centrados num limite de 1400px. */}
-      <div className="relative z-10 px-4 pb-4 sm:px-6 md:pb-5 lg:px-8">
-        <BrandShowcaseNav
-          slides={slides}
-          activeIndex={activeIndex}
-          onSelect={setActiveIndex}
-          paused={paused}
-          onTogglePaused={() => setPaused((p) => !p)}
-        />
-      </div>
-
-      <div className="relative z-10 px-4 pb-3 sm:px-6 md:pb-4 lg:px-8">
-        <div className="text-right">
-          <Link
-            to="/marcas"
-            className="group/link relative inline-flex items-center text-xs uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-300 hover:text-foreground"
-          >
-            Explorar todas as marcas compatíveis
-            <span
+            <div
               aria-hidden="true"
-              className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-primary transition-transform duration-300 ease-out group-hover/link:scale-x-100"
+              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background from-0% via-background/55 via-45% to-transparent to-90%"
             />
-          </Link>
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/70 via-background/10 to-transparent"
+            />
+
+            <div className="absolute inset-x-0 top-0 z-10 max-w-md px-4 pt-5 sm:px-6 sm:pt-6 lg:px-8 lg:pt-8">
+              <h2
+                ref={(el) => {
+                  titleRefs.current[i] = el;
+                }}
+                className={`text-2xl font-bold leading-[0.95] md:text-4xl ${i === 0 ? "" : "opacity-0"}`}
+                style={{ willChange: "transform, opacity, filter" }}
+              >
+                {slide.headline}
+              </h2>
+              <p
+                ref={(el) => {
+                  descRefs.current[i] = el;
+                }}
+                className={`mt-2 max-w-sm text-sm text-muted-foreground md:text-base ${i === 0 ? "" : "opacity-0"}`}
+                style={{ willChange: "opacity" }}
+              >
+                {slide.subtitle}
+              </p>
+              <div
+                ref={(el) => {
+                  buttonWrapRefs.current[i] = el;
+                }}
+                className={`mt-6 inline-block ${i === 0 ? "" : "opacity-0"}`}
+                style={{ willChange: "transform, opacity" }}
+              >
+                <Button
+                  asChild
+                  size="lg"
+                  className="h-11 rounded-none bg-primary px-6 text-sm uppercase tracking-wider hover:bg-primary/90 md:h-12 md:px-7"
+                >
+                  <Link to="/brand/$slug" params={{ slug: slide.slug }}>
+                    {slide.ctaLabel} <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {/* Barra de progresso — uma faixa por marca, preenchida exatamente
+            pelo valor de scroll (nunca por animação própria/timer). Clicar
+            salta (scroll suave) para o início dessa fatia — acessibilidade
+            para quem não consegue "esfregar" o scroll (teclado/leitor de
+            ecrã), sem contradizer "o scroll controla tudo": é só um atalho
+            para uma posição de scroll, não um mecanismo paralelo. */}
+        <div className="relative z-10 px-4 pb-4 sm:px-6 md:pb-5 lg:px-8">
+          <div role="tablist" aria-label="Selecionar marca" className="flex gap-3 sm:gap-4">
+            {slides.map((slide, i) => (
+              <button
+                key={slide.slug}
+                type="button"
+                role="tab"
+                aria-selected={i === activeIndex}
+                onClick={() => handleTabClick(i)}
+                className="group flex-1 cursor-pointer text-left focus:outline-none"
+              >
+                <span className="block h-[2px] w-full overflow-hidden bg-foreground/20">
+                  <span
+                    ref={(el) => {
+                      barFillRefs.current[i] = el;
+                    }}
+                    className="block h-full w-full origin-left bg-foreground"
+                    style={{ transform: "scaleX(0)" }}
+                  />
+                </span>
+                <span
+                  className={`mt-2.5 block truncate text-[10px] uppercase tracking-[0.2em] transition-colors duration-300 ${
+                    i === activeIndex ? "text-foreground" : "text-muted-foreground group-hover:text-foreground/80"
+                  }`}
+                >
+                  {slide.name}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="relative z-10 px-4 pb-3 sm:px-6 md:pb-4 lg:px-8">
+          <div className="text-right">
+            <Link
+              to="/marcas"
+              className="group/link relative inline-flex items-center text-xs uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-300 hover:text-foreground"
+            >
+              Explorar todas as marcas compatíveis
+              <span
+                aria-hidden="true"
+                className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-primary transition-transform duration-300 ease-out group-hover/link:scale-x-100"
+              />
+            </Link>
+          </div>
         </div>
       </div>
     </section>
