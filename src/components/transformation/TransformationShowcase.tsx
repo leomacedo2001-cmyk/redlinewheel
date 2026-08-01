@@ -100,16 +100,8 @@ export function TransformationShowcase() {
                   <div>
                     <h3 className="text-2xl font-bold mb-3">{project.projectName}</h3>
                     <p className="text-muted-foreground leading-relaxed mb-5">{project.description}</p>
-                    <Button
-                      asChild
-                      className="bg-primary hover:bg-primary/90 rounded-none h-12 px-8 text-sm uppercase tracking-wider"
-                    >
-                      <Link to="/brand/$slug" params={{ slug: activeBrand.slug }}>
-                        Ver Coleção {activeBrand.name} <ArrowRight className="ml-2 h-4 w-4" />
-                      </Link>
-                    </Button>
 
-                    <div className="mt-6 grid grid-cols-2 gap-6">
+                    <div className="grid grid-cols-2 gap-6">
                       <div className="border-l-2 border-primary pl-4">
                         <div className="text-3xl font-bold">500+</div>
                         <div className="text-xs uppercase tracking-wider text-muted-foreground">
@@ -127,22 +119,6 @@ export function TransformationShowcase() {
 
                   <div className="grid grid-cols-2 gap-x-6 gap-y-5 text-sm">
                     <div>
-                      <div className="text-xs uppercase tracking-wider text-muted-foreground mb-2">
-                        Tempo de Produção
-                      </div>
-                      <div className="font-semibold">{project.productionTime}</div>
-                    </div>
-                    <div>
-                      <div className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Materiais</div>
-                      <ul className="space-y-1">
-                        {project.materials.map((m) => (
-                          <li key={m} className="font-medium leading-snug">
-                            {m}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="col-span-2">
                       <div className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Modificações</div>
                       <motion.ul
                         initial="hidden"
@@ -165,6 +141,26 @@ export function TransformationShowcase() {
                           </motion.li>
                         ))}
                       </motion.ul>
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <div className="w-full">
+                        <div className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Materiais</div>
+                        <ul className="space-y-1">
+                          {project.materials.map((m) => (
+                            <li key={m} className="font-medium leading-snug">
+                              {m}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <Button
+                        asChild
+                        className="bg-primary hover:bg-primary/90 rounded-none h-12 px-8 text-sm uppercase tracking-wider mt-5"
+                      >
+                        <Link to="/brand/$slug" params={{ slug: activeBrand.slug }}>
+                          Ver Coleção {activeBrand.name} <ArrowRight className="ml-2 h-4 w-4" />
+                        </Link>
+                      </Button>
                     </div>
                   </div>
                 </div>
