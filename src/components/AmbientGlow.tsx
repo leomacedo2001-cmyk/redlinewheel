@@ -1,8 +1,6 @@
 type AmbientGlowProps = {
   /** Em que aresta da própria secção o halo se ancora — nunca sai da secção. */
   edge: "top" | "bottom";
-  /** "strong" para secções-âncora (ex.: Comunidade) onde a luz deve ler-se ligeiramente mais. */
-  strength?: "default" | "strong";
 };
 
 /**
@@ -31,16 +29,19 @@ type AmbientGlowProps = {
  * Cada secção que usa este componente deve ter `overflow-hidden` +
  * `isolate` no próprio elemento da secção, para o halo nunca conseguir
  * pintar fora dela mesma, seja qual for a largura do ecrã.
+ *
+ * Opacidade fixa em 0.15 para todas as secções — havia uma variante
+ * "strong" (0.18) só na Comunidade REDLINE, que era a única fonte real de
+ * inconsistência entre secções (tamanho e cor já eram sempre os mesmos).
+ * Removida de propósito: nenhuma secção é "mais âncora" que as outras.
  */
-export function AmbientGlow({ edge, strength = "default" }: AmbientGlowProps) {
-  const opacity = strength === "strong" ? 0.18 : 0.15;
-
+export function AmbientGlow({ edge }: AmbientGlowProps) {
   return (
     <div
       aria-hidden="true"
       className={`pointer-events-none absolute inset-x-0 h-[150px] ${edge === "top" ? "top-0" : "bottom-0"}`}
       style={{
-        background: `radial-gradient(ellipse 65% 100% at 50% ${edge === "top" ? "0%" : "100%"}, oklch(0.6 0.2 30 / ${opacity}) 0%, transparent 65%)`,
+        background: `radial-gradient(ellipse 65% 100% at 50% ${edge === "top" ? "0%" : "100%"}, oklch(0.6 0.2 30 / 0.15) 0%, transparent 65%)`,
       }}
     />
   );
