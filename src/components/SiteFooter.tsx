@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, type LinkProps } from "@tanstack/react-router";
 import { motion, useInView, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { AmbientGlow } from "@/components/AmbientGlow";
 
 import signatureImage from "@/assets/footer/post-footer-wordmark.jpg";
 
@@ -161,7 +162,13 @@ export function SiteFooter() {
   });
 
   return (
-    <footer ref={footerRef} className="relative overflow-hidden border-t border-white/6 bg-black mt-24">
+    <footer ref={footerRef} className="relative isolate overflow-hidden border-t border-white/6 bg-black mt-24">
+      {/* Ambient light no início do footer — mesmo componente/padrão usado
+          em todas as restantes secções do site (BrandShowcase,
+          FeedbackShowcase, RedlineDifference, etc.), para o footer também
+          ler-se como continuação, não como um bloco à parte. */}
+      <AmbientGlow edge="top" />
+
       {/* Fio de luz neutro no topo — mesma "profundidade sem gradiente" já usada antes. */}
       <div
         aria-hidden="true"
