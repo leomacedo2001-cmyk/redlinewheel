@@ -3,6 +3,8 @@ import { Cog, Gem, Hammer, type LucideIcon, Palette, PackageCheck, ShieldCheck }
 import { SectionEyebrow } from "@/components/SectionEyebrow";
 import { AmbientGlow } from "@/components/AmbientGlow";
 
+import materialTexture from "@/assets/redline-difference-texture.jpg";
+
 const FEATURES = [
   {
     icon: Gem,
@@ -94,6 +96,19 @@ export function RedlineDifference() {
 
   return (
     <section ref={sectionRef} className="relative isolate overflow-hidden bg-background pt-[110px] pb-[110px]">
+      {/* Textura de fundo — mesmo mote das outras secções ("nunca
+          reconhecível como objeto", só profundidade): recorte da própria
+          fotografia de material (Alcântara favo-de-mel + carbono real) que
+          exclui por completo qualquer logótipo/texto, a 6% de opacidade e
+          desfocada. bg-background continua a ser a camada base, por isso a
+          ligação com "Comunidade REDLINE" acima mantém-se intacta. */}
+      <img
+        src={materialTexture}
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[0.06] blur-[6px]"
+      />
+
       {/* Halo de luz ambiente nas duas arestas — mesmo componente/padrão das
           restantes secções (BrandShowcase, FeedbackShowcase,
           CustomProductsSection, etc.). */}
