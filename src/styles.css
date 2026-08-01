@@ -171,15 +171,16 @@
   animation: card-reveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* Entrada do footer — mais contida que animate-fade-up (o footer é o fim da
-   experiência, não outra secção a "chegar"): deslocamento pequeno, sem blur. */
-@keyframes footer-reveal {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Respiração de brilho da assinatura REDLINE no footer — quase impercetível
+   (98%→100%), nunca glow, nunca neon. Aplicada via CSS puro (não
+   framer-motion) por ser um loop infinito, mais barato assim. */
+@keyframes signature-breathe {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(0.98); }
 }
 
-@utility animate-footer-reveal {
-  animation: footer-reveal 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+@utility animate-signature-breathe {
+  animation: signature-breathe 6s ease-in-out infinite;
 }
 
 /* Equalizer minimalista do footer — pulsar muito subtil, nunca chamativo. */
