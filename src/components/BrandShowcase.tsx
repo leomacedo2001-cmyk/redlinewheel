@@ -10,14 +10,14 @@ import { SectionEyebrow } from "@/components/SectionEyebrow";
 import { ACTIVE_BRAND_SHOWCASE_SLIDES } from "@/lib/brandShowcase";
 
 /**
- * Secção "Marcas" — configurador cinematográfico controlado 100% por
- * scroll (sem autoplay, sem slider, sem timers). A secção fica pinada
- * (GSAP ScrollTrigger, `pin: true`) enquanto o utilizador percorre cada
- * marca; o scroll é traduzido em progresso contínuo — nunca há um "salto"
- * entre marcas nem entre scroll para cima/baixo, porque tudo deriva do
- * mesmo valor contínuo (`self.progress`), incluindo o comportamento
- * inverso (que por isso não precisa de nenhuma lógica própria: é a mesma
- * matemática, só que a decrescer).
+ * Secção "Marcas" — configurador cinematográfico controlado por scroll,
+ * com avanço automático opcional. A secção fica pinada (GSAP ScrollTrigger,
+ * `pin: true`) enquanto o utilizador percorre cada marca; o scroll é
+ * traduzido em progresso contínuo — nunca há um "salto" entre marcas nem
+ * entre scroll para cima/baixo, porque tudo deriva do mesmo valor contínuo
+ * (`self.progress`), incluindo o comportamento inverso (que por isso não
+ * precisa de nenhuma lógica própria: é a mesma matemática, só que a
+ * decrescer).
  *
  * Cada marca "vive" numa fatia igual do scroll total (`1/N`). Dentro de
  * cada fatia: os primeiros `BOUNDARY` (70%) enchem a barra dessa marca
@@ -26,6 +26,15 @@ import { ACTIVE_BRAND_SHOWCASE_SLIDES } from "@/lib/brandShowcase";
  * seguinte (fade, blur, zoom-out, rotação ~1°, parallax) — sempre
  * derivada da posição de scroll, nunca de um timer, por isso é
  * perfeitamente reversível a qualquer instante.
+ *
+ * Avanço automático: assim que a secção pina, um `requestAnimationFrame`
+ * empurra a própria posição de scroll a um ritmo constante (nunca um
+ * estado paralelo — como tudo deriva de `self.progress`, o avanço
+ * automático e o manual são perfeitamente intercambiáveis a qualquer
+ * instante). Qualquer scroll/toque/tecla/clique genuíno do utilizador
+ * pára-o exatamente onde estava; ao fim de `AUTOPLAY_RESUME_DELAY_MS` sem
+ * nova interação, retoma sozinho. Para ao alcançar a última marca — nunca
+ * empurra o utilizador para a secção seguinte sem ação sua.
  */
 
 const BOUNDARY = 0.7;
@@ -50,6 +59,18 @@ const BACKDROP_MAX_OPACITY = 0.55;
  * próprio pin-spacer). Esta legenda é uma antevisão deliberada — mesmo
  * texto da abertura de FeedbackShowcase — não a secção real a espreitar. */
 const BOTTOM_PREVIEW_MAX_OPACITY = 0.6;
+/** Quanto tempo o avanço automático demora a percorrer UMA marca inteira
+ * (encher a barra + transição). Recalculado a partir do próprio segmento
+ * de scroll (getSegmentPx), por isso o ritmo em segundos fica sempre igual
+ * independentemente da altura do ecrã, mesmo a distância em px variando. */
+const AUTOPLAY_SEGMENT_DURATION_MS = 6000;
+/** Tempo de inatividade (sem scroll/toque/teclado/clique nas abas) antes de
+ * o avanço automático retomar sozinho. */
+const AUTOPLAY_RESUME_DELAY_MS = 10000;
+/** Janela de graça após o pin engatar durante a qual eventos "wheel"
+ * residuais do MESMO gesto que causou o pin não contam como "o utilizador
+ * pediu controlo manual" — ver `pinEnterTimeRef`. */
+const AUTOPLAY_ENTER_GRACE_MS = 700;
 
 function easeInOutCubic(t: number): number {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
@@ -86,6 +107,22 @@ export function BrandShowcase() {
   const bottomPreviewRef = useRef<HTMLDivElement>(null);
   const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
   const activeIndexRef = useRef(0);
+  const autoplayRafRef = useRef<number | null>(null);
+  const inactivityTimerRef = useRef<number | null>(null);
+  const isPinnedRef = useRef(false);
+  // Instante em que o pin engatou pela última vez — o mesmo gesto de
+  // scroll que faz a secção fixar continua a disparar eventos "wheel"
+  // durante mais uns instantes (a mesma rodela/gesto de trackpad dispara
+  // vários eventos discretos); sem esta janela de graça, essa cauda do
+  // MESMO gesto parava imediatamente o avanço automático que o onEnter
+  // acabou de arrancar, obrigando à espera de 10s completos antes de
+  // sequer começar a mexer-se.
+  const pinEnterTimeRef = useRef(0);
+  // Preenchidas dentro do efeito — permitem que `handleTabClick` (fora do
+  // gsap.context, mas ainda um clique deliberado do utilizador) pare e
+  // reagende o avanço automático tal como o scroll/toque/teclado.
+  const stopAutoplayRef = useRef<() => void>(() => {});
+  const scheduleResumeRef = useRef<() => void>(() => {});
 
   useEffect(() => {
     if (typeof window === "undefined" || !pinRef.current || slides.length === 0) return;
@@ -94,6 +131,101 @@ export function BrandShowcase() {
     const n = slides.length;
     const reduced = !!prefersReducedMotion;
     const getSegmentPx = () => Math.max(window.innerHeight, MIN_SEGMENT_PX);
+    const getAutoplayPxPerMs = () => getSegmentPx() / AUTOPLAY_SEGMENT_DURATION_MS;
+
+    // Avanço automático — vive fora do gsap.context (não é um tween GSAP,
+    // é o próprio scroll da página) para `handleTabClick` (fora deste
+    // efeito) e a limpeza do efeito conseguirem chamar as mesmas funções.
+    const stopAutoplay = () => {
+      if (autoplayRafRef.current !== null) {
+        cancelAnimationFrame(autoplayRafRef.current);
+        autoplayRafRef.current = null;
+      }
+    };
+
+    const clearInactivityTimer = () => {
+      if (inactivityTimerRef.current !== null) {
+        window.clearTimeout(inactivityTimerRef.current);
+        inactivityTimerRef.current = null;
+      }
+    };
+
+    // Avança a própria posição de scroll a um ritmo constante — nunca um
+    // estado paralelo: como tudo (barra, crossfade, aba ativa) já deriva
+    // de `self.progress` no onUpdate, empurrar o scroll real mantém o
+    // avanço automático e o manual perfeitamente intercambiáveis a
+    // qualquer instante, sem nenhuma lógica duplicada.
+    const startAutoplay = () => {
+      if (reduced || !isPinnedRef.current || autoplayRafRef.current !== null) return;
+      const st = scrollTriggerRef.current;
+      if (!st || st.progress >= 1) return;
+      let lastTime = performance.now();
+      const tick = (now: number) => {
+        const current = scrollTriggerRef.current;
+        if (!current || !isPinnedRef.current) {
+          autoplayRafRef.current = null;
+          return;
+        }
+        // Limitado a 100ms — um separador em segundo plano (mudar de
+        // separador, minimizar) atrasa o próximo requestAnimationFrame por
+        // vezes muito além disso; sem este limite, esse hiato inteiro
+        // seria empurrado de uma vez para o scroll ao voltar ao separador,
+        // saltando marcas em vez de avançar suavemente.
+        const deltaMs = Math.min(now - lastTime, 100);
+        lastTime = now;
+        // Fica 2px aquém de `current.end`, nunca em cima dele — o GSAP
+        // liberta o pin assim que o scroll ATINGE o fim do trigger (não só
+        // quando o ultrapassa), por isso parar exatamente em cima do limite
+        // já era o suficiente para o libertar sozinho, empurrando o
+        // utilizador para "Comunidade REDLINE" sem ação sua nenhuma.
+        const endGuard = current.end - 2;
+        const target = Math.min(window.scrollY + getAutoplayPxPerMs() * deltaMs, endGuard);
+        window.scrollTo(0, target);
+        if (target >= endGuard) {
+          autoplayRafRef.current = null;
+          return;
+        }
+        autoplayRafRef.current = requestAnimationFrame(tick);
+      };
+      autoplayRafRef.current = requestAnimationFrame(tick);
+    };
+
+    const scheduleResume = () => {
+      clearInactivityTimer();
+      inactivityTimerRef.current = window.setTimeout(() => {
+        inactivityTimerRef.current = null;
+        if (isPinnedRef.current) startAutoplay();
+      }, AUTOPLAY_RESUME_DELAY_MS);
+    };
+
+    // Qualquer interação genuína (scroll/toque/teclado — nunca o próprio
+    // `window.scrollTo` do autoplay, que não dispara nenhum destes eventos)
+    // pára o avanço automático exatamente onde estava e reinicia a janela
+    // de 10s de inatividade.
+    const handleUserInteraction = () => {
+      if (!isPinnedRef.current) return;
+      // Ignora a cauda de eventos "wheel" do MESMO gesto que acabou de
+      // fazer o pin engatar — ver AUTOPLAY_ENTER_GRACE_MS.
+      if (performance.now() - pinEnterTimeRef.current < AUTOPLAY_ENTER_GRACE_MS) return;
+      stopAutoplay();
+      scheduleResume();
+    };
+
+    stopAutoplayRef.current = () => {
+      stopAutoplay();
+      clearInactivityTimer();
+    };
+    scheduleResumeRef.current = scheduleResume;
+
+    const SCROLL_KEYS = new Set(["ArrowDown", "ArrowUp", "PageDown", "PageUp", " ", "Spacebar", "Home", "End"]);
+    const onWheel = () => handleUserInteraction();
+    const onTouchStart = () => handleUserInteraction();
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (SCROLL_KEYS.has(e.key)) handleUserInteraction();
+    };
+    window.addEventListener("wheel", onWheel, { passive: true });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("keydown", onKeyDown);
 
     const ctx = gsap.context(() => {
       slides.forEach((_, i) => {
@@ -129,10 +261,30 @@ export function BrandShowcase() {
         scrub: true,
         anticipatePin: 1,
         invalidateOnRefresh: true,
-        onEnter: () => fadeBackdrop(true),
-        onEnterBack: () => fadeBackdrop(true),
-        onLeave: () => fadeBackdrop(false),
-        onLeaveBack: () => fadeBackdrop(false),
+        onEnter: () => {
+          fadeBackdrop(true);
+          isPinnedRef.current = true;
+          pinEnterTimeRef.current = performance.now();
+          startAutoplay();
+        },
+        onEnterBack: () => {
+          fadeBackdrop(true);
+          isPinnedRef.current = true;
+          pinEnterTimeRef.current = performance.now();
+          startAutoplay();
+        },
+        onLeave: () => {
+          fadeBackdrop(false);
+          isPinnedRef.current = false;
+          stopAutoplay();
+          clearInactivityTimer();
+        },
+        onLeaveBack: () => {
+          fadeBackdrop(false);
+          isPinnedRef.current = false;
+          stopAutoplay();
+          clearInactivityTimer();
+        },
         onUpdate: (self) => {
           const scaled = self.progress * n;
           const idx = Math.min(n - 1, Math.floor(scaled));
@@ -213,7 +365,14 @@ export function BrandShowcase() {
       scrollTriggerRef.current = st;
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => {
+      stopAutoplay();
+      clearInactivityTimer();
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("keydown", onKeyDown);
+      ctx.revert();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slides.length]);
 
@@ -222,6 +381,10 @@ export function BrandShowcase() {
   function handleTabClick(i: number) {
     const st = scrollTriggerRef.current;
     if (!st) return;
+    // Um clique deliberado conta como interação, tal como scroll/toque/
+    // teclado — pára o avanço automático e reinicia a janela de 10s.
+    stopAutoplayRef.current();
+    scheduleResumeRef.current();
     const total = st.end - st.start;
     const segmentPx = total / slides.length;
     window.scrollTo({ top: st.start + i * segmentPx + 1, behavior: "smooth" });
@@ -412,14 +575,17 @@ export function BrandShowcase() {
 
         <div className="relative z-10 px-4 pb-3 sm:px-6 md:pb-4 lg:px-8">
           <div className="text-right">
+            {/* Risca sempre visível (não só ao passar o rato) — só a
+                intensidade acende no hover: um efeito LED, texto e risca
+                cada um a "iluminar-se" na sua própria cor. */}
             <Link
               to="/marcas"
-              className="group/link relative inline-flex items-center text-xs uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-300 hover:text-foreground"
+              className="group/link relative inline-flex items-center text-xs uppercase tracking-[0.2em] text-muted-foreground transition-[color,text-shadow] duration-300 ease-out hover:text-foreground hover:[text-shadow:0_0_10px_oklch(1_0_0/0.45)]"
             >
               Explorar todas as marcas compatíveis
               <span
                 aria-hidden="true"
-                className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-primary transition-transform duration-300 ease-out group-hover/link:scale-x-100"
+                className="absolute -bottom-1 left-0 h-px w-full bg-primary shadow-none transition-shadow duration-300 ease-out group-hover/link:shadow-[0_0_8px_oklch(0.58_0.22_25/0.95),0_0_18px_oklch(0.58_0.22_25/0.6)]"
               />
             </Link>
           </div>
