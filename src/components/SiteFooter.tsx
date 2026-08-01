@@ -128,7 +128,7 @@ export function SiteFooter() {
   const revealStyle = (delayMs: number) => (isInView ? { animationDelay: `${delayMs}ms` } : undefined);
 
   return (
-    <footer ref={footerRef} className="relative overflow-hidden border-t border-white/6 bg-black mt-24">
+    <footer ref={footerRef} className="relative overflow-hidden border-t border-white/6 bg-[#050505] mt-24">
       {/* Fio de luz neutro no topo — mesma "profundidade sem gradiente" já usada antes. */}
       <div
         aria-hidden="true"
@@ -241,7 +241,7 @@ export function SiteFooter() {
             </span>
             <span
               aria-hidden="true"
-              className="h-[2px] w-10 origin-left bg-[#D1111B] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              className="h-[2px] w-10 origin-left bg-[#FF1A1A] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
               style={{ transform: isInView ? "scaleX(1)" : "scaleX(0)" }}
             />
           </div>
@@ -264,7 +264,7 @@ export function SiteFooter() {
         </span>
         <span
           aria-hidden="true"
-          className="h-32 w-[2px] origin-top bg-[#D1111B] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+          className="h-[130px] w-[2px] origin-top bg-[#FF1A1A] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
           style={{ transform: isInView ? "scaleY(1)" : "scaleY(0)" }}
         />
       </div>
@@ -300,14 +300,9 @@ export function SiteFooter() {
 
       {/* ASSINATURA REDLINE — faixa panorâmica full-bleed: largura sempre
           100vw (sem container, sem gaps laterais), altura independente da
-          largura (clamp, satura em 388px — a mesma altura que já estava
-          "perfeita" com o container) para esticar só para os lados, nunca
-          na vertical. object-cover preenche a largura toda sem cortar
-          lateralmente. object-position deslocado para 40% (em vez do
-          center/50% por omissão) — a janela de recorte é mais pequena que
-          a marca inteira, por isso a posição vertical foi afinada à mão
-          para nunca cortar o topo das letras (o que as tornava com um
-          aspeto "achatado"), sacrificando o reflexo do chão em vez disso. */}
+          largura (clamp, satura em 388px, a mesma proporção de 1416×295
+          pedida). object-cover preenche a largura toda sem cortar
+          lateralmente, object-position center center (sem desvio). */}
       <div
         className={`relative w-full overflow-hidden ${reveal()}`}
         style={{ height: "clamp(140px, 24vw, 388px)", ...revealStyle(400) }}
@@ -315,7 +310,7 @@ export function SiteFooter() {
         <img
           src={signatureImage}
           alt="REDLINE"
-          className="absolute inset-0 h-full w-full object-cover object-[50%_40%] select-none [filter:brightness(1.42)_contrast(1.5)_saturate(1.4)_drop-shadow(0_0_9px_rgba(255,60,60,0.55))]"
+          className="absolute inset-0 h-full w-full object-cover object-center select-none [filter:brightness(1.42)_contrast(1.5)_saturate(1.4)_drop-shadow(0_0_9px_rgba(255,60,60,0.55))]"
         />
       </div>
     </footer>
