@@ -27,7 +27,6 @@ import { ACTIVE_BRAND_SHOWCASE_SLIDES } from "@/lib/brandShowcase";
  * perfeitamente reversível a qualquer instante.
  */
 
-const HEADER_OFFSET_PX = 64;
 const BOUNDARY = 0.7;
 const MIN_SEGMENT_PX = 560;
 
@@ -62,6 +61,7 @@ export function BrandShowcase() {
   const descRefs = useRef<(HTMLParagraphElement | null)[]>([]);
   const buttonWrapRefs = useRef<(HTMLDivElement | null)[]>([]);
   const barFillRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const backdropRef = useRef<HTMLDivElement>(null);
   const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
   const activeIndexRef = useRef(0);
 
@@ -82,14 +82,29 @@ export function BrandShowcase() {
         setEl(barFillRefs.current[i], { scaleX: 0 });
       });
 
+      const fadeBackdrop = (visible: boolean) => {
+        const el = backdropRef.current;
+        if (!el) return;
+        gsap.to(el, { opacity: visible ? 1 : 0, duration: reduced ? 0 : 0.4, overwrite: true });
+      };
+
       const st = ScrollTrigger.create({
         trigger: pinRef.current,
-        start: `top top+=${HEADER_OFFSET_PX}`,
+        // "center center" — a secção pina assim que se apresenta centrada
+        // no ecrã (não só quando o topo encosta ao cabeçalho), tal como
+        // pedido. Como o pin fixa o elemento exatamente onde estava no
+        // instante do disparo, a posição final passa a ser essa mesma
+        // composição centrada, em vez de "encostada" ao cabeçalho.
+        start: "center center",
         end: () => `+=${n * getSegmentPx()}`,
         pin: true,
         scrub: true,
         anticipatePin: 1,
         invalidateOnRefresh: true,
+        onEnter: () => fadeBackdrop(true),
+        onEnterBack: () => fadeBackdrop(true),
+        onLeave: () => fadeBackdrop(false),
+        onLeaveBack: () => fadeBackdrop(false),
         onUpdate: (self) => {
           const scaled = self.progress * n;
           const idx = Math.min(n - 1, Math.floor(scaled));
@@ -203,12 +218,20 @@ export function BrandShowcase() {
         ))}
       </div>
 
+      {/* Cortina de fundo — cobre o ecrã inteiro (não só a caixa pinada de
+          560px) enquanto a secção está pinada, desvanecendo o que ainda
+          estivesse visível das secções vizinhas (fim de "Transformação",
+          início de "Comunidade REDLINE") assim que o pin arranca. Fica
+          sempre por baixo do cabeçalho (z-20 < header z-50) e por baixo da
+          própria caixa pinada (z-30). */}
+      <div ref={backdropRef} aria-hidden="true" className="pointer-events-none fixed inset-0 z-20 bg-background opacity-0" />
+
       {/* elemento pinado — overflow-hidden aqui é seguro (é o próprio
           elemento fixo, não um ancestral dele), e contém o ligeiríssimo
           overflow da imagem quando o zoom sobe acima de 100%. */}
       <div
         ref={pinRef}
-        className="relative flex h-[420px] w-full flex-col justify-end overflow-hidden sm:h-[480px] md:h-[560px]"
+        className="relative z-30 flex h-[420px] w-full flex-col justify-end overflow-hidden sm:h-[480px] md:h-[560px]"
       >
         {slides.map((slide, i) => (
           <div
@@ -229,13 +252,16 @@ export function BrandShowcase() {
               />
             </div>
 
+            {/* Escurece só a faixa onde o texto/CTA/barra realmente vivem
+                (fundo e topo), não a foto inteira — as cores/contraste
+                originais da fotografia ficam intactos no miolo da imagem. */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background from-0% via-background/55 via-45% to-transparent to-90%"
+              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background from-0% via-background/55 via-16% to-transparent to-40%"
             />
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/70 via-background/10 to-transparent"
+              className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/65 from-0% to-transparent to-30%"
             />
 
             <div className="absolute inset-x-0 top-0 z-10 max-w-md px-4 pt-5 sm:px-6 sm:pt-6 lg:px-8 lg:pt-8">
