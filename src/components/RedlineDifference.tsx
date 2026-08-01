@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Cog, Gem, Hammer, type LucideIcon, Palette, PackageCheck, ShieldCheck } from "lucide-react";
 import { SectionEyebrow } from "@/components/SectionEyebrow";
+import { AmbientGlow } from "@/components/AmbientGlow";
 
 import carbonTexture from "@/assets/product-carbono.jpg";
 
@@ -93,6 +94,13 @@ export function RedlineDifference() {
 
   return (
     <section ref={sectionRef} className="relative isolate overflow-hidden bg-[#050505] pt-[110px] pb-[110px]">
+      {/* Halo de luz ambiente nas duas arestas — a única secção do
+          homepage que ainda não tinha, mesmo componente/padrão das
+          restantes (BrandShowcase, FeedbackShowcase, CustomProductsSection,
+          etc.), para nunca ler como "uma secção preta" isolada entre elas. */}
+      <AmbientGlow edge="top" />
+      <AmbientGlow edge="bottom" />
+
       {/* Textura única, quase impercetível — só profundidade, nunca uma
           imagem legível (nunca leria como volante/interior/carro). */}
       <img
