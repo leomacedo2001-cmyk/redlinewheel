@@ -24,11 +24,10 @@ function ContactPage() {
         Tens dúvidas sobre personalização, compatibilidade ou entrega? Responde-nos e voltamos a ti em menos de 24h.
       </p>
 
-      <div className="grid md:grid-cols-3 gap-px bg-border">
+      <div className="grid md:grid-cols-2 gap-px bg-border">
         {[
-          { icon: Mail, t: "Email", v: "hello@apex-automotive.com", href: "mailto:hello@apex-automotive.com" },
-          { icon: MessageCircle, t: "WhatsApp", v: "+351 900 000 000", href: "https://wa.me/351900000000" },
-          { icon: Instagram, t: "Instagram", v: "@apex.automotive", href: "https://instagram.com" },
+          { icon: Mail, t: "Email", v: "redlinecustomsauto@gmail.com", href: "mailto:redlinecustomsauto@gmail.com" },
+          { icon: Facebook, t: "Facebook", v: "REDLINE Performance", href: "https://www.facebook.com/profile.php?id=61591677547923" },
         ].map(({ icon: Icon, t, v, href }) => (
           <a key={t} href={href} className="bg-surface p-10 hover:bg-surface-elevated transition-colors block">
             <Icon className="h-6 w-6 text-primary mb-4" />
