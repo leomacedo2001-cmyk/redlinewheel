@@ -6,16 +6,15 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   ArrowLeft,
-  Minus,
-  Plus,
   ShoppingCart,
-  Zap,
   Truck,
   ShieldCheck,
   CreditCard,
   Check,
   Loader2,
   AlertCircle,
+  SlidersHorizontal,
+  MessageCircle,
 } from "lucide-react";
 import { getBrand, getBrandModel, resolveShopifyHandle, type BrandModelSpec } from "@/lib/brands";
 import { fetchProductByHandle } from "@/lib/shopify";
@@ -28,6 +27,9 @@ import { ShareButton } from "@/components/product/ShareButton";
 import { StickyBuyBar } from "@/components/product/StickyBuyBar";
 import { RelatedProducts } from "@/components/product/RelatedProducts";
 import { ReviewsEmpty } from "@/components/product/ReviewsEmpty";
+import { CompatibilityDialog } from "@/components/product/CompatibilityDialog";
+import { vehicleLines, type VehicleInput } from "@/lib/compatibility";
+import { mailtoHref } from "@/lib/contact";
 
 const SITE_URL = "https://redlinewheel.lovable.app";
 
@@ -138,7 +140,7 @@ function ModelPage() {
       : model.gallery && model.gallery.length > 0
         ? model.gallery
         : [model.img];
-  const [qty, setQty] = useState(1);
+  const [compatOpen, setCompatOpen] = useState(false);
 
   const addItem = useCartStore((s) => s.addItem);
   const getCheckoutUrl = useCartStore((s) => s.getCheckoutUrl);
@@ -150,6 +152,9 @@ function ModelPage() {
       ? formatPrice(model.price.amount, model.price.currency)
       : null;
 
+  // Cada volante é uma peça feita à medida do carro: compra-se um, não N.
+  const QUANTITY = 1;
+
   const handleAddToCart = async () => {
     if (!shopifyProduct || !selectedVariant) {
       toast.error("Produto indisponível", { description: "Este volante ainda não está publicado na loja." });
@@ -160,32 +165,73 @@ function ModelPage() {
       variantId: selectedVariant.id,
       variantTitle: selectedVariant.title,
       price: selectedVariant.price,
-      quantity: qty,
+      quantity: QUANTITY,
       selectedOptions: selectedVariant.selectedOptions ?? [],
     });
-    toast.success("Adicionado ao carrinho", { description: `${brand.name} ${model.name} × ${qty}` });
+    toast.success("Adicionado ao carrinho", { description: `${brand.name} ${model.name}` });
   };
 
-  const handleBuyNow = async () => {
-    if (!shopifyProduct || !selectedVariant) {
-      toast.error("Produto indisponível", { description: "Este volante ainda não está publicado na loja." });
+  /**
+   * Só corre DEPOIS da etapa de confirmação de compatibilidade.
+   * Com o produto publicado no Shopify vai para checkout; sem ele, o pedido
+   * segue por email com o volante e o veículo já preenchidos — o cliente nunca
+   * fica num beco sem saída.
+   */
+  const handleProceed = async (vehicle: VehicleInput) => {
+    if (shopifyProduct && selectedVariant && selectedVariant.availableForSale) {
+      await addItem({
+        product: shopifyProduct,
+        variantId: selectedVariant.id,
+        variantTitle: selectedVariant.title,
+        price: selectedVariant.price,
+        quantity: QUANTITY,
+        selectedOptions: selectedVariant.selectedOptions ?? [],
+      });
+      const url = getCheckoutUrl();
+      if (url) window.open(url, "_blank");
+      setCompatOpen(false);
       return;
     }
-    await addItem({
-      product: shopifyProduct,
-      variantId: selectedVariant.id,
-      variantTitle: selectedVariant.title,
-      price: selectedVariant.price,
-      quantity: qty,
-      selectedOptions: selectedVariant.selectedOptions ?? [],
-    });
-    const url = getCheckoutUrl();
-    if (url) window.open(url, "_blank");
+    window.location.href = mailtoHref(
+      `Encomenda — ${brand.name} ${model.name}`,
+      [
+        "Olá REDLINE,",
+        "",
+        "Quero encomendar este volante:",
+        `Volante: ${brand.name} ${model.name}${priceDisplay ? ` (${priceDisplay})` : ""}`,
+        model.sku ? `Referência: ${model.sku}` : "",
+        "",
+        "O meu automóvel:",
+        ...vehicleLines(vehicle),
+        "",
+        "Obrigado.",
+      ]
+        .filter(Boolean)
+        .join("\n"),
+    );
+    setCompatOpen(false);
   };
 
   const productMissing = !productQuery.isLoading && !shopifyProduct;
   const variantUnavailable = !!selectedVariant && !selectedVariant.availableForSale;
   const canBuy = !!shopifyProduct && !!selectedVariant && selectedVariant.availableForSale;
+
+  const unsureHref = mailtoHref(
+    `Dúvida de compatibilidade — ${brand.name} ${model.name}`,
+    [
+      "Olá REDLINE,",
+      "",
+      "Tenho uma dúvida de compatibilidade sobre este volante:",
+      `Volante: ${brand.name} ${model.name}`,
+      model.chassis ? `Chassis indicado: ${model.chassis}` : "",
+      "",
+      "O meu automóvel (marca, modelo, ano, chassis):",
+      "",
+      "Obrigado.",
+    ]
+      .filter(Boolean)
+      .join("\n"),
+  );
 
   const brandFull = getBrand(brand.slug);
   const favoriteItem = {
@@ -199,15 +245,27 @@ function ModelPage() {
 
   return (
     <>
+      <CompatibilityDialog
+        open={compatOpen}
+        onOpenChange={setCompatOpen}
+        productName={`${brand.name} ${model.name}`}
+        brandName={brand.name}
+        chassis={model.chassis}
+        compatibilities={model.compatibilities}
+        priceDisplay={priceDisplay}
+        onProceed={handleProceed}
+        proceeding={isCartLoading}
+      />
+
       <StickyBuyBar
         triggerRef={heroRef}
         title={`${brand.name} ${model.name}`}
         subtitle={model.chassis}
         price={priceDisplay}
         image={model.img}
-        onAddToCart={canBuy ? handleAddToCart : () => window.location.assign("/contact")}
-        onBuyNow={canBuy ? handleBuyNow : () => window.location.assign("/contact")}
-        disabled={!canBuy}
+        onAddToCart={canBuy ? handleAddToCart : () => setCompatOpen(true)}
+        onBuyNow={() => setCompatOpen(true)}
+        disabled={false}
         loading={isCartLoading}
       />
 
@@ -325,53 +383,42 @@ function ModelPage() {
               </div>
             </div>
 
-            {/* Quantity */}
-            <div className="flex items-center gap-4">
-              <div className="text-xs uppercase tracking-wider text-muted-foreground">Quantidade</div>
-              <div className="flex items-center border border-border/60">
-                <button onClick={() => setQty(Math.max(1, qty - 1))} className="h-10 w-10 flex items-center justify-center hover:bg-surface" aria-label="Diminuir">
-                  <Minus className="h-3.5 w-3.5" />
-                </button>
-                <span className="w-12 text-center font-semibold">{qty}</span>
-                <button onClick={() => setQty(qty + 1)} className="h-10 w-10 flex items-center justify-center hover:bg-surface" aria-label="Aumentar">
-                  <Plus className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Actions */}
+            {/* Actions — dois percursos: comprar este volante, ou parti-lo como base */}
             <div className="space-y-3">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {canBuy ? (
-                  <>
-                    <Button
-                      onClick={handleAddToCart}
-                      disabled={isCartLoading}
-                      variant="outline"
-                      className="rounded-none h-12 uppercase tracking-wider text-xs border-border/60 hover:border-primary hover:text-primary"
-                    >
-                      {isCartLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <ShoppingCart className="h-4 w-4 mr-2" />}
-                      Adicionar ao Carrinho
-                    </Button>
-                    <Button
-                      onClick={handleBuyNow}
-                      disabled={isCartLoading}
-                      className="rounded-none h-12 uppercase tracking-wider text-xs bg-primary hover:bg-primary/90"
-                    >
-                      {isCartLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Zap className="h-4 w-4 mr-2" />}
-                      Comprar Agora
-                    </Button>
-                  </>
-                ) : (
-                  <Button
-                    asChild
-                    className="rounded-none h-12 uppercase tracking-wider text-xs bg-primary hover:bg-primary/90 sm:col-span-2"
-                  >
-                    <Link to="/contact">Pedir Orçamento</Link>
-                  </Button>
-                )}
-              </div>
-              <div className="flex items-center gap-2">
+              <Button
+                onClick={() => setCompatOpen(true)}
+                disabled={isCartLoading}
+                className="w-full rounded-none h-14 uppercase tracking-wider text-sm bg-primary hover:bg-primary/90"
+              >
+                {isCartLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <ShoppingCart className="h-4 w-4 mr-2" />}
+                Comprar este volante
+              </Button>
+
+              <Button
+                asChild
+                variant="outline"
+                className="w-full rounded-none h-12 uppercase tracking-wider text-xs border-border/60 hover:border-primary hover:text-primary"
+              >
+                <Link to="/configurator" search={{ base: `${brand.slug}/${model.slug}` }}>
+                  <SlidersHorizontal className="h-4 w-4 mr-2" />
+                  Personalizar este volante
+                </Link>
+              </Button>
+
+              <p className="flex items-start gap-2 text-[11px] leading-relaxed text-muted-foreground">
+                <ShieldCheck className="h-3.5 w-3.5 text-primary shrink-0 mt-px" />
+                Confirmamos a compatibilidade com o teu automóvel antes da produção.
+              </p>
+
+              <a
+                href={unsureHref}
+                className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors underline underline-offset-4 decoration-border/60 hover:decoration-primary"
+              >
+                <MessageCircle className="h-3.5 w-3.5" />
+                Não tens a certeza da compatibilidade? Fala connosco
+              </a>
+
+              <div className="flex items-center gap-2 pt-1">
                 <FavoriteButton item={favoriteItem} />
                 <ShareButton title={`${brand.name} ${model.name} — REDLINE Performance`} text={model.description} />
               </div>

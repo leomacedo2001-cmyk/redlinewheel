@@ -4,9 +4,28 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Mail, Check } from "lucide-react";
+import { ArrowLeft, Mail, Check, X } from "lucide-react";
+import { getBrandModel } from "@/lib/brands";
+import { buildPrefill, EMPTY_PREFILL, type ConfiguratorPrefill } from "@/lib/configuratorPrefill";
+import {
+  TIPO_VOLANTE_LIST,
+  MATERIAL_LIST,
+  CARBONO_LIST,
+  COR_COSTURAS_LIST,
+  COR_FAIXA_LIST,
+  EXTRAS_LIST,
+} from "@/lib/configuratorOptions";
+import { mailtoHref } from "@/lib/contact";
 
 export const Route = createFileRoute("/configurator")({
+  /**
+   * `?base=<marca>/<modelo>` identifica o volante do catálogo usado como ponto
+   * de partida. É opcional: sem ele o configurador abre vazio, como sempre.
+   */
+  validateSearch: (search: Record<string, unknown>): { base?: string } => {
+    const base = search.base;
+    return typeof base === "string" && base.length > 0 ? { base } : {};
+  },
   head: () => ({
     meta: [
       { title: "Configurador de Volante — REDLINE Performance" },
@@ -20,38 +39,39 @@ export const Route = createFileRoute("/configurator")({
   component: ConfiguratorPage,
 });
 
-const TIPO_VOLANTE = ["Original (retrim)", "Achatado em baixo (flat bottom)", "Achatado em cima e baixo", "Racing / GT", "OEM+"];
-const MATERIAL = ["Alcântara", "Pele perfurada", "Pele lisa (nappa)", "Combinação Alcântara + Pele", "Combinação Alcântara + Carbono"];
-const CARBONO = ["Sem carbono", "Carbono twill 2x2", "Carbono forged", "Carbono + Alcântara"];
-const COR_COSTURAS = ["Vermelho", "Preto", "Branco", "Cinza", "Azul", "Amarelo", "Tom-sobre-tom", "Tricolor M", "Outra"];
-const COR_FAIXA = ["Sem faixa", "Vermelho", "Branco", "Azul", "Amarelo", "Tricolor M", "Verde AMG", "Outra"];
-
-type MultiKey = "extras";
 type SingleKey = "tipo" | "material" | "carbono" | "costuras" | "faixa";
 
-const EXTRAS = [
-  "Indicador LED de mudança",
-  "Patilhas de velocidade em alumínio",
-  "Aquecimento do volante",
-  "Logótipo personalizado gravado",
-  "Airbag retrimado a condizer",
-  "Apoio de braço a condizer",
-  "Manípulo da caixa a condizer",
-  "Fole da caixa a condizer",
-];
+/**
+ * Resolve o `?base=` para um pré-preenchimento. Um slug inválido ou um produto
+ * que já não exista devolvem simplesmente o formulário vazio — nunca um erro.
+ */
+function resolvePrefill(base?: string): ConfiguratorPrefill {
+  if (!base) return EMPTY_PREFILL;
+  const [brandSlug, modelSlug] = base.split("/");
+  if (!brandSlug || !modelSlug) return EMPTY_PREFILL;
+  const found = getBrandModel(brandSlug, modelSlug);
+  if (!found) return EMPTY_PREFILL;
+  return buildPrefill(found.brand.name, found.model);
+}
 
 function ConfiguratorPage() {
-  const [marca, setMarca] = useState("");
-  const [modelo, setModelo] = useState("");
-  const [ano, setAno] = useState("");
+  const { base } = Route.useSearch();
+  const prefill = useMemo(() => resolvePrefill(base), [base]);
+
+  // O estado arranca do pré-preenchimento; a partir daí o cliente muda o que quiser.
+  // A `key` no componente de página garante que trocar de produto recomeça limpo.
+  const [marca, setMarca] = useState(prefill.marca);
+  const [modelo, setModelo] = useState(prefill.modelo);
+  const [chassis, setChassis] = useState(prefill.chassis);
+  const [ano, setAno] = useState(prefill.ano);
   const [single, setSingle] = useState<Record<SingleKey, string>>({
-    tipo: "",
-    material: "",
-    carbono: "",
-    costuras: "",
-    faixa: "",
+    tipo: prefill.tipo,
+    material: prefill.material,
+    carbono: prefill.carbono,
+    costuras: prefill.costuras,
+    faixa: prefill.faixa,
   });
-  const [extras, setExtras] = useState<string[]>([]);
+  const [extras, setExtras] = useState<string[]>(prefill.extras);
   const [nome, setNome] = useState("");
   const [contacto, setContacto] = useState("");
   const [notas, setNotas] = useState("");
@@ -61,10 +81,11 @@ function ConfiguratorPage() {
     setExtras((prev) => (prev.includes(e) ? prev.filter((x) => x !== e) : [...prev, e]));
 
   const summary = useMemo(() => {
-    const lines = [
-      "*Pedido de orçamento — Volante Personalizado*",
-      "",
+    const lines: string[] = ["*Pedido de orçamento — Volante Personalizado*", ""];
+    if (prefill.baseName) lines.push(`Baseado em: ${prefill.baseName}`, "");
+    lines.push(
       `Veículo: ${marca || "-"} ${modelo || ""} ${ano ? `(${ano})` : ""}`.trim(),
+      `Chassis / geração: ${chassis || "-"}`,
       `Tipo: ${single.tipo || "-"}`,
       `Material: ${single.material || "-"}`,
       `Carbono: ${single.carbono || "-"}`,
@@ -74,14 +95,12 @@ function ConfiguratorPage() {
       "",
       `Nome: ${nome || "-"}`,
       `Contacto: ${contacto || "-"}`,
-      notas ? `Notas: ${notas}` : "",
-    ].filter(Boolean);
+    );
+    if (notas) lines.push(`Notas: ${notas}`);
     return lines.join("\n");
-  }, [marca, modelo, ano, single, extras, nome, contacto, notas]);
+  }, [prefill.baseName, marca, modelo, chassis, ano, single, extras, nome, contacto, notas]);
 
-  const mailHref = `mailto:redlinecustomsauto@gmail.com?subject=${encodeURIComponent(
-    "Pedido de orçamento — Volante Personalizado"
-  )}&body=${encodeURIComponent(summary)}`;
+  const mailHref = mailtoHref("Pedido de orçamento — Volante Personalizado", summary);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -96,29 +115,46 @@ function ConfiguratorPage() {
       </Link>
       <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">Configurador</div>
       <h1 className="text-5xl md:text-6xl font-bold mb-4">Configura o teu volante.</h1>
-      <p className="text-muted-foreground text-lg max-w-2xl mb-12">
+      <p className="text-muted-foreground text-lg max-w-2xl mb-6">
         Escolhe cada detalhe do teu volante personalizado. Enviamos orçamento em menos de 24h.
       </p>
+
+      {prefill.baseName && (
+        <div className="mb-12 flex flex-wrap items-center gap-x-3 gap-y-2 border-l-2 border-primary bg-surface/60 px-4 py-3">
+          <span className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+            Estás a personalizar:
+          </span>
+          <span className="text-sm font-semibold">{prefill.baseName}</span>
+          <Link
+            to="/configurator"
+            className="ml-auto inline-flex items-center gap-1 text-[11px] uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors"
+          >
+            <X className="h-3 w-3" /> Começar do zero
+          </Link>
+        </div>
+      )}
+      {!prefill.baseName && <div className="mb-12" />}
 
       <form onSubmit={handleSubmit} className="grid lg:grid-cols-[1fr_360px] gap-10">
         <div className="space-y-10">
           <Section title="Veículo">
-            <div className="grid sm:grid-cols-3 gap-4">
+            <div className="grid sm:grid-cols-2 gap-4">
               <Field label="Marca"><Input value={marca} onChange={(e) => setMarca(e.target.value)} placeholder="BMW, Audi, AMG..." required /></Field>
               <Field label="Modelo"><Input value={modelo} onChange={(e) => setModelo(e.target.value)} placeholder="M3, RS3, A45..." required /></Field>
+              <Field label="Chassis / geração"><Input value={chassis} onChange={(e) => setChassis(e.target.value)} placeholder="G80, 8Y, W205..." /></Field>
               <Field label="Ano"><Input value={ano} onChange={(e) => setAno(e.target.value)} placeholder="2021" inputMode="numeric" /></Field>
             </div>
           </Section>
 
-          <SingleChoice title="Tipo de volante" options={TIPO_VOLANTE} value={single.tipo} onChange={(v) => setSingle((s) => ({ ...s, tipo: v }))} />
-          <SingleChoice title="Material principal" options={MATERIAL} value={single.material} onChange={(v) => setSingle((s) => ({ ...s, material: v }))} />
-          <SingleChoice title="Fibra de carbono" options={CARBONO} value={single.carbono} onChange={(v) => setSingle((s) => ({ ...s, carbono: v }))} />
-          <SingleChoice title="Cor das costuras" options={COR_COSTURAS} value={single.costuras} onChange={(v) => setSingle((s) => ({ ...s, costuras: v }))} />
-          <SingleChoice title="Cor da faixa central (12h)" options={COR_FAIXA} value={single.faixa} onChange={(v) => setSingle((s) => ({ ...s, faixa: v }))} />
+          <SingleChoice title="Tipo de volante" options={TIPO_VOLANTE_LIST} value={single.tipo} onChange={(v) => setSingle((s) => ({ ...s, tipo: v }))} />
+          <SingleChoice title="Material principal" options={MATERIAL_LIST} value={single.material} onChange={(v) => setSingle((s) => ({ ...s, material: v }))} />
+          <SingleChoice title="Fibra de carbono" options={CARBONO_LIST} value={single.carbono} onChange={(v) => setSingle((s) => ({ ...s, carbono: v }))} />
+          <SingleChoice title="Cor das costuras" options={COR_COSTURAS_LIST} value={single.costuras} onChange={(v) => setSingle((s) => ({ ...s, costuras: v }))} />
+          <SingleChoice title="Cor da faixa central (12h)" options={COR_FAIXA_LIST} value={single.faixa} onChange={(v) => setSingle((s) => ({ ...s, faixa: v }))} />
 
           <Section title="Extras">
             <div className="grid sm:grid-cols-2 gap-2">
-              {EXTRAS.map((e) => {
+              {EXTRAS_LIST.map((e) => {
                 const active = extras.includes(e);
                 return (
                   <button
