@@ -246,10 +246,7 @@ export function SiteFooter() {
             <ColumnLabel>Contacto</ColumnLabel>
             <ul className="space-y-4">
               <li>
-                <FooterAnchor href="mailto:info@redlinewheels.com">info@redlinewheels.com</FooterAnchor>
-              </li>
-              <li>
-                <FooterAnchor href="tel:+351910123456">+351 910 123 456</FooterAnchor>
+                <FooterAnchor href="mailto:redlinecustomsauto@gmail.com">redlinecustomsauto@gmail.com</FooterAnchor>
               </li>
               <li className="text-[15px] text-muted-foreground">Vila Nova de Gaia, Portugal</li>
             </ul>
@@ -261,26 +258,12 @@ export function SiteFooter() {
             <ColumnLabel>Siga-nos</ColumnLabel>
             <ul className="space-y-4">
               <li>
-                <FooterAnchor href="https://instagram.com/redlineperformance" external>
-                  Instagram
-                </FooterAnchor>
-              </li>
-              <li>
-                <FooterAnchor href="https://facebook.com/redlineperformance" external>
+                <FooterAnchor href="https://www.facebook.com/profile.php?id=61591677547923" external>
                   Facebook
                 </FooterAnchor>
               </li>
-              <li>
-                <FooterAnchor href="https://youtube.com/@redlineperformance" external>
-                  YouTube
-                </FooterAnchor>
-              </li>
-              <li>
-                <FooterAnchor href="https://tiktok.com/@redlineperformance" external>
-                  TikTok
-                </FooterAnchor>
-              </li>
             </ul>
+
           </motion.div>
 
           {/* Indicador "07/REDLINE" — versão mobile/tablet, em fluxo normal
