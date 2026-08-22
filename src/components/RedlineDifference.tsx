@@ -23,8 +23,8 @@ const FEATURES = [
   },
   {
     icon: ShieldCheck,
-    title: "Garantia Premium",
-    description: "Todos os trabalhos são testados antes da entrega e acompanhados por garantia.",
+    title: "3 Anos de Garantia",
+    description: "Todos os trabalhos são testados antes da entrega e acompanhados por garantia legal.",
   },
   {
     icon: PackageCheck,

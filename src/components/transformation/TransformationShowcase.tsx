@@ -109,9 +109,9 @@ export function TransformationShowcase() {
                         </div>
                       </div>
                       <div className="border-l-2 border-primary pl-4">
-                        <div className="text-3xl font-bold">2 anos</div>
+                        <div className="text-3xl font-bold">3 anos</div>
                         <div className="text-xs uppercase tracking-wider text-muted-foreground">
-                          Garantia premium
+                          Garantia legal
                         </div>
                       </div>
                     </div>

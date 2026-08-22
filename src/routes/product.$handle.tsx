@@ -102,7 +102,7 @@ function ProductPage() {
             {[
               "Materiais premium (alcantara, carbono, couro nappa)",
               "Construção artesanal",
-              "Garantia 2 anos",
+              "3 anos de garantia legal",
               "Entrega para toda a Europa",
             ].map((f) => (
               <div key={f} className="flex items-center gap-3 text-sm">

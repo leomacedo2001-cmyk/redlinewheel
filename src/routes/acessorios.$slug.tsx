@@ -324,8 +324,8 @@ function AccessoryPage() {
               <div className="flex items-start gap-2 text-xs">
                 <ShieldCheck className="h-4 w-4 text-primary mt-0.5" />
                 <div>
-                  <div className="font-semibold">Garantia 2 anos</div>
-                  <div className="text-muted-foreground">Em todo o produto</div>
+                  <div className="font-semibold">Garantia 3 anos</div>
+                  <div className="text-muted-foreground">Garantia legal</div>
                 </div>
               </div>
               <div className="flex items-start gap-2 text-xs">

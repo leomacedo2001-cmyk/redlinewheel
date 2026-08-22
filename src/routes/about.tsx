@@ -42,7 +42,7 @@ export const Route = createFileRoute("/about")({
       {
         name: "description",
         content:
-          "A nossa história, o processo de fabrico, os padrões de qualidade, a garantia premium e as perguntas mais frequentes — tudo sobre a REDLINE Performance.",
+          "A nossa história, o processo de fabrico, os padrões de qualidade, a garantia legal e as perguntas mais frequentes — tudo sobre a REDLINE Performance.",
       },
       { property: "og:title", content: "Sobre — REDLINE Performance" },
       { property: "og:description", content: "História, processo, qualidade, garantia e FAQ — tudo num só lugar." },
@@ -100,7 +100,7 @@ function AboutTree({ activeId }: { activeId: string }) {
 const STATS = [
   { n: "500+", l: "Volantes entregues" },
   { n: "15+", l: "Países servidos" },
-  { n: "2 anos", l: "Garantia premium" },
+  { n: "3 anos", l: "Garantia legal" },
 ];
 
 /* ---------- O Nosso Processo ---------- */
@@ -233,7 +233,7 @@ const NOT_COVERED = [
 const CLAIM_STEPS = [
   { title: "Contacta-nos", description: "Envia-nos uma mensagem através da página de contacto com o teu número de encomenda." },
   { title: "Envia fotos", description: "Descreve o problema e envia fotos claras da zona afetada — respondemos em menos de 24h." },
-  { title: "Avaliação", description: "A nossa equipa avalia o caso e confirma se está coberto pela garantia premium." },
+  { title: "Avaliação", description: "A nossa equipa avalia o caso e confirma se está coberto pela garantia legal." },
   { title: "Reparação ou Substituição", description: "Reparamos ou substituímos a peça sem custos adicionais, com o mesmo cuidado do fabrico original." },
 ];
 
@@ -285,7 +285,7 @@ const FAQ_GROUPS: { title: string; items: { question: string; answer: string }[]
       {
         question: "Que garantia têm os volantes REDLINE?",
         answer:
-          "Todos os volantes têm 2 anos de garantia premium, cobrindo defeitos de fabrico em materiais, costuras e reintegração eletrónica. Consulta a secção de Garantia acima para todos os detalhes.",
+          "Todos os volantes têm 3 anos de garantia legal, nos termos da legislação aplicável, cobrindo defeitos de fabrico em materiais, costuras e reintegração eletrónica. Consulta a secção de Garantia acima para todos os detalhes.",
       },
     ],
   },
@@ -424,10 +424,10 @@ function AboutPage() {
           {/* Garantia */}
           <section id="garantia" ref={garantiaRef} className="scroll-mt-24">
             <div className="mb-3 text-xs uppercase tracking-[0.3em] text-primary">Compromisso REDLINE</div>
-            <h2 className="mb-4 text-4xl font-bold md:text-5xl">Garantia Premium de 2 Anos.</h2>
+            <h2 className="mb-4 text-4xl font-bold md:text-5xl">3 Anos de Garantia Legal.</h2>
             <p className="mb-12 max-w-2xl leading-relaxed text-muted-foreground">
-              Cada volante REDLINE é construído para durar. Se algo relacionado com o nosso fabrico não corresponder ao esperado,
-              tratamos disso — sem burocracia.
+              Cada volante REDLINE é construído para durar, com 3 anos de garantia legal, nos termos da legislação aplicável. Se algo
+              relacionado com o nosso fabrico não corresponder ao esperado, tratamos disso — sem burocracia.
             </p>
 
             <div className="grid gap-8 sm:grid-cols-2">

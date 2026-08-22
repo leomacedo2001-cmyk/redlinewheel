@@ -388,8 +388,8 @@ function ModelPage() {
               <div className="flex items-start gap-2 text-xs">
                 <ShieldCheck className="h-4 w-4 text-primary mt-0.5" />
                 <div>
-                  <div className="font-semibold">Garantia 2 anos</div>
-                  <div className="text-muted-foreground">Em todo o produto</div>
+                  <div className="font-semibold">Garantia 3 anos</div>
+                  <div className="text-muted-foreground">Garantia legal</div>
                 </div>
               </div>
               <div className="flex items-start gap-2 text-xs">
@@ -444,7 +444,7 @@ function ModelPage() {
               "Volante personalizado conforme configuração",
               "Reutilização do airbag original (quando aplicável)",
               "Instruções de montagem",
-              "Garantia oficial REDLINE Performance (2 anos)",
+              "3 anos de garantia legal, nos termos da legislação aplicável",
             ].map((i) => (
               <li key={i} className="flex items-start gap-2">
                 <Check className="h-4 w-4 text-primary mt-0.5" />
