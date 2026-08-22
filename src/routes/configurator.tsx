@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, MessageCircle, Mail, Check } from "lucide-react";
+import { ArrowLeft, Mail, Check } from "lucide-react";
 
 export const Route = createFileRoute("/configurator")({
   head: () => ({
