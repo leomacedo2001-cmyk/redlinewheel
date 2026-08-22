@@ -74,8 +74,8 @@ function Home() {
                 size="lg"
                 className="bg-primary hover:bg-primary/90 rounded-none h-14 px-8 text-sm uppercase tracking-wider"
               >
-                <Link to="/products">
-                  Ver Produtos <ArrowRight className="ml-2 h-4 w-4" />
+                <Link to="/configurator">
+                  Configura o teu volante <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
               <Button
@@ -84,7 +84,7 @@ function Home() {
                 variant="outline"
                 className="rounded-none h-14 px-8 text-sm uppercase tracking-wider border-foreground/30"
               >
-                <Link to="/marcas">Explorar Coleção</Link>
+                <Link to="/products">Ver modelos disponíveis</Link>
               </Button>
             </div>
           </div>
