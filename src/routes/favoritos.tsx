@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Heart, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useFavoritesStore } from "@/stores/favoritesStore";
+import { formatPrice } from "@/lib/price";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 
 export const Route = createFileRoute("/favoritos")({
@@ -77,7 +78,7 @@ function FavoritesPage() {
                 <h3 className="text-lg font-bold mb-2">{item.name}</h3>
                 {item.price && (
                   <div className="text-base font-semibold mb-4">
-                    {item.price.currency} {item.price.amount.toFixed(2)}
+                    {formatPrice(item.price.amount, item.price.currency)}
                   </div>
                 )}
                 <div className="mt-auto flex gap-2">

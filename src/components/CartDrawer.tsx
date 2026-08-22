@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { ShoppingCart, Minus, Plus, Trash2, ExternalLink, Loader2 } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
+import { formatPrice } from "@/lib/price";
 
 export function CartDrawer() {
   const [isOpen, setIsOpen] = useState(false);
@@ -61,7 +62,7 @@ export function CartDrawer() {
                     <div className="flex-1 min-w-0">
                       <h4 className="font-medium truncate text-sm">{item.product.node.title}</h4>
                       <p className="text-xs text-muted-foreground">{item.selectedOptions.map((o) => o.value).join(" · ")}</p>
-                      <p className="font-semibold text-sm mt-1">{item.price.currencyCode} {parseFloat(item.price.amount).toFixed(2)}</p>
+                      <p className="font-semibold text-sm mt-1">{formatPrice(item.price.amount, item.price.currencyCode)}</p>
                     </div>
                     <div className="flex flex-col items-end gap-2 flex-shrink-0">
                       <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => removeItem(item.variantId)}>
@@ -83,7 +84,7 @@ export function CartDrawer() {
               <div className="flex-shrink-0 space-y-4 pt-4 border-t border-border/60">
                 <div className="flex justify-between items-center">
                   <span className="text-lg font-semibold">Total</span>
-                  <span className="text-xl font-bold">{items[0]?.price.currencyCode} {totalPrice.toFixed(2)}</span>
+                  <span className="text-xl font-bold">{formatPrice(totalPrice, items[0]?.price.currencyCode ?? "EUR")}</span>
                 </div>
                 <Button onClick={handleCheckout} className="w-full bg-primary hover:bg-primary/90" size="lg" disabled={items.length === 0 || isLoading || isSyncing}>
                   {isLoading || isSyncing ? <Loader2 className="w-4 h-4 animate-spin" /> : <><ExternalLink className="w-4 h-4 mr-2" />Finalizar Compra</>}

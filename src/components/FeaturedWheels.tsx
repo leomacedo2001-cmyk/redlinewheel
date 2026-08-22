@@ -3,6 +3,7 @@ import { motion, useInView, useReducedMotion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, ChevronDown, ChevronUp, Star } from "lucide-react";
 import { getBrandModel, type Brand, type BrandModel } from "@/lib/brands";
+import { formatPrice as formatMoney } from "@/lib/price";
 import { SectionEyebrow } from "@/components/SectionEyebrow";
 import { AmbientGlow } from "@/components/AmbientGlow";
 import mercedesAmgRedForgedStudio from "@/assets/mercedes-amg-red-forged-studio-16x9.png";
@@ -86,7 +87,7 @@ type ShowcaseItem = { brand: Brand; model: BrandModel };
 
 function formatPrice(model: BrandModel): string | null {
   if (!model.price) return null;
-  return `${model.price.currency === "EUR" ? "€" : model.price.currency + " "}${model.price.amount.toFixed(0)}`;
+  return formatMoney(model.price.amount, model.price.currency);
 }
 
 const EASE = [0.22, 1, 0.36, 1] as const;

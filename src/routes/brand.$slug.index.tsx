@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Search } from "lucide-react";
 import { getBrand, BRANDS, type BrandModel } from "@/lib/brands";
+import { formatPrice } from "@/lib/price";
 
 export const Route = createFileRoute("/brand/$slug/")({
   loader: ({ params }) => {
@@ -171,7 +172,7 @@ function BrandPage() {
                 <p className="text-sm text-muted-foreground mb-4 flex-1">{mo.description}</p>
                 {mo.price && (
                   <div className="text-base font-semibold mb-3">
-                    {mo.price.currency} {mo.price.amount.toFixed(2)}
+                    {formatPrice(mo.price.amount, mo.price.currency)}
                   </div>
                 )}
                 <Button

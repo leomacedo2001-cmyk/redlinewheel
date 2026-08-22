@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { PADDLE_ACCESSORIES } from "@/lib/accessories";
+import { formatPrice } from "@/lib/price";
 
 const SITE_URL = "https://redlinewheel.lovable.app";
 
@@ -36,7 +37,7 @@ function PaddleShiftPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {PADDLE_ACCESSORIES.map((a) => {
           const price = a.price
-            ? `${a.price.currency === "EUR" ? "€" : a.price.currency + " "}${a.price.amount.toFixed(0)}`
+            ? formatPrice(a.price.amount, a.price.currency)
             : null;
           return (
             <Link

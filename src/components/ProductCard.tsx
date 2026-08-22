@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, ArrowUpRight } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
 import type { ShopifyProduct } from "@/lib/shopify";
+import { formatPrice } from "@/lib/price";
 
 export function ProductCard({ product }: { product: ShopifyProduct }) {
   const addItem = useCartStore((s) => s.addItem);
@@ -56,7 +57,7 @@ export function ProductCard({ product }: { product: ShopifyProduct }) {
           <div>
             <div className="text-xs text-muted-foreground uppercase tracking-wider">Desde</div>
             <div className="text-lg font-bold">
-              {price.currencyCode} {parseFloat(price.amount).toFixed(2)}
+              {formatPrice(price.amount, price.currencyCode)}
             </div>
           </div>
           <Button

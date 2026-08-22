@@ -8,6 +8,7 @@ import { ArrowLeft, Minus, Plus, ShoppingCart, Zap, Truck, ShieldCheck, CreditCa
 import { getAccessory, ACCESSORIES, type AccessorySpec } from "@/lib/accessories";
 import { fetchProductByHandle } from "@/lib/shopify";
 import { useCartStore } from "@/stores/cartStore";
+import { formatPrice } from "@/lib/price";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { ShareButton } from "@/components/product/ShareButton";
@@ -107,9 +108,9 @@ function AccessoryPage() {
   const isCartLoading = useCartStore((s) => s.isLoading);
 
   const priceDisplay = selectedVariant
-    ? `${selectedVariant.price.currencyCode} ${parseFloat(selectedVariant.price.amount).toFixed(2)}`
+    ? formatPrice(selectedVariant.price.amount, selectedVariant.price.currencyCode)
     : accessory.price
-      ? `${accessory.price.currency} ${accessory.price.amount.toFixed(2)}`
+      ? formatPrice(accessory.price.amount, accessory.price.currency)
       : null;
 
   const handleAddToCart = async () => {

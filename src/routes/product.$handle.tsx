@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, ShoppingCart, Check, ArrowLeft } from "lucide-react";
 import { fetchProductByHandle } from "@/lib/shopify";
 import { useCartStore } from "@/stores/cartStore";
+import { formatPrice } from "@/lib/price";
 
 export const Route = createFileRoute("/product/$handle")({
   head: ({ params }) => ({
@@ -94,7 +95,7 @@ function ProductPage() {
             <h1 className="text-4xl md:text-5xl font-bold">{product.node.title}</h1>
           </div>
           <div className="text-3xl font-bold">
-            {price.currencyCode} {parseFloat(price.amount).toFixed(2)}
+            {formatPrice(price.amount, price.currencyCode)}
           </div>
           <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{product.node.description}</p>
 

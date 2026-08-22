@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ArrowRight, Search, SlidersHorizontal, X } from "lucide-react";
 import { BRANDS, type Brand, type BrandModel } from "@/lib/brands";
+import { formatPrice as formatMoney } from "@/lib/price";
 import {
   attr,
   FORMAT_LABELS,
@@ -50,7 +51,7 @@ type Entry = { brand: Brand; model: BrandModel };
 const NAV_BRANDS = BRANDS.filter((b) => b.slug !== "outras-marcas");
 
 function formatPrice(amount: number, currency: string) {
-  return `${currency === "EUR" ? "€" : `${currency} `}${amount.toFixed(0)}`;
+  return formatMoney(amount, currency);
 }
 
 function ProductsPage() {

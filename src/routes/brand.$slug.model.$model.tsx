@@ -20,6 +20,7 @@ import {
 import { getBrand, getBrandModel, resolveShopifyHandle, type BrandModelSpec } from "@/lib/brands";
 import { fetchProductByHandle } from "@/lib/shopify";
 import { useCartStore } from "@/stores/cartStore";
+import { formatPrice } from "@/lib/price";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { FavoriteButton } from "@/components/product/FavoriteButton";
@@ -144,9 +145,9 @@ function ModelPage() {
   const isCartLoading = useCartStore((s) => s.isLoading);
 
   const priceDisplay = selectedVariant
-    ? `${selectedVariant.price.currencyCode} ${parseFloat(selectedVariant.price.amount).toFixed(2)}`
+    ? formatPrice(selectedVariant.price.amount, selectedVariant.price.currencyCode)
     : model.price
-      ? `${model.price.currency} ${model.price.amount.toFixed(2)}`
+      ? formatPrice(model.price.amount, model.price.currency)
       : null;
 
   const handleAddToCart = async () => {

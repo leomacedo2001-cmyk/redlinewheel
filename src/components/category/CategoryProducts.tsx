@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import type { Brand, BrandModel } from "@/lib/brands";
+import { formatPrice } from "@/lib/price";
 
 type CategoryProductsProps = {
   title: string;
@@ -35,7 +36,7 @@ export function CategoryProducts({ title, products }: CategoryProductsProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map(({ brand, model }) => {
             const price = model.price
-              ? `${model.price.currency === "EUR" ? "€" : model.price.currency + " "}${model.price.amount.toFixed(0)}`
+              ? formatPrice(model.price.amount, model.price.currency)
               : null;
             return (
               <Link
