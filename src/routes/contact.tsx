@@ -5,7 +5,7 @@ export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contacto — REDLINE Performance" },
-      { name: "description", content: "Fala connosco. Email, WhatsApp e redes sociais para esclarecer qualquer dúvida sobre os nossos volantes premium." },
+      { name: "description", content: "Fala connosco. Email e Facebook para esclarecer qualquer dúvida sobre os nossos volantes premium." },
       { property: "og:title", content: "Contacto — REDLINE Performance" },
       { property: "og:description", content: "Estamos disponíveis para te ajudar a personalizar o teu próximo volante." },
       { property: "og:url", content: "/contact" },
