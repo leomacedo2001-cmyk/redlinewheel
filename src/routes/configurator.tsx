@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, MessageCircle, Mail, Check } from "lucide-react";
+import { ArrowLeft, Mail, Check } from "lucide-react";
 
 export const Route = createFileRoute("/configurator")({
   head: () => ({
@@ -79,15 +79,14 @@ function ConfiguratorPage() {
     return lines.join("\n");
   }, [marca, modelo, ano, single, extras, nome, contacto, notas]);
 
-  const whatsappHref = `https://wa.me/351900000000?text=${encodeURIComponent(summary)}`;
-  const mailHref = `mailto:hello@redline-performance.com?subject=${encodeURIComponent(
+  const mailHref = `mailto:redlinecustomsauto@gmail.com?subject=${encodeURIComponent(
     "Pedido de orçamento — Volante Personalizado"
   )}&body=${encodeURIComponent(summary)}`;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSent(true);
-    window.open(whatsappHref, "_blank");
+    window.open(mailHref, "_blank");
   };
 
   return (
@@ -161,16 +160,11 @@ function ConfiguratorPage() {
           <pre className="whitespace-pre-wrap text-xs leading-relaxed text-muted-foreground font-mono bg-background p-4 border border-border/40 max-h-72 overflow-auto">{summary}</pre>
 
           <Button type="submit" className="w-full rounded-none h-12 uppercase tracking-wider text-xs bg-primary hover:bg-primary/90">
-            <MessageCircle className="h-4 w-4 mr-2" /> Enviar por WhatsApp
+            <Mail className="h-4 w-4 mr-2" /> Enviar por Email
           </Button>
-          <a href={mailHref} className="block">
-            <Button type="button" variant="outline" className="w-full rounded-none h-12 uppercase tracking-wider text-xs">
-              <Mail className="h-4 w-4 mr-2" /> Enviar por Email
-            </Button>
-          </a>
 
           {sent && (
-            <p className="text-xs text-primary">Abrimos o WhatsApp numa nova janela. Confirma o envio para nós.</p>
+            <p className="text-xs text-primary">Abrimos o teu email numa nova janela. Confirma o envio para nós.</p>
           )}
         </aside>
       </form>
