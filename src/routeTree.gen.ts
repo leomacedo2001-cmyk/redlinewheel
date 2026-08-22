@@ -9,90 +9,35 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as ProductsRouteImport } from './routes/products'
-import { Route as PrivacidadeRouteImport } from './routes/privacidade'
-import { Route as McpRouteImport } from './routes/mcp'
-import { Route as MarcasRouteImport } from './routes/marcas'
-import { Route as GaleriaRouteImport } from './routes/galeria'
-import { Route as FiltrosRouteImport } from './routes/filtros'
-import { Route as FavoritosRouteImport } from './routes/favoritos'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as ConfiguratorRouteImport } from './routes/configurator'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AcessoriosRouteImport } from './routes/acessorios'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AcessoriosIndexRouteImport } from './routes/acessorios.index'
-import { Route as ProdutosSlugRouteImport } from './routes/produtos.$slug'
-import { Route as ProductHandleRouteImport } from './routes/product.$handle'
-import { Route as CSlugRouteImport } from './routes/c.$slug'
-import { Route as AcessoriosSlugRouteImport } from './routes/acessorios.$slug'
-import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AcessoriosRouteImport } from './routes/acessorios'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ConfiguratorRouteImport } from './routes/configurator'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as FavoritosRouteImport } from './routes/favoritos'
+import { Route as FiltrosRouteImport } from './routes/filtros'
+import { Route as GaleriaRouteImport } from './routes/galeria'
+import { Route as MarcasRouteImport } from './routes/marcas'
+import { Route as McpRouteImport } from './routes/mcp'
+import { Route as PrivacidadeRouteImport } from './routes/privacidade'
+import { Route as ProductsRouteImport } from './routes/products'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
-import { Route as BrandSlugIndexRouteImport } from './routes/brand.$slug.index'
-import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as AcessoriosIndexRouteImport } from './routes/acessorios.index'
+import { Route as AcessoriosSlugRouteImport } from './routes/acessorios.$slug'
+import { Route as CSlugRouteImport } from './routes/c.$slug'
+import { Route as ProductHandleRouteImport } from './routes/product.$handle'
+import { Route as ProdutosSlugRouteImport } from './routes/produtos.$slug'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as BrandSlugIndexRouteImport } from './routes/brand.$slug.index'
 import { Route as BrandSlugModelModelRouteImport } from './routes/brand.$slug.model.$model'
 
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProductsRoute = ProductsRouteImport.update({
-  id: '/products',
-  path: '/products',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacidadeRoute = PrivacidadeRouteImport.update({
-  id: '/privacidade',
-  path: '/privacidade',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const McpRoute = McpRouteImport.update({
-  id: '/mcp',
-  path: '/mcp',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MarcasRoute = MarcasRouteImport.update({
-  id: '/marcas',
-  path: '/marcas',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GaleriaRoute = GaleriaRouteImport.update({
-  id: '/galeria',
-  path: '/galeria',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FiltrosRoute = FiltrosRouteImport.update({
-  id: '/filtros',
-  path: '/filtros',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FavoritosRoute = FavoritosRouteImport.update({
-  id: '/favoritos',
-  path: '/favoritos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ConfiguratorRoute = ConfiguratorRouteImport.update({
-  id: '/configurator',
-  path: '/configurator',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AcessoriosRoute = AcessoriosRouteImport.update({
-  id: '/acessorios',
-  path: '/acessorios',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -100,19 +45,91 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AcessoriosRoute = AcessoriosRouteImport.update({
+  id: '/acessorios',
+  path: '/acessorios',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConfiguratorRoute = ConfiguratorRouteImport.update({
+  id: '/configurator',
+  path: '/configurator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FavoritosRoute = FavoritosRouteImport.update({
+  id: '/favoritos',
+  path: '/favoritos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FiltrosRoute = FiltrosRouteImport.update({
+  id: '/filtros',
+  path: '/filtros',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GaleriaRoute = GaleriaRouteImport.update({
+  id: '/galeria',
+  path: '/galeria',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarcasRoute = MarcasRouteImport.update({
+  id: '/marcas',
+  path: '/marcas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacidadeRoute = PrivacidadeRouteImport.update({
+  id: '/privacidade',
+  path: '/privacidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductsRoute = ProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AcessoriosIndexRoute = AcessoriosIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AcessoriosRoute,
 } as any)
-const ProdutosSlugRoute = ProdutosSlugRouteImport.update({
-  id: '/produtos/$slug',
-  path: '/produtos/$slug',
+const AcessoriosSlugRoute = AcessoriosSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => AcessoriosRoute,
+} as any)
+const CSlugRoute = CSlugRouteImport.update({
+  id: '/c/$slug',
+  path: '/c/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProductHandleRoute = ProductHandleRouteImport.update({
@@ -120,31 +137,14 @@ const ProductHandleRoute = ProductHandleRouteImport.update({
   path: '/product/$handle',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CSlugRoute = CSlugRouteImport.update({
-  id: '/c/$slug',
-  path: '/c/$slug',
+const ProdutosSlugRoute = ProdutosSlugRouteImport.update({
+  id: '/produtos/$slug',
+  path: '/produtos/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AcessoriosSlugRoute = AcessoriosSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => AcessoriosRoute,
-} as any)
-const Char91DotwellKnownChar93OauthProtectedResourceRoute =
-  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
-    id: '/.well-known/oauth-protected-resource',
-    path: '/.well-known/oauth-protected-resource',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const Char91DotmcpChar93ListToolsRoute =
-  Char91DotmcpChar93ListToolsRouteImport.update({
-    id: '/.mcp/list-tools',
-    path: '/.mcp/list-tools',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const BrandSlugIndexRoute = BrandSlugIndexRouteImport.update({
-  id: '/brand/$slug/',
-  path: '/brand/$slug/',
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
   getParentRoute: () => rootRouteImport,
 } as any)
 const Char91DotmcpChar93InvokeToolToolRoute =
@@ -153,9 +153,9 @@ const Char91DotmcpChar93InvokeToolToolRoute =
     path: '/.mcp/invoke-tool/$tool',
     getParentRoute: () => rootRouteImport,
   } as any)
-const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
-  id: '/.lovable/oauth/consent',
-  path: '/.lovable/oauth/consent',
+const BrandSlugIndexRoute = BrandSlugIndexRouteImport.update({
+  id: '/brand/$slug/',
+  path: '/brand/$slug/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BrandSlugModelModelRoute = BrandSlugModelModelRouteImport.update({
@@ -356,88 +356,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/products': {
-      id: '/products'
-      path: '/products'
-      fullPath: '/products'
-      preLoaderRoute: typeof ProductsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacidade': {
-      id: '/privacidade'
-      path: '/privacidade'
-      fullPath: '/privacidade'
-      preLoaderRoute: typeof PrivacidadeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mcp': {
-      id: '/mcp'
-      path: '/mcp'
-      fullPath: '/mcp'
-      preLoaderRoute: typeof McpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/marcas': {
-      id: '/marcas'
-      path: '/marcas'
-      fullPath: '/marcas'
-      preLoaderRoute: typeof MarcasRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/galeria': {
-      id: '/galeria'
-      path: '/galeria'
-      fullPath: '/galeria'
-      preLoaderRoute: typeof GaleriaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/filtros': {
-      id: '/filtros'
-      path: '/filtros'
-      fullPath: '/filtros'
-      preLoaderRoute: typeof FiltrosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/favoritos': {
-      id: '/favoritos'
-      path: '/favoritos'
-      fullPath: '/favoritos'
-      preLoaderRoute: typeof FavoritosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/configurator': {
-      id: '/configurator'
-      path: '/configurator'
-      fullPath: '/configurator'
-      preLoaderRoute: typeof ConfiguratorRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/acessorios': {
-      id: '/acessorios'
-      path: '/acessorios'
-      fullPath: '/acessorios'
-      preLoaderRoute: typeof AcessoriosRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -447,53 +370,88 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/acessorios': {
+      id: '/acessorios'
+      path: '/acessorios'
+      fullPath: '/acessorios'
+      preLoaderRoute: typeof AcessoriosRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/acessorios/': {
-      id: '/acessorios/'
-      path: '/'
-      fullPath: '/acessorios/'
-      preLoaderRoute: typeof AcessoriosIndexRouteImport
-      parentRoute: typeof AcessoriosRoute
-    }
-    '/produtos/$slug': {
-      id: '/produtos/$slug'
-      path: '/produtos/$slug'
-      fullPath: '/produtos/$slug'
-      preLoaderRoute: typeof ProdutosSlugRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/product/$handle': {
-      id: '/product/$handle'
-      path: '/product/$handle'
-      fullPath: '/product/$handle'
-      preLoaderRoute: typeof ProductHandleRouteImport
+    '/configurator': {
+      id: '/configurator'
+      path: '/configurator'
+      fullPath: '/configurator'
+      preLoaderRoute: typeof ConfiguratorRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/c/$slug': {
-      id: '/c/$slug'
-      path: '/c/$slug'
-      fullPath: '/c/$slug'
-      preLoaderRoute: typeof CSlugRouteImport
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/acessorios/$slug': {
-      id: '/acessorios/$slug'
-      path: '/$slug'
-      fullPath: '/acessorios/$slug'
-      preLoaderRoute: typeof AcessoriosSlugRouteImport
-      parentRoute: typeof AcessoriosRoute
+    '/favoritos': {
+      id: '/favoritos'
+      path: '/favoritos'
+      fullPath: '/favoritos'
+      preLoaderRoute: typeof FavoritosRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/.well-known/oauth-protected-resource': {
-      id: '/.well-known/oauth-protected-resource'
-      path: '/.well-known/oauth-protected-resource'
-      fullPath: '/.well-known/oauth-protected-resource'
-      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+    '/filtros': {
+      id: '/filtros'
+      path: '/filtros'
+      fullPath: '/filtros'
+      preLoaderRoute: typeof FiltrosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/galeria': {
+      id: '/galeria'
+      path: '/galeria'
+      fullPath: '/galeria'
+      preLoaderRoute: typeof GaleriaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marcas': {
+      id: '/marcas'
+      path: '/marcas'
+      fullPath: '/marcas'
+      preLoaderRoute: typeof MarcasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacidade': {
+      id: '/privacidade'
+      path: '/privacidade'
+      fullPath: '/privacidade'
+      preLoaderRoute: typeof PrivacidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/products': {
+      id: '/products'
+      path: '/products'
+      fullPath: '/products'
+      preLoaderRoute: typeof ProductsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.mcp/list-tools': {
@@ -503,11 +461,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/brand/$slug/': {
-      id: '/brand/$slug/'
-      path: '/brand/$slug'
-      fullPath: '/brand/$slug/'
-      preLoaderRoute: typeof BrandSlugIndexRouteImport
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/acessorios/': {
+      id: '/acessorios/'
+      path: '/'
+      fullPath: '/acessorios/'
+      preLoaderRoute: typeof AcessoriosIndexRouteImport
+      parentRoute: typeof AcessoriosRoute
+    }
+    '/acessorios/$slug': {
+      id: '/acessorios/$slug'
+      path: '/$slug'
+      fullPath: '/acessorios/$slug'
+      preLoaderRoute: typeof AcessoriosSlugRouteImport
+      parentRoute: typeof AcessoriosRoute
+    }
+    '/c/$slug': {
+      id: '/c/$slug'
+      path: '/c/$slug'
+      fullPath: '/c/$slug'
+      preLoaderRoute: typeof CSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/product/$handle': {
+      id: '/product/$handle'
+      path: '/product/$handle'
+      fullPath: '/product/$handle'
+      preLoaderRoute: typeof ProductHandleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/produtos/$slug': {
+      id: '/produtos/$slug'
+      path: '/produtos/$slug'
+      fullPath: '/produtos/$slug'
+      preLoaderRoute: typeof ProdutosSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.mcp/invoke-tool/$tool': {
@@ -517,11 +517,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.lovable/oauth/consent': {
-      id: '/.lovable/oauth/consent'
-      path: '/.lovable/oauth/consent'
-      fullPath: '/.lovable/oauth/consent'
-      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+    '/brand/$slug/': {
+      id: '/brand/$slug/'
+      path: '/brand/$slug'
+      fullPath: '/brand/$slug/'
+      preLoaderRoute: typeof BrandSlugIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/brand/$slug/model/$model': {
