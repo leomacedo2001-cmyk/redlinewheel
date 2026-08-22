@@ -79,15 +79,14 @@ function ConfiguratorPage() {
     return lines.join("\n");
   }, [marca, modelo, ano, single, extras, nome, contacto, notas]);
 
-  const whatsappHref = `https://wa.me/351900000000?text=${encodeURIComponent(summary)}`;
-  const mailHref = `mailto:hello@redline-performance.com?subject=${encodeURIComponent(
+  const mailHref = `mailto:redlinecustomsauto@gmail.com?subject=${encodeURIComponent(
     "Pedido de orçamento — Volante Personalizado"
   )}&body=${encodeURIComponent(summary)}`;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSent(true);
-    window.open(whatsappHref, "_blank");
+    window.open(mailHref, "_blank");
   };
 
   return (
