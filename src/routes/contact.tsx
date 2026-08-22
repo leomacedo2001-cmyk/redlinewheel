@@ -29,10 +29,10 @@ function ContactPage() {
           { icon: Mail, t: "Email", v: "redlinecustomsauto@gmail.com", href: "mailto:redlinecustomsauto@gmail.com" },
           { icon: Facebook, t: "Facebook", v: "REDLINE Performance", href: "https://www.facebook.com/profile.php?id=61591677547923" },
         ].map(({ icon: Icon, t, v, href }) => (
-          <a key={t} href={href} className="bg-surface p-10 hover:bg-surface-elevated transition-colors block">
+          <a key={t} href={href} className="bg-surface p-10 hover:bg-surface-elevated transition-colors block min-w-0">
             <Icon className="h-6 w-6 text-primary mb-4" />
             <div className="text-xs uppercase tracking-wider text-muted-foreground mb-2">{t}</div>
-            <div className="font-semibold">{v}</div>
+            <div className="font-semibold break-words">{v}</div>
           </a>
         ))}
       </div>
