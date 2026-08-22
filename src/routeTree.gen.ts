@@ -20,6 +20,7 @@ import { Route as FiltrosRouteImport } from './routes/filtros'
 import { Route as GaleriaRouteImport } from './routes/galeria'
 import { Route as MarcasRouteImport } from './routes/marcas'
 import { Route as McpRouteImport } from './routes/mcp'
+import { Route as PaddleshiftRouteImport } from './routes/paddleshift'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -88,6 +89,11 @@ const MarcasRoute = MarcasRouteImport.update({
 const McpRoute = McpRouteImport.update({
   id: '/mcp',
   path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaddleshiftRoute = PaddleshiftRouteImport.update({
+  id: '/paddleshift',
+  path: '/paddleshift',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacidadeRoute = PrivacidadeRouteImport.update({
@@ -176,6 +182,7 @@ export interface FileRoutesByFullPath {
   '/galeria': typeof GaleriaRoute
   '/marcas': typeof MarcasRoute
   '/mcp': typeof McpRoute
+  '/paddleshift': typeof PaddleshiftRoute
   '/privacidade': typeof PrivacidadeRoute
   '/products': typeof ProductsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -202,6 +209,7 @@ export interface FileRoutesByTo {
   '/galeria': typeof GaleriaRoute
   '/marcas': typeof MarcasRoute
   '/mcp': typeof McpRoute
+  '/paddleshift': typeof PaddleshiftRoute
   '/privacidade': typeof PrivacidadeRoute
   '/products': typeof ProductsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -230,6 +238,7 @@ export interface FileRoutesById {
   '/galeria': typeof GaleriaRoute
   '/marcas': typeof MarcasRoute
   '/mcp': typeof McpRoute
+  '/paddleshift': typeof PaddleshiftRoute
   '/privacidade': typeof PrivacidadeRoute
   '/products': typeof ProductsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -259,6 +268,7 @@ export interface FileRouteTypes {
     | '/galeria'
     | '/marcas'
     | '/mcp'
+    | '/paddleshift'
     | '/privacidade'
     | '/products'
     | '/sitemap.xml'
@@ -285,6 +295,7 @@ export interface FileRouteTypes {
     | '/galeria'
     | '/marcas'
     | '/mcp'
+    | '/paddleshift'
     | '/privacidade'
     | '/products'
     | '/sitemap.xml'
@@ -312,6 +323,7 @@ export interface FileRouteTypes {
     | '/galeria'
     | '/marcas'
     | '/mcp'
+    | '/paddleshift'
     | '/privacidade'
     | '/products'
     | '/sitemap.xml'
@@ -340,6 +352,7 @@ export interface RootRouteChildren {
   GaleriaRoute: typeof GaleriaRoute
   MarcasRoute: typeof MarcasRoute
   McpRoute: typeof McpRoute
+  PaddleshiftRoute: typeof PaddleshiftRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   ProductsRoute: typeof ProductsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -431,6 +444,13 @@ declare module '@tanstack/react-router' {
       path: '/mcp'
       fullPath: '/mcp'
       preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/paddleshift': {
+      id: '/paddleshift'
+      path: '/paddleshift'
+      fullPath: '/paddleshift'
+      preLoaderRoute: typeof PaddleshiftRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacidade': {
@@ -560,6 +580,7 @@ const rootRouteChildren: RootRouteChildren = {
   GaleriaRoute: GaleriaRoute,
   MarcasRoute: MarcasRoute,
   McpRoute: McpRoute,
+  PaddleshiftRoute: PaddleshiftRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   ProductsRoute: ProductsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,

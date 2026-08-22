@@ -3,11 +3,16 @@ import paddleCarbonBlue from "@/assets/paddle-shift-carbon-blue-1.jpg";
 
 export type AccessorySpec = { label: string; value: string };
 
+/** Categoria do acessório — permite páginas dedicadas por tipo (ex.: PaddleShift). */
+export type AccessoryCategory = "patilhas";
+
 export type Accessory = {
   slug: string;
   name: string;
   description: string;
   longDescription?: string;
+  /** Categoria a que o acessório pertence; alimenta as páginas dedicadas. */
+  category?: AccessoryCategory;
   img: string;
   gallery?: string[];
   /** Texto livre de compatibilidade — acessórios não seguem o modelo marca→modelo dos volantes. */
@@ -26,6 +31,7 @@ export const ACCESSORIES: Accessory[] = [
     description: "Patilhas de mudança em alumínio com grip em borracha azul perfurada.",
     longDescription:
       "Patilhas de mudança REDLINE em alumínio CNC, com inserto em borracha azul perfurada para máxima aderência em condução dinâmica. Encaixe por clipe sobre a patilha OEM, sem furar nem modificar o volante original.",
+    category: "patilhas",
     img: paddleRubberBlue,
     gallery: [paddleRubberBlue],
     fitment: "Encaixe universal por clipe sobre patilhas OEM. Confirmar compatibilidade exata com o volante antes da compra.",
@@ -46,6 +52,7 @@ export const ACCESSORIES: Accessory[] = [
     description: "Patilhas de mudança em fibra de carbono real com marca +/- azul.",
     longDescription:
       "Patilhas de mudança REDLINE em fibra de carbono real (weave visível), com marcação +/- em azul. Encaixe por clipe sobre a patilha OEM, sem furar nem modificar o volante original. Acabamento de assinatura REDLINE.",
+    category: "patilhas",
     img: paddleCarbonBlue,
     gallery: [paddleCarbonBlue],
     fitment: "Encaixe universal por clipe sobre patilhas OEM. Confirmar compatibilidade exata com o volante antes da compra.",
@@ -61,6 +68,9 @@ export const ACCESSORIES: Accessory[] = [
     shopifyHandle: "acessorios-patilhas-carbono-azul",
   },
 ];
+
+/** Acessórios da categoria "patilhas" — alimenta a página dedicada /paddleshift. */
+export const PADDLE_ACCESSORIES = ACCESSORIES.filter((a) => a.category === "patilhas");
 
 export function getAccessory(slug: string): Accessory | undefined {
   return ACCESSORIES.find((a) => a.slug === slug);

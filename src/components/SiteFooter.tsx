@@ -201,6 +201,9 @@ export function SiteFooter() {
               <li>
                 <FooterLink to="/acessorios">Acessórios</FooterLink>
               </li>
+              <li>
+                <FooterLink to="/paddleshift">PaddleShift</FooterLink>
+              </li>
             </ul>
           </motion.div>
 
