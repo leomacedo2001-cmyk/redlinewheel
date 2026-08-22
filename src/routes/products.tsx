@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { ArrowRight, Search, SlidersHorizontal, X } from "lucide-react";
 import { BRANDS, type Brand, type BrandModel } from "@/lib/brands";
 import { formatPrice as formatMoney } from "@/lib/price";
+import { getFitments, fitmentSearchTerms, normalizeText } from "@/lib/fitment";
 import {
   attr,
   FORMAT_LABELS,
@@ -23,7 +24,9 @@ type ProductsSearch = {
 
 export const Route = createFileRoute("/products")({
   validateSearch: (search: Record<string, unknown>): ProductsSearch => ({
-    q: typeof search.q === "string" && search.q ? search.q : undefined,
+    // O router converte `?q=991` para número — sem este String() um chassis
+    // só com dígitos (991, 992) era silenciosamente ignorado na pesquisa.
+    q: typeof search.q === "string" || typeof search.q === "number" ? String(search.q) || undefined : undefined,
     marca: typeof search.marca === "string" && search.marca ? search.marca : undefined,
   }),
   head: () => ({
@@ -95,12 +98,30 @@ function ProductsPage() {
     });
   }
 
+  /**
+   * Índice de pesquisa: marca, nome, descrição e todos os termos de
+   * compatibilidade (modelo, chassis e rótulo de geração) da fonte normalizada,
+   * sem acentos nem pontuação. Assim procurar "G80", "w205" ou "8Y" encontra os
+   * volantes declarados como compatíveis.
+   */
+  const searchIndex = useMemo(() => {
+    const map = new Map<BrandModel, string>();
+    for (const { brand, model } of allEntries) {
+      const terms = [brand.name, model.name, model.description, ...fitmentSearchTerms(getFitments(brand.name, model))];
+      // Normalizar CADA termo e só depois juntar com "|": normalizar a frase
+      // inteira colava os termos uns aos outros e fazia "991" acertar em
+      // "...RS9" + "91..." — devolvia o catálogo todo.
+      map.set(model, terms.map(normalizeText).join("|"));
+    }
+    return map;
+  }, [allEntries]);
+
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const q = normalizeText(query.trim());
     return allEntries.filter(({ brand, model }) => {
       if (q) {
-        const haystack = `${brand.name} ${model.name} ${model.chassis ?? ""} ${model.description} ${model.compatibilities.join(" ")}`.toLowerCase();
-        if (!haystack.includes(q)) return false;
+        // Índice pré-calculado sobre a MESMA fonte normalizada da ficha.
+        if (!(searchIndex.get(model) ?? "").includes(q)) return false;
       }
       if (marca && brand.slug !== marca) return false;
       if (formato && !attr.isFormat(model.attributes, formato)) return false;
@@ -111,7 +132,7 @@ function ProductsPage() {
       if (model.price && (model.price.amount < priceRange[0] || model.price.amount > priceRange[1])) return false;
       return true;
     });
-  }, [allEntries, query, marca, formato, material, costura, feature, disponivelOnly, priceRange]);
+  }, [allEntries, searchIndex, query, marca, formato, material, costura, feature, disponivelOnly, priceRange]);
 
   const activeFilterCount = [marca, formato, material, costura, feature, disponivelOnly ? "1" : "", priceTouched ? "1" : ""].filter(Boolean).length;
 

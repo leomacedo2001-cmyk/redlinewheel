@@ -14,6 +14,7 @@
 import type { BrandModel } from "@/lib/brands";
 import { attr, type ProductAttributes } from "@/lib/attributes";
 import { CARBONO, COR_COSTURAS, COR_FAIXA, MATERIAL, TIPO_VOLANTE, EXTRAS } from "@/lib/configuratorOptions";
+import { getFitments } from "@/lib/fitment";
 
 export type ConfiguratorPrefill = {
   marca: string;
@@ -133,14 +134,17 @@ function baseNameOf(brandName: string, modelName: string): string {
  */
 export function buildPrefill(brandName: string, model: BrandModel): ConfiguratorPrefill {
   const a = model.attributes;
+  // Mesma fonte normalizada da ficha e da validação de compra.
+  const summary = getFitments(brandName, model);
+
   return {
     marca: brandName,
-    // O campo "Modelo" é do CARRO do cliente, não do volante. Um volante serve
-    // normalmente vários modelos, por isso só o preenchemos quando a lista de
-    // compatibilidades tem exatamente uma entrada — aí não há ambiguidade.
-    // Com várias, fica vazio: escolher uma seria inventar o carro do cliente.
-    modelo: model.compatibilities.length === 1 ? model.compatibilities[0] : "",
-    chassis: model.chassis ?? "",
+    // "Modelo" e "Chassis" são do CARRO do cliente. Só pré-preenchemos o que é
+    // INEQUÍVOCO: o modelo quando o volante serve um único veículo declarado, e
+    // o chassis quando é o mesmo em todas as compatibilidades. Havendo várias
+    // hipóteses, o campo fica vazio — escolher uma seria decidir pelo cliente.
+    modelo: summary.fitments.length === 1 ? summary.fitments[0].model : "",
+    chassis: summary.commonChassis ?? "",
     ano: "",
     tipo: mapTipo(a),
     material: mapMaterial(a),

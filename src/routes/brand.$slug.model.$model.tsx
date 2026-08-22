@@ -28,6 +28,8 @@ import { StickyBuyBar } from "@/components/product/StickyBuyBar";
 import { RelatedProducts } from "@/components/product/RelatedProducts";
 import { ReviewsEmpty } from "@/components/product/ReviewsEmpty";
 import { CompatibilityDialog } from "@/components/product/CompatibilityDialog";
+import { CompatibilityList } from "@/components/product/CompatibilityList";
+import { getFitments } from "@/lib/fitment";
 import { vehicleLines, type VehicleInput } from "@/lib/compatibility";
 import { mailtoHref } from "@/lib/contact";
 
@@ -216,6 +218,10 @@ function ModelPage() {
   const variantUnavailable = !!selectedVariant && !selectedVariant.availableForSale;
   const canBuy = !!shopifyProduct && !!selectedVariant && selectedVariant.availableForSale;
 
+  // Fonte única de compatibilidade — a mesma que alimenta a secção, a validação
+  // de compra e o pré-preenchimento do configurador.
+  const fitmentSummary = useMemo(() => getFitments(brand.name, model), [brand.name, model]);
+
   const unsureHref = mailtoHref(
     `Dúvida de compatibilidade — ${brand.name} ${model.name}`,
     [
@@ -250,8 +256,7 @@ function ModelPage() {
         onOpenChange={setCompatOpen}
         productName={`${brand.name} ${model.name}`}
         brandName={brand.name}
-        chassis={model.chassis}
-        compatibilities={model.compatibilities}
+        summary={fitmentSummary}
         priceDisplay={priceDisplay}
         onProceed={handleProceed}
         proceeding={isCartLoading}
@@ -371,17 +376,8 @@ function ModelPage() {
               </div>
             )}
 
-            {/* Compatibilities */}
-            <div>
-              <div className="text-[10px] uppercase tracking-[0.3em] text-primary mb-3">Compatibilidades</div>
-              <div className="flex flex-wrap gap-1.5">
-                {model.compatibilities.map((c: string) => (
-                  <span key={c} className="text-[11px] px-2 py-1 bg-surface border border-border/60 text-muted-foreground">
-                    {c}
-                  </span>
-                ))}
-              </div>
-            </div>
+            {/* Compatibilidade — estrutura normalizada (src/lib/fitment.ts) */}
+            <CompatibilityList summary={fitmentSummary} />
 
             {/* Actions — dois percursos: comprar este volante, ou parti-lo como base */}
             <div className="space-y-3">

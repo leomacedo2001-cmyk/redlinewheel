@@ -1,12 +1,16 @@
 /**
  * Validação de compatibilidade veículo ↔ volante.
  *
- * Corre inteiramente com os dados que já existem no catálogo — `brand.name`,
- * `model.chassis` e `model.compatibilities`. Não inventa compatibilidades: se
- * o que o cliente escreve não bate com nada do que está declarado no produto,
- * o resultado é "precisa de confirmação manual", nunca um erro nem uma
- * confirmação inventada.
+ * Corre exclusivamente sobre a estrutura normalizada de `fitment.ts`, que é a
+ * mesma que a ficha mostra e que o configurador usa para pré-preencher. Não há
+ * aqui nenhuma segunda leitura dos campos livres do catálogo.
+ *
+ * Não inventa compatibilidades: se o que o cliente escreve não bate com nada do
+ * que está declarado no produto, o resultado é "precisa de confirmação manual"
+ * — nunca um erro, nunca uma confirmação assumida.
  */
+
+import { normalizeText, type Fitment, type FitmentSummary } from "@/lib/fitment";
 
 export type VehicleInput = {
   marca: string;
@@ -16,67 +20,64 @@ export type VehicleInput = {
 };
 
 export type CompatibilityResult = {
-  /** "confirmada" = deu para validar com os dados do produto. */
+  /** "confirmada" = deu para validar com os dados declarados do produto. */
   status: "confirmada" | "manual";
-  /** Marca do cliente bate com a marca do produto. */
   brandMatch: boolean;
-  /** Modelo ou chassis do cliente bate com uma compatibilidade declarada. */
   modelMatch: boolean;
-  /** A entrada exata do catálogo que fez o match (para mostrar ao cliente). */
+  /** A entrada do catálogo que fez o match, para mostrar ao cliente. */
   matchedOn?: string;
+  /** Anos declarados da entrada que fez o match, quando existem. */
+  matchedYears?: { from: number; to?: number };
 };
-
-/** minúsculas, sem acentos, só letras e dígitos — "M3 Touring G81" -> "m3touringg81" */
-function norm(s: string): string {
-  return s
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, "");
-}
 
 /** Duas designações "encontram-se" se uma contém a outra (evita falsos positivos curtos). */
 function looseMatch(a: string, b: string): boolean {
-  const x = norm(a);
-  const y = norm(b);
+  const x = normalizeText(a);
+  const y = normalizeText(b);
   if (x.length < 2 || y.length < 2) return false;
   return x === y || x.includes(y) || y.includes(x);
 }
 
-export type CompatibilitySource = {
-  brandName: string;
-  /** Chassis/geração declarado no produto, quando existe. */
-  chassis?: string;
-  /** Lista de compatibilidades declarada no produto. */
-  compatibilities: string[];
-};
+/** Todos os textos por que uma entrada pode ser reconhecida. */
+function candidatesOf(f: Fitment): string[] {
+  return [f.raw, f.model, f.chassis].filter((v): v is string => Boolean(v));
+}
 
-export function checkCompatibility(src: CompatibilitySource, input: VehicleInput): CompatibilityResult {
-  // A marca "Outras Marcas" é um agrupamento, não uma marca real — nunca dá
-  // para confirmar automaticamente por aí.
-  const brandIsGeneric = norm(src.brandName).includes("outrasmarcas");
-  const brandMatch = !brandIsGeneric && looseMatch(src.brandName, input.marca);
+export function checkCompatibility(summary: FitmentSummary, input: VehicleInput): CompatibilityResult {
+  const brandName = summary.fitments[0]?.brand ?? "";
+  // "Outras Marcas" é um agrupamento, não uma marca — nunca confirma por aí.
+  const brandIsGeneric = normalizeText(brandName).includes("outrasmarcas");
+  const brandMatch = !brandIsGeneric && looseMatch(brandName, input.marca);
 
-  // O cliente pode identificar o carro pelo modelo comercial ("M3 Touring") ou
-  // pelo chassis ("G81"). Qualquer um serve.
-  const candidates = [input.modelo, input.chassis].filter((v) => v.trim().length > 0);
-  const declared = [...src.compatibilities, ...(src.chassis ? [src.chassis] : [])];
+  // O cliente pode identificar o carro pelo modelo comercial ou pelo chassis.
+  const typed = [input.modelo, input.chassis].filter((v) => v.trim().length > 0);
 
-  let matchedOn: string | undefined;
-  for (const candidate of candidates) {
-    const hit = declared.find((d) => looseMatch(d, candidate));
-    if (hit) {
-      matchedOn = hit;
-      break;
+  let matched: Fitment | undefined;
+  outer: for (const value of typed) {
+    for (const f of summary.fitments) {
+      if (candidatesOf(f).some((c) => looseMatch(c, value))) {
+        matched = f;
+        break outer;
+      }
     }
   }
-  const modelMatch = Boolean(matchedOn);
+
+  // O rótulo de geração declarado também vale como identificação ("F15/F16").
+  let matchedLabel: string | undefined = matched?.raw;
+  if (!matched && summary.generationLabel) {
+    const label = summary.generationLabel;
+    const hit = typed.some((v) => label.split("/").some((code) => looseMatch(code, v)));
+    if (hit) matchedLabel = label;
+  }
+
+  const modelMatch = Boolean(matchedLabel);
 
   return {
     status: brandMatch && modelMatch ? "confirmada" : "manual",
     brandMatch,
     modelMatch,
-    matchedOn,
+    matchedOn: modelMatch ? matchedLabel : undefined,
+    matchedYears: matched?.years,
   };
 }
 

@@ -6,18 +6,18 @@ const head=t=>console.log('\n'+t);
 
 const PRODUCTS = [
   { path:'/brand/bmw/model/g-series-forged-magenta', brand:'BMW', name:'BMW G-Series Forged Magenta Signature',
-    price:'€1.199', chassis:'G2x / G8x', good:{marca:'BMW',modelo:'M3 G80'},
-    prefill:{ marca:'BMW', chassis:'G2x / G8x', tipo:'Achatado em baixo (flat bottom)',
+    price:'€1.199', chassis:'', good:{marca:'BMW',modelo:'M3 G80'},
+    prefill:{ marca:'BMW', chassis:'', tipo:'Achatado em baixo (flat bottom)',
       material:'Combinação Alcântara + Carbono', carbono:'Carbono forged', costuras:'Amarelo',
       faixa:null, extras:['Indicador LED de mudança'], naoExtras:['Patilhas de velocidade em alumínio'] } },
   { path:'/brand/mercedes-benz/model/amg-red-forged-signature', brand:'Mercedes-Benz', name:'Mercedes-AMG Red Forged Signature',
-    price:'€1.249', chassis:'AMG', good:{marca:'Mercedes-Benz',modelo:'C63 AMG'},
-    prefill:{ marca:'Mercedes-Benz', chassis:'AMG', tipo:'Achatado em baixo (flat bottom)',
+    price:'€1.249', chassis:'', good:{marca:'Mercedes-Benz',modelo:'C63 AMG'},
+    prefill:{ marca:'Mercedes-Benz', chassis:'', tipo:'Achatado em baixo (flat bottom)',
       material:'Combinação Alcântara + Carbono', carbono:'Carbono forged', costuras:'Vermelho',
       faixa:'Sem faixa', extras:['Patilhas de velocidade em alumínio'], naoExtras:['Indicador LED de mudança'] } },
   { path:'/brand/audi/model/rs-carbon-signature', brand:'Audi', name:'Audi RS Carbon Signature',
-    price:'€1.149', chassis:'Gama RS', good:{marca:'Audi',modelo:'RS3 8Y'},
-    prefill:{ marca:'Audi', chassis:'Gama RS', tipo:'Achatado em baixo (flat bottom)',
+    price:'€1.149', chassis:'', good:{marca:'Audi',modelo:'RS3 8Y'},
+    prefill:{ marca:'Audi', chassis:'', tipo:'Achatado em baixo (flat bottom)',
       material:'Pele perfurada', carbono:'Carbono twill 2x2', costuras:'Vermelho',
       faixa:'Sem faixa', extras:['Indicador LED de mudança'], naoExtras:['Patilhas de velocidade em alumínio'] } },
 ];
@@ -43,7 +43,7 @@ for (const prod of PRODUCTS) {
   ck(!!unsure && unsure.includes('redlinecustomsauto@gmail.com'), 'usa o email real configurado');
   ck(txt.includes(prod.name) && txt.includes(prod.price), 'nome e preco intactos ('+prod.price+')');
   ck(txt.includes('Garantia 3 anos') && txt.includes('Envio Europa') && txt.includes('Pagamento Seguro'), 'selos de confianca mantidos');
-  ck(/Compatibilidades/i.test(txt) && /Especificações|Descrição/i.test(txt), 'compatibilidades e especificacoes mantidas');
+  ck(/COMPATIBILIDADE/i.test(txt) && /Especificações|Descrição/i.test(txt), 'compatibilidades e especificacoes mantidas');
 
   // dominancia visual
   const prim = await p.getByRole('button',{name:/^Comprar este volante$/i}).boundingBox();
@@ -91,7 +91,9 @@ for (const prod of PRODUCTS) {
   const vals = await p.locator('form input').evaluateAll(els=>els.map(e=>e.value));
   ck(vals.includes(prod.prefill.marca), 'marca pre-preenchida ("'+prod.prefill.marca+'")');
   ck(!vals.some(v=>v===prod.name), 'campo Modelo NAO preenchido com o nome do volante (o volante serve varios modelos)');
-  ck(vals.includes(prod.prefill.chassis), 'chassis pre-preenchido ("'+prod.prefill.chassis+'")');
+  ck(prod.prefill.chassis==='' ? vals[2]==='' : vals.includes(prod.prefill.chassis),
+     prod.prefill.chassis==='' ? 'chassis VAZIO (ambiguo entre compatibilidades)' : 'chassis pre-preenchido ("'+prod.prefill.chassis+'")',
+     'obtido "'+vals[2]+'"');
   const selected = await p.locator('form button.border-primary').evaluateAll(els=>els.map(e=>e.innerText.trim()));
   for (const [label,exp] of [['tipo',prod.prefill.tipo],['material',prod.prefill.material],['carbono',prod.prefill.carbono],['costuras',prod.prefill.costuras]]) {
     ck(selected.includes(exp), label+' pre-selecionado: "'+exp+'"', selected.includes(exp)?'':'selecionados: '+selected.join(' | '));

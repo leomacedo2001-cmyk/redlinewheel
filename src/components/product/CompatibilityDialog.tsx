@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { checkCompatibility, vehicleLines, type CompatibilityResult, type VehicleInput } from "@/lib/compatibility";
+import { formatYears, type FitmentSummary } from "@/lib/fitment";
 import { mailtoHref } from "@/lib/contact";
 
 type Props = {
@@ -12,8 +13,8 @@ type Props = {
   onOpenChange: (open: boolean) => void;
   productName: string;
   brandName: string;
-  chassis?: string;
-  compatibilities: string[];
+  /** Estrutura normalizada — a mesma que a ficha mostra. */
+  summary: FitmentSummary;
   priceDisplay?: string | null;
   /** Continua para a compra com o veículo confirmado. */
   onProceed: (vehicle: VehicleInput) => void;
@@ -27,8 +28,7 @@ export function CompatibilityDialog({
   onOpenChange,
   productName,
   brandName,
-  chassis,
-  compatibilities,
+  summary,
   priceDisplay,
   onProceed,
   proceeding,
@@ -43,7 +43,7 @@ export function CompatibilityDialog({
 
   const handleCheck = (e: React.FormEvent) => {
     e.preventDefault();
-    setResult(checkCompatibility({ brandName, chassis, compatibilities }, vehicle));
+    setResult(checkCompatibility(summary, vehicle));
   };
 
   const manualHref = mailtoHref(
@@ -96,14 +96,18 @@ export function CompatibilityDialog({
               <Label className="text-xs uppercase tracking-wider text-muted-foreground">
                 Chassis / geração <span className="normal-case tracking-normal">(se souberes)</span>
               </Label>
-              <Input value={vehicle.chassis} onChange={set("chassis")} placeholder={chassis ?? "G80"} />
+              <Input value={vehicle.chassis} onChange={set("chassis")} placeholder={summary.commonChassis ?? summary.generationLabel ?? "G80"} />
             </div>
           </div>
 
-          {compatibilities.length > 0 && (
+          {summary.fitments.length > 0 && (
             <div className="text-[11px] text-muted-foreground leading-relaxed">
               Este volante está declarado como compatível com:{" "}
-              <span className="text-foreground">{compatibilities.join(" · ")}</span>
+              <span className="text-foreground">
+                {summary.fitments.map((f) => f.model).join(" · ")}
+              </span>
+              {summary.generationLabel && <> — {summary.generationLabel}</>}
+              {formatYears(summary.years) && <> ({formatYears(summary.years)})</>}
             </div>
           )}
 
@@ -128,8 +132,11 @@ export function CompatibilityDialog({
                 <p className="text-muted-foreground text-xs leading-relaxed mt-1">
                   {result.matchedOn ? (
                     <>
-                      O teu automóvel corresponde a <span className="text-foreground">{result.matchedOn}</span>, uma
-                      das compatibilidades declaradas deste volante. Validamos novamente antes da produção.
+                      O teu automóvel corresponde a <span className="text-foreground">{result.matchedOn}</span>
+                      {formatYears(result.matchedYears) && (
+                        <> (<span className="text-foreground">{formatYears(result.matchedYears)}</span>)</>
+                      )}
+                      , uma das compatibilidades declaradas deste volante. Validamos novamente antes da produção.
                     </>
                   ) : (
                     "Validamos novamente antes de iniciarmos a produção."
