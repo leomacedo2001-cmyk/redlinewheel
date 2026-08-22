@@ -160,16 +160,11 @@ function ConfiguratorPage() {
           <pre className="whitespace-pre-wrap text-xs leading-relaxed text-muted-foreground font-mono bg-background p-4 border border-border/40 max-h-72 overflow-auto">{summary}</pre>
 
           <Button type="submit" className="w-full rounded-none h-12 uppercase tracking-wider text-xs bg-primary hover:bg-primary/90">
-            <MessageCircle className="h-4 w-4 mr-2" /> Enviar por WhatsApp
+            <Mail className="h-4 w-4 mr-2" /> Enviar por Email
           </Button>
-          <a href={mailHref} className="block">
-            <Button type="button" variant="outline" className="w-full rounded-none h-12 uppercase tracking-wider text-xs">
-              <Mail className="h-4 w-4 mr-2" /> Enviar por Email
-            </Button>
-          </a>
 
           {sent && (
-            <p className="text-xs text-primary">Abrimos o WhatsApp numa nova janela. Confirma o envio para nós.</p>
+            <p className="text-xs text-primary">Abrimos o teu email numa nova janela. Confirma o envio para nós.</p>
           )}
         </aside>
       </form>
