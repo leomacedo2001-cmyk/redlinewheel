@@ -201,11 +201,6 @@ export function SiteFooter() {
               <li>
                 <FooterLink to="/acessorios">Acessórios</FooterLink>
               </li>
-              <li>
-                <FooterLink to="/c/$slug" params={{ slug: "patilhas" }}>
-                  PaddleShift
-                </FooterLink>
-              </li>
             </ul>
           </motion.div>
 
