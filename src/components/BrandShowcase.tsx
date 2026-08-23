@@ -19,8 +19,10 @@ import { ACTIVE_BRAND_SHOWCASE_SLIDES } from "@/lib/brandShowcase";
  * precisa de nenhuma lógica própria: é a mesma matemática, só que a
  * decrescer).
  *
- * Cada marca "vive" numa fatia igual do scroll total (`1/N`). Dentro de
- * cada fatia: os primeiros `BOUNDARY` (70%) enchem a barra dessa marca
+ * Cada marca "vive" numa fatia igual do scroll total, e cada fatia mede o
+ * mesmo que a própria caixa pinada — a distância pinada acompanha o conteúdo
+ * que se anima, não a altura do ecrã (ver `getSegmentPx`/`pinSpanSegments`).
+ * Dentro de cada fatia: os primeiros `BOUNDARY` (70%) enchem a barra dessa marca
  * (imagem/texto continuam assentes, só uma respiração muito subtil ligada
  * a `barT`); os últimos 30% são a transição cinematográfica para a marca
  * seguinte (fade, blur, zoom-out, rotação ~1°, parallax) — sempre
@@ -38,7 +40,10 @@ import { ACTIVE_BRAND_SHOWCASE_SLIDES } from "@/lib/brandShowcase";
  */
 
 const BOUNDARY = 0.7;
-const MIN_SEGMENT_PX = 560;
+/** Piso de segurança para a fatia de scroll de cada marca, caso a altura da
+ * caixa pinada ainda não seja mensurável (primeiro cálculo antes do layout).
+ * Nunca é o valor normal — ver `getSegmentPx`. */
+const MIN_SEGMENT_PX = 360;
 /** Altura do cabeçalho fixo (SiteHeader, h-16). Centrar a caixa pinada no
  * VIEWPORT inteiro (`center center`) dava um gap de cima mais pequeno que
  * o de baixo em qualquer altura de ecrã — o cabeçalho "come" 64px só do
@@ -71,6 +76,27 @@ const AUTOPLAY_RESUME_DELAY_MS = 10000;
  * residuais do MESMO gesto que causou o pin não contam como "o utilizador
  * pediu controlo manual" — ver `pinEnterTimeRef`. */
 const AUTOPLAY_ENTER_GRACE_MS = 700;
+
+/**
+ * Quantas fatias de scroll a animação REALMENTE precisa, para N marcas.
+ *
+ * A distância pinada era `N` fatias inteiras — uma por marca. Mas N marcas só
+ * têm N-1 transições: na última fatia `hasNext` é `false`, `rawTransT` fica
+ * sempre 0 e portanto os seus últimos 30% (1 - BOUNDARY) não animam
+ * absolutamente nada. Era espaço de scroll sem conteúdo nenhum, no fim da
+ * secção — exatamente onde se lia como "vazio".
+ *
+ * O que a animação precisa é: N-1 fatias completas (barra + transição para a
+ * marca seguinte) mais os primeiros BOUNDARY da última (encher a barra da
+ * última marca, que termina cravada no instante em que o pin liberta).
+ *
+ * Este valor tem de ser usado nos TRÊS sítios que traduzem scroll↔marca —
+ * `end`, `onUpdate` e `handleTabClick` — ou as abas deixam de saltar para o
+ * sítio certo.
+ */
+function pinSpanSegments(n: number): number {
+  return Math.max(0, n - 1) + BOUNDARY;
+}
 
 function easeInOutCubic(t: number): number {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
@@ -130,8 +156,12 @@ export function BrandShowcase() {
 
     const n = slides.length;
     const reduced = !!prefersReducedMotion;
-    const getSegmentPx = () => Math.max(window.innerHeight, MIN_SEGMENT_PX);
+    /** Fatia de scroll de UMA marca. Mede-se pela altura real da caixa pinada
+     * (420/480/560px conforme o breakpoint) — o conteúdo que efetivamente se
+     * anima — e não pela altura do viewport. Ver PIN_SPAN_SEGMENTS. */
+    const getSegmentPx = () => Math.max(pinRef.current?.offsetHeight ?? 0, MIN_SEGMENT_PX);
     const getAutoplayPxPerMs = () => getSegmentPx() / AUTOPLAY_SEGMENT_DURATION_MS;
+    const span = pinSpanSegments(n);
 
     // Avanço automático — vive fora do gsap.context (não é um tween GSAP,
     // é o próprio scroll da página) para `handleTabClick` (fora deste
@@ -256,7 +286,7 @@ export function BrandShowcase() {
         // passa a ser essa composição centrada (com os dois gaps iguais),
         // em vez de "encostada" ao cabeçalho.
         start: `center center+=${HEADER_HEIGHT_PX / 2}`,
-        end: () => `+=${n * getSegmentPx()}`,
+        end: () => `+=${span * getSegmentPx()}`,
         pin: true,
         scrub: true,
         anticipatePin: 1,
@@ -286,7 +316,7 @@ export function BrandShowcase() {
           clearInactivityTimer();
         },
         onUpdate: (self) => {
-          const scaled = self.progress * n;
+          const scaled = self.progress * span;
           const idx = Math.min(n - 1, Math.floor(scaled));
           const localT = Math.min(1, scaled - idx);
           const barT = Math.min(1, localT / BOUNDARY);
@@ -386,7 +416,8 @@ export function BrandShowcase() {
     stopAutoplayRef.current();
     scheduleResumeRef.current();
     const total = st.end - st.start;
-    const segmentPx = total / slides.length;
+    // MESMO fator de escala do `end`/`onUpdate` — ver pinSpanSegments.
+    const segmentPx = total / pinSpanSegments(slides.length);
     window.scrollTo({ top: st.start + i * segmentPx + 1, behavior: "smooth" });
   }
 
