@@ -61,7 +61,7 @@ export const TRANSFORMATION_PROJECTS: TransformationProject[] = [
     beforeAlt: "Volante Porsche de série, em pele lisa preta",
     afterAlt: "Volante Porsche personalizado REDLINE, em fibra de carbono forjado e Alcântara",
     modifications: [
-      "Revestimento substituído por Alcântara premium",
+      "Revestimento substituído por Alcântara",
       "Aro em fibra de carbono forjado",
       "Costura manual tricolor preto / vermelho / branco",
       "Friso central em carbono com marcador vermelho",

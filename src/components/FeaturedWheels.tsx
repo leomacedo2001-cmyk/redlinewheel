@@ -294,7 +294,7 @@ export function FeaturedProductsSection() {
             <SectionEyebrow className="mb-3">Coleção</SectionEyebrow>
             <h2 className="text-4xl font-bold md:text-5xl">Produtos em Destaque</h2>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-muted-foreground">
-              Sete peças curadas da nossa coleção Signature — cada uma feita à mão, com carbono forjado, LED ou
+              Sete peças selecionadas da nossa coleção Signature — cada uma feita à mão, com carbono forjado, LED ou
               Alcântara completa. Percorre a coleção.
             </p>
 

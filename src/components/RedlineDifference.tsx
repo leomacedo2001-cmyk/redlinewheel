@@ -9,7 +9,7 @@ const FEATURES = [
   {
     icon: Gem,
     title: "Materiais Premium",
-    description: "Utilizamos apenas Alcântara, pele premium e fibra de carbono de elevada qualidade.",
+    description: "Alcântara, couro nappa e fibra de carbono real — twill ou forjado.",
   },
   {
     icon: Hammer,
@@ -132,10 +132,10 @@ export function RedlineDifference() {
           <div className={`lg:pt-2 ${isInView ? "animate-feature-reveal" : "opacity-0"}`}>
             <SectionEyebrow className="mb-4">Porque Escolher a REDLINE</SectionEyebrow>
             <h2 className="text-4xl font-bold tracking-tight md:text-5xl">
-              Excelência em cada <span className="italic text-primary">detalhe</span>.
+              Construído à mão, até ao último <span className="italic text-primary">detalhe</span>.
             </h2>
             <p className="mt-5 max-w-[38ch] text-sm leading-relaxed text-muted-foreground">
-              Não deixamos nada ao acaso: cada volante passa por seis etapas de rigor absoluto, do
+              Cada volante passa pelas mesmas seis etapas, sem atalhos e sem produção em massa, do
               primeiro esboço ao momento em que sentes a diferença ao volante.
             </p>
           </div>

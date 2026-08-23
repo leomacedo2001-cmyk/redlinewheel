@@ -98,7 +98,7 @@ export function CtaShowcase() {
           Pronto para transformar o teu interior?
         </h2>
         <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
-          Explora a nossa coleção completa de volantes premium.
+          Explora a coleção completa: Alcântara, couro nappa, carbono twill e forjado.
         </p>
         <Button
           asChild

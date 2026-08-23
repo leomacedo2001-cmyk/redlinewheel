@@ -432,14 +432,14 @@ export function BrandShowcase() {
         </div>
         <AmbientGlow edge="bottom" />
 
-        {/* Antevisão de "Comunidade REDLINE" — o pin-spacer do GSAP ocupa
-            toda a distância de scroll das 4 marcas, por isso o DOM real
-            desta secção nunca está no ecrã enquanto Marcas está pinada (só
-            depois do pin libertar). Mesmo texto de abertura de
-            FeedbackShowcase.tsx, a antever o que vem a seguir. */}
+        {/* Identidade própria da secção das Marcas. Este bloco mostrava o
+            mesmo eyebrow e título de "Comunidade REDLINE" (FeedbackShowcase),
+            como antevisão do que vinha a seguir — mas o resultado era o mesmo
+            título repetido duas vezes na homepage. Passa a apresentar a
+            própria secção; os cartões, imagens e links das marcas não mudam. */}
         <div ref={bottomPreviewRef} className="absolute inset-x-0 bottom-0 px-4 pb-8 text-center opacity-0 sm:px-6 sm:pb-10 lg:px-8">
-          <SectionEyebrow align="center">Comunidade REDLINE</SectionEyebrow>
-          <h2 className="mt-3 text-2xl font-bold md:text-3xl">Confiança que se vê ao volante.</h2>
+          <SectionEyebrow align="center">Marcas</SectionEyebrow>
+          <h2 className="mt-3 text-2xl font-bold md:text-3xl">Construído para máquinas diferentes.</h2>
         </div>
       </div>
 

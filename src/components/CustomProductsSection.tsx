@@ -20,7 +20,7 @@ const CATEGORIES = [
     slug: "alcantara",
     name: "Revestimento em Alcântara",
     img: alcantara,
-    desc: "Aderência e toque premium. O material de eleição das edições M Performance e RS.",
+    desc: "Aderência e costura à mão. O material de eleição das edições M Performance e RS.",
   },
   {
     slug: "pele-perfurada",
@@ -104,7 +104,7 @@ export function CustomProductsSection() {
               </p>
               <ul className="text-sm text-muted-foreground space-y-2 mb-8">
                 <li>• Configurador online com mais de 40 opções</li>
-                <li>• Compatível com as principais marcas premium</li>
+                <li>• Compatível com BMW, Mercedes-Benz, Audi, Porsche e mais</li>
                 <li>• Orçamento em menos de 24 horas</li>
               </ul>
               <Button

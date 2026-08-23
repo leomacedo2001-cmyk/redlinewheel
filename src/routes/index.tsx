@@ -65,8 +65,8 @@ function Home() {
               automóvel.
             </h1>
             <p className="mt-6 text-lg text-muted-foreground max-w-lg">
-              Volantes premium personalizados em alcantara, carbono e couro nappa. Construídos à mão
-              para uma experiência de condução incomparável.
+              Volantes personalizados em Alcântara, couro nappa e fibra de carbono. Construídos à
+              mão, com costura ponto a ponto e os comandos originais mantidos.
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
               <Button
