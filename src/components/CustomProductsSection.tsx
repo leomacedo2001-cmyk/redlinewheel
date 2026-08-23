@@ -97,7 +97,15 @@ export function CustomProductsSection() {
               <div className="text-[10px] uppercase tracking-[0.3em] text-primary mb-3">
                 Personalização Total
               </div>
-              <h3 className="text-3xl md:text-4xl font-bold mb-4">Volantes Personalizados</h3>
+              {/* A subida de tamanho fica em `lg`, não em `md`. No breakpoint md
+                  acontecem três coisas de uma vez nesta coluna — passa a duas
+                  colunas, o padding sobe de 32px para 48px de cada lado e a
+                  fonte de 30px para 36px — e "Personalizados" (~296px) deixava
+                  de caber nos ~263px úteis, ficando cortado. Entre 768px e
+                  1023px o título mantém o tamanho que já tinha abaixo de 768px;
+                  a partir de 1024px, onde a coluna tem folga de sobra, volta
+                  aos 36px de sempre. */}
+              <h3 className="text-3xl lg:text-4xl font-bold mb-4">Volantes Personalizados</h3>
               <p className="text-muted-foreground leading-relaxed mb-6">
                 Construídos à mão, à medida do teu carro. Escolhe materiais, costuras, carbono, LED,
                 patilhas e mais. Inspirados nos padrões BMW M, AMG, Audi Sport, Porsche e Ferrari.
