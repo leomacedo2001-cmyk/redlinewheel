@@ -5,6 +5,7 @@ import { FeaturedProductsSection } from "@/components/FeaturedWheels";
 import { BrandShowcase } from "@/components/BrandShowcase";
 import { CtaShowcase } from "@/components/CtaShowcase";
 import { RedlineDifference } from "@/components/RedlineDifference";
+import { HowItWorks } from "@/components/HowItWorks";
 
 import heroImg from "@/assets/hero-steering.jpg";
 import heroVideo from "@/assets/hero/hero-wheel-reveal.mp4";
@@ -94,6 +95,11 @@ function Home() {
       <FeaturedProductsSection />
 
       <CustomProductsSection />
+
+      {/* Logo a seguir à apresentação do serviço/configurador e antes das
+          secções visuais e institucionais: quem acabou de ver o que é feito à
+          medida percebe aqui, em quatro passos, como chegar à encomenda. */}
+      <HowItWorks />
 
       <TransformationShowcase />
 
