@@ -73,7 +73,7 @@ function HexIcon({ icon: Icon }: { icon: LucideIcon }) {
 /**
  * "A Diferença REDLINE" — pausa visual antes do vídeo/CTA final: já não tem
  * fundo/textura próprios, usa a cor padrão do site (bg-background), a
- * mesma da "Comunidade REDLINE" logo acima — as duas secções passam a ler-
+ * mesma da "Galeria REDLINE" logo acima — as duas secções passam a ler-
  * se como uma continuação, não como blocos isolados. Layout editorial de
  * duas colunas (título+descrição à esquerda, grelha compacta 3×2 de
  * cartões à direita) — mesmos seis cartões, nomes e textos de sempre, só a
@@ -101,7 +101,7 @@ export function RedlineDifference() {
           fotografia de material (Alcântara favo-de-mel + carbono real) que
           exclui por completo qualquer logótipo/texto, a 6% de opacidade e
           desfocada. bg-background continua a ser a camada base, por isso a
-          ligação com "Comunidade REDLINE" acima mantém-se intacta. */}
+          ligação com a "Galeria REDLINE" acima mantém-se intacta. */}
       <img
         src={materialTexture}
         alt=""

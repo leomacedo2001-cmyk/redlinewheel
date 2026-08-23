@@ -5,14 +5,19 @@ import {
   useState,
   type TouchEvent as ReactTouchEvent,
 } from "react";
-import { TESTIMONIALS } from "@/lib/testimonials";
-import { TestimonialCard } from "./TestimonialCard";
+import { galleryPhotos } from "@/lib/installations";
+import { GalleryCard } from "./GalleryCard";
 import { CarouselControls } from "@/components/carousel/CarouselControls";
 import { SectionEyebrow } from "@/components/SectionEyebrow";
 import { AmbientGlow } from "@/components/AmbientGlow";
 
 /**
- * Showcase "Comunidade REDLINE" — cartões de testemunho premium.
+ * Showcase "Galeria REDLINE" — carrossel de fotografias.
+ *
+ * Chamava-se "Comunidade REDLINE" e apresentava cartões de testemunho com
+ * nome, cidade e classificação vindos de dados fictícios. Passa a ser uma
+ * galeria de inspiração: as mesmas fotografias, o mesmo carrossel e o mesmo
+ * design, sem qualquer atribuição a clientes (ver auditoria de prova social).
  *
  * Carrossel de passos discretos (não um marquee contínuo): mostra várias
  * cartas lado a lado — 1 em mobile, 2 em tablet, 3+ em desktop, apenas por
@@ -42,7 +47,10 @@ function getCircularOffset(index: number, active: number, length: number): numbe
 }
 
 export function FeedbackShowcase() {
-  const length = TESTIMONIALS.length;
+  // Fotografias sem atribuição — `installations.ts` só deixa passar dados de
+  // cliente quando a instalação está verificada, o que hoje não acontece.
+  const photos = galleryPhotos();
+  const length = photos.length;
   const [activeStart, setActiveStart] = useState(0);
   const [isInView, setIsInView] = useState(false);
 
@@ -127,13 +135,12 @@ export function FeedbackShowcase() {
         {/* Rótulo primeiro — marca o "capítulo" antes do friso e do título,
             em vez de ficar espremido entre o friso e o título. */}
         <SectionEyebrow align="center" className="mb-5">
-          Comunidade REDLINE
+          Galeria REDLINE
         </SectionEyebrow>
         <div className="mx-auto mb-6 h-px w-16 bg-primary/35" />
-        <h2 className="text-4xl md:text-5xl font-bold mb-4">Confiança que se vê ao volante.</h2>
+        <h2 className="text-4xl md:text-5xl font-bold mb-4">Inspiração ao volante.</h2>
         <p className="text-muted-foreground max-w-xl mx-auto">
-          Instalações reais, em carros reais. Uma pequena amostra dos volantes que já saíram das
-          nossas mãos para as ruas da Europa.
+          Explora diferentes acabamentos, materiais e estilos REDLINE.
         </p>
       </div>
 
@@ -143,12 +150,12 @@ export function FeedbackShowcase() {
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
-          {TESTIMONIALS.map((testimonial, i) => {
+          {photos.map((photo, i) => {
             const offset = getCircularOffset(i, activeStart, length);
             const inWindow = offset >= -RENDER_WINDOW.behind && offset <= RENDER_WINDOW.ahead;
             return (
               <div
-                key={testimonial.id}
+                key={photo.installationId}
                 className="col-start-1 row-start-1 justify-self-start w-[280px] sm:w-[300px] md:w-[320px] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
                 style={{
                   transform: `translateX(${offset * STEP_TRANSLATE_PERCENT}%)`,
@@ -165,7 +172,7 @@ export function FeedbackShowcase() {
                   className={isInView ? "animate-card-reveal h-full" : "h-full opacity-0"}
                   style={isInView ? { animationDelay: `${Math.min(i, 6) * 90}ms` } : undefined}
                 >
-                  <TestimonialCard testimonial={testimonial} />
+                  <GalleryCard photo={photo} />
                 </div>
               </div>
             );

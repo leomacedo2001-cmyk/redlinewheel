@@ -45,7 +45,6 @@ export type TransformationProject = {
   /** Omitir usa o centro sem zoom (`{ focalX: 50, focalY: 50, zoom: 1 }`). */
   framing?: TransformationFraming;
   modifications: string[];
-  productionTime: string;
   materials: string[];
   description: string;
   callouts: TransformationCallout[];
@@ -67,7 +66,6 @@ export const TRANSFORMATION_PROJECTS: TransformationProject[] = [
       "Friso central em carbono com marcador vermelho",
       "Emblema REDLINE Performance",
     ],
-    productionTime: "48 horas",
     materials: ["Fibra de Carbono Forjado", "Alcântara Premium", "Linha de Costura Tricolor"],
     description:
       "Mantivemos a geometria e os comandos originais intactos — o volante de série foi despido do revestimento e reconstruído à mão em fibra de carbono forjado e Alcântara, com costura tricolor e um friso central que assina cada detalhe.",
@@ -92,7 +90,6 @@ export const TRANSFORMATION_PROJECTS: TransformationProject[] = [
       "Costura em contraste vermelho",
       "Botões Drive Select e Start/Stop integrados",
     ],
-    productionTime: "48 horas",
     materials: ["Fibra de Carbono", "Couro Perfurado", "Costura em Contraste"],
     description:
       "O volante RS de série ganhou um friso LED integrado no aro superior, fibra de carbono nas zonas de pega e os comandos Drive Select e Start/Stop ao alcance dos dedos — sem perder a ergonomia nem os comandos originais.",

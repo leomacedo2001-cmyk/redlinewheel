@@ -51,7 +51,7 @@ const HEADER_HEIGHT_PX = 64;
  * "Transformação" (por cima) continua visível, só desvanecida, nunca
  * desaparece por completo. */
 const BACKDROP_MAX_OPACITY = 0.55;
-/** Opacidade máxima da pré-visualização de "Comunidade REDLINE" (por
+/** Opacidade máxima da pré-visualização da secção seguinte (por
  * baixo). O GSAP pin-spacer ocupa toda a distância de scroll das 4 marcas
  * — o DOM real da secção seguinte só entra no ecrã depois do pin libertar,
  * nunca durante ele, por isso não há "conteúdo real" nenhum para desvanecer
@@ -177,7 +177,7 @@ export function BrandShowcase() {
         // liberta o pin assim que o scroll ATINGE o fim do trigger (não só
         // quando o ultrapassa), por isso parar exatamente em cima do limite
         // já era o suficiente para o libertar sozinho, empurrando o
-        // utilizador para "Comunidade REDLINE" sem ação sua nenhuma.
+        // utilizador para a secção seguinte sem ação sua nenhuma.
         const endGuard = current.end - 2;
         const target = Math.min(window.scrollY + getAutoplayPxPerMs() * deltaMs, endGuard);
         window.scrollTo(0, target);
@@ -413,7 +413,7 @@ export function BrandShowcase() {
           560px) enquanto a secção está pinada, desvanecendo (nunca
           escondendo por completo — só até BACKDROP_MAX_OPACITY) o que
           ainda estivesse visível das secções vizinhas (fim de
-          "Transformação", início de "Comunidade REDLINE") assim que o pin
+          "Transformação", início da "Galeria REDLINE") assim que o pin
           arranca. O foco principal continua nas Marcas, mas o contexto à
           volta mantém-se legível, só apagado. Fica sempre por baixo do
           cabeçalho (z-20 < header z-50) e por baixo da própria caixa
@@ -433,7 +433,7 @@ export function BrandShowcase() {
         <AmbientGlow edge="bottom" />
 
         {/* Identidade própria da secção das Marcas. Este bloco mostrava o
-            mesmo eyebrow e título de "Comunidade REDLINE" (FeedbackShowcase),
+            mesmo eyebrow e título da secção seguinte (FeedbackShowcase),
             como antevisão do que vinha a seguir — mas o resultado era o mesmo
             título repetido duas vezes na homepage. Passa a apresentar a
             própria secção; os cartões, imagens e links das marcas não mudam. */}

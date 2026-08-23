@@ -20,11 +20,15 @@ head('== 1. "peças curadas" ==');
 ck(!/pe[çc]as curadas/i.test(txt), 'expressao "peças curadas" ausente');
 ck(/Sete pe[çc]as selecionadas da nossa cole[çc][ãa]o Signature/i.test(txt), '"Sete peças selecionadas da nossa coleção Signature" presente');
 
-head('== 2. "Comunidade REDLINE" nao repetido ==');
+head('== 2. titulos das seccoes ==');
+// "Comunidade REDLINE" / "Confianca que se ve ao volante." foram REMOVIDAS na
+// correcao da prova social ficticia: implicavam clientes verificados que nao
+// existem. A seccao passou a "Galeria REDLINE" / "Inspiracao ao volante.".
 const nCom = (txt.match(/Comunidade REDLINE/gi)||[]).length;
 const nConf = (txt.match(/Confian[çc]a que se v[êe] ao volante/gi)||[]).length;
-ck(nCom===1, '"Comunidade REDLINE" aparece 1 vez (obtido '+nCom+')');
-ck(nConf===1, '"Confiança que se vê ao volante." aparece 1 vez (obtido '+nConf+')');
+ck(nCom===0, '"Comunidade REDLINE" ausente (obtido '+nCom+')');
+ck(nConf===0, '"Confiança que se vê ao volante." ausente (obtido '+nConf+')');
+ck(/GALERIA REDLINE/i.test(txt) && /Inspira[çc][ãa]o ao volante\./.test(txt), 'seccao da galeria com a identidade nova');
 ck(/Marcas/i.test(txt) && /Constru[íi]do para m[áa]quinas diferentes/i.test(txt), 'seccao das marcas com identidade propria');
 
 head('== 3. adjetivos genericos reduzidos ==');

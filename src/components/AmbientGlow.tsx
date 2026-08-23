@@ -31,7 +31,7 @@ type AmbientGlowProps = {
  * pintar fora dela mesma, seja qual for a largura do ecrã.
  *
  * Opacidade fixa em 0.15 para todas as secções — havia uma variante
- * "strong" (0.18) só na Comunidade REDLINE, que era a única fonte real de
+ * "strong" (0.18) só na Galeria REDLINE, que era a única fonte real de
  * inconsistência entre secções (tamanho e cor já eram sempre os mesmos).
  * Removida de propósito: nenhuma secção é "mais âncora" que as outras.
  */

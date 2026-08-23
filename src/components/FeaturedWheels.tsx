@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, ChevronDown, ChevronUp, Star } from "lucide-react";
+import { ArrowRight, ChevronDown, ChevronUp } from "lucide-react";
 import { getBrandModel, type Brand, type BrandModel } from "@/lib/brands";
 import { formatPrice as formatMoney } from "@/lib/price";
 import { SectionEyebrow } from "@/components/SectionEyebrow";
@@ -191,11 +191,6 @@ function ProductCard({
             <span className="absolute left-4 top-4 z-10 bg-primary px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.58_0.22_25/0.7)]">
               Coleção Signature
             </span>
-            <div className="absolute right-4 top-4 z-10 flex items-center gap-1 border border-border/60 bg-background/70 px-2.5 py-1.5 backdrop-blur">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="h-3 w-3 fill-primary text-primary" />
-              ))}
-            </div>
           </div>
 
           {/* PAINEL DE INFORMAÇÃO */}
