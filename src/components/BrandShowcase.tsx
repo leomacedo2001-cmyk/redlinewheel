@@ -40,6 +40,9 @@ import { ACTIVE_BRAND_SHOWCASE_SLIDES } from "@/lib/brandShowcase";
  */
 
 const BOUNDARY = 0.7;
+/** Identificador único do ScrollTrigger — permite matar uma instância
+ * anterior que tenha sobrevivido a uma remontagem antes de criar a nova. */
+const SCROLL_TRIGGER_ID = "brand-showcase-pin";
 /** Piso de segurança para a fatia de scroll de cada marca, caso a altura da
  * caixa pinada ainda não seja mensurável (primeiro cálculo antes do layout).
  * Nunca é o valor normal — ver `getSegmentPx`. */
@@ -273,7 +276,38 @@ export function BrandShowcase() {
         if (preview) gsap.to(preview, { opacity: visible ? BOTTOM_PREVIEW_MAX_OPACITY : 0, duration: reduced ? 0 : 0.4, overwrite: true });
       };
 
+      // Uma remontagem (voltar à homepage por navegação interna, HMR em
+      // desenvolvimento) podia deixar viva a instância anterior — duas a
+      // pinar o mesmo elemento davam exatamente o mesmo sintoma: espaço de
+      // scroll reservado a dobrar, com a caixa a aparecer só num deles.
+      ScrollTrigger.getById(SCROLL_TRIGGER_ID)?.kill();
+
+      // O estado "está pinada" deriva SEMPRE do próprio trigger (isActive),
+      // nunca só do evento de entrada — recarregar a página já a meio da
+      // secção, ou um recálculo de medidas, não dispara onEnter nenhum, e
+      // era por isso que nesses casos ficava tudo parado e sem cortina.
+      const syncPinnedState = (self: ScrollTrigger) => {
+        // `onRefresh` dispara já durante o próprio `ScrollTrigger.create`,
+        // antes de `scrollTriggerRef` estar preenchido — sem esta linha, o
+        // arranque do avanço automático numa recarga a meio da secção não
+        // encontrava trigger nenhum e ficava parado.
+        scrollTriggerRef.current = self;
+        const active = self.isActive;
+        if (active === isPinnedRef.current) return;
+        isPinnedRef.current = active;
+        fadeBackdrop(active);
+        if (active) {
+          pinEnterTimeRef.current = performance.now();
+          startAutoplay();
+        } else {
+          stopAutoplay();
+          clearInactivityTimer();
+        }
+      };
+
+
       const st = ScrollTrigger.create({
+        id: SCROLL_TRIGGER_ID,
         trigger: pinRef.current,
         // A secção pina assim que se apresenta centrada no ecrã (não só
         // quando o topo encosta ao cabeçalho). "center+=HEADER/2" desloca
@@ -291,30 +325,9 @@ export function BrandShowcase() {
         scrub: true,
         anticipatePin: 1,
         invalidateOnRefresh: true,
-        onEnter: () => {
-          fadeBackdrop(true);
-          isPinnedRef.current = true;
-          pinEnterTimeRef.current = performance.now();
-          startAutoplay();
-        },
-        onEnterBack: () => {
-          fadeBackdrop(true);
-          isPinnedRef.current = true;
-          pinEnterTimeRef.current = performance.now();
-          startAutoplay();
-        },
-        onLeave: () => {
-          fadeBackdrop(false);
-          isPinnedRef.current = false;
-          stopAutoplay();
-          clearInactivityTimer();
-        },
-        onLeaveBack: () => {
-          fadeBackdrop(false);
-          isPinnedRef.current = false;
-          stopAutoplay();
-          clearInactivityTimer();
-        },
+        onToggle: (self) => syncPinnedState(self),
+        onRefresh: (self) => syncPinnedState(self),
+
         onUpdate: (self) => {
           const scaled = self.progress * span;
           const idx = Math.min(n - 1, Math.floor(scaled));
@@ -395,14 +408,58 @@ export function BrandShowcase() {
       scrollTriggerRef.current = st;
     }, sectionRef);
 
+    // --- Recalcular medidas sempre que o layout da página muda ---
+    // As coordenadas do pin são medidas uma vez; tudo o que carrega depois
+    // (vídeo do hero, fotos das secções acima, fontes, saída do overlay de
+    // entrada) desloca a secção e deixava-as desatualizadas — o espaço de
+    // scroll continuava reservado mas a caixa nunca aparecia lá dentro:
+    // a "faixa preta gigante sem automação". `invalidateOnRefresh: true`
+    // faz com que cada refresh volte a avaliar start/end.
+    let refreshTimer: number | null = null;
+    const scheduleRefresh = () => {
+      if (refreshTimer !== null) window.clearTimeout(refreshTimer);
+      refreshTimer = window.setTimeout(() => {
+        refreshTimer = null;
+        ScrollTrigger.refresh();
+      }, 120);
+    };
+
+    const onWindowLoad = () => scheduleRefresh();
+    window.addEventListener("load", onWindowLoad);
+    if (document.readyState === "complete") scheduleRefresh();
+
+    document.fonts?.ready?.then(scheduleRefresh).catch(() => {});
+
+    // Imagens da própria secção: se ainda não estiverem descodificadas, a
+    // altura/posição pode mudar ao entrarem.
+    sectionRef.current?.querySelectorAll("img").forEach((img) => {
+      if (img.complete) return;
+      img.decode().then(scheduleRefresh).catch(() => {});
+    });
+
+    // Qualquer variação da altura total do documento (overlay de entrada a
+    // sair, imagens tardias em qualquer secção, mudança de breakpoint).
+    let lastHeight = document.body.scrollHeight;
+    const resizeObserver = new ResizeObserver(() => {
+      const h = document.body.scrollHeight;
+      if (Math.abs(h - lastHeight) < 2) return;
+      lastHeight = h;
+      scheduleRefresh();
+    });
+    resizeObserver.observe(document.body);
+
     return () => {
       stopAutoplay();
       clearInactivityTimer();
+      if (refreshTimer !== null) window.clearTimeout(refreshTimer);
+      resizeObserver.disconnect();
+      window.removeEventListener("load", onWindowLoad);
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("keydown", onKeyDown);
       ctx.revert();
     };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slides.length]);
 
