@@ -477,6 +477,14 @@ export function BrandShowcase() {
 
   return (
     <section ref={sectionRef} className="relative isolate">
+      {/* Título da secção — no topo, fora da apresentação pinada, como nas
+          restantes secções da homepage. */}
+      <div className="container-premium relative z-30 flex flex-col items-center pt-24 text-center sm:pt-28 lg:pt-32">
+        <SectionEyebrow align="center">Marcas</SectionEyebrow>
+        <div className="mx-auto mt-4 h-px w-16 bg-primary/35" />
+        <h2 className="mt-4 text-3xl font-bold md:text-4xl">Construído para máquinas diferentes.</h2>
+      </div>
+
       {/* wrapper próprio (não o `section`, ancestral do elemento pinado) para
           o `overflow-hidden` — um `overflow-hidden` num ancestral de um
           elemento `position: fixed` (o que o GSAP usa para pinar) recorta-o
@@ -526,14 +534,6 @@ export function BrandShowcase() {
         ref={pinRef}
         className="relative z-30 flex h-[420px] w-full flex-col justify-end overflow-hidden sm:h-[480px] md:h-[560px]"
       >
-        {/* Título da secção — fixo no topo da caixa pinada e sempre visível,
-            como nas restantes secções da página. */}
-        <div className="pointer-events-none relative z-40 flex flex-col items-center px-4 pt-8 text-center sm:px-6 sm:pt-10 lg:px-8 lg:pt-12">
-          <SectionEyebrow align="center">Marcas</SectionEyebrow>
-          <div className="mx-auto mt-4 h-px w-16 bg-primary/35" />
-          <h2 className="mt-4 text-3xl font-bold md:text-4xl">Construído para máquinas diferentes.</h2>
-        </div>
-
         {slides.map((slide, i) => (
           <div
             key={slide.slug}
