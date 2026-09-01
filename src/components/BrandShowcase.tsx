@@ -517,13 +517,6 @@ export function BrandShowcase() {
         </div>
         <AmbientGlow edge="bottom" />
 
-        {/* Identidade própria da secção das Marcas. Movido para o topo para
-            ser visível logo no início do scroll, sem competir com os cartões
-            e barras de progresso na base da caixa pinada. */}
-        <div ref={topPreviewRef} className="absolute inset-x-0 top-0 px-4 pt-24 text-center opacity-0 sm:px-6 sm:pt-28 lg:px-8 lg:pt-32">
-          <SectionEyebrow align="center">Marcas</SectionEyebrow>
-          <h2 className="mt-3 text-2xl font-bold md:text-3xl">Construído para máquinas diferentes.</h2>
-        </div>
       </div>
 
       {/* elemento pinado — overflow-hidden aqui é seguro (é o próprio
