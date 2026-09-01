@@ -477,6 +477,14 @@ export function BrandShowcase() {
 
   return (
     <section ref={sectionRef} className="relative isolate">
+      {/* Título da secção — no topo, fora da apresentação pinada, como nas
+          restantes secções da homepage. */}
+      <div className="container-premium relative z-30 flex flex-col items-center pt-24 text-center sm:pt-28 lg:pt-32">
+        <SectionEyebrow align="center">Marcas</SectionEyebrow>
+        <div className="mx-auto mt-4 h-px w-16 bg-primary/35" />
+        <h2 className="mt-4 text-3xl font-bold md:text-4xl">Construído para máquinas diferentes.</h2>
+      </div>
+
       {/* wrapper próprio (não o `section`, ancestral do elemento pinado) para
           o `overflow-hidden` — um `overflow-hidden` num ancestral de um
           elemento `position: fixed` (o que o GSAP usa para pinar) recorta-o
