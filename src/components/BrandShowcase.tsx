@@ -133,6 +133,7 @@ export function BrandShowcase() {
   const buttonWrapRefs = useRef<(HTMLDivElement | null)[]>([]);
   const barFillRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const backdropRef = useRef<HTMLDivElement>(null);
+  const topPreviewRef = useRef<HTMLDivElement>(null);
   const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
   const activeIndexRef = useRef(0);
   const autoplayRafRef = useRef<number | null>(null);
@@ -271,6 +272,8 @@ export function BrandShowcase() {
       const fadeBackdrop = (visible: boolean) => {
         const el = backdropRef.current;
         if (el) gsap.to(el, { opacity: visible ? BACKDROP_MAX_OPACITY : 0, duration: reduced ? 0 : 0.4, overwrite: true });
+        const preview = topPreviewRef.current;
+        if (preview) gsap.to(preview, { opacity: visible ? BOTTOM_PREVIEW_MAX_OPACITY : 0, duration: reduced ? 0 : 0.4, overwrite: true });
       };
 
       // Uma remontagem (voltar à homepage por navegação interna, HMR em
@@ -477,14 +480,6 @@ export function BrandShowcase() {
 
   return (
     <section ref={sectionRef} className="relative isolate">
-      {/* Título da secção — no topo, fora da apresentação pinada, como nas
-          restantes secções da homepage. */}
-      <div className="container-premium relative z-30 flex flex-col items-center pt-24 text-center sm:pt-28 lg:pt-32">
-        <SectionEyebrow align="center">Marcas</SectionEyebrow>
-        <div className="mx-auto mt-4 h-px w-16 bg-primary/35" />
-        <h2 className="mt-4 text-3xl font-bold md:text-4xl">Construído para máquinas diferentes.</h2>
-      </div>
-
       {/* wrapper próprio (não o `section`, ancestral do elemento pinado) para
           o `overflow-hidden` — um `overflow-hidden` num ancestral de um
           elemento `position: fixed` (o que o GSAP usa para pinar) recorta-o
@@ -525,6 +520,13 @@ export function BrandShowcase() {
         </div>
         <AmbientGlow edge="bottom" />
 
+        {/* Identidade própria da secção das Marcas. Movido para o topo para
+            ser visível logo no início do scroll, sem competir com os cartões
+            e barras de progresso na base da caixa pinada. */}
+        <div ref={topPreviewRef} className="absolute inset-x-0 top-0 px-4 pt-24 text-center opacity-0 sm:px-6 sm:pt-28 lg:px-8 lg:pt-32">
+          <SectionEyebrow align="center">Marcas</SectionEyebrow>
+          <h2 className="mt-3 text-2xl font-bold md:text-3xl">Construído para máquinas diferentes.</h2>
+        </div>
       </div>
 
       {/* elemento pinado — overflow-hidden aqui é seguro (é o próprio
