@@ -9,7 +9,7 @@ import { ImageOff } from "lucide-react";
  * placeholder. As fotografias reais serão reintroduzidas no futuro.
  */
 
-const PLACEHOLDER_COUNT = 6;
+const PLACEHOLDER_COUNT = 3;
 
 export function FeedbackShowcase() {
   return (
