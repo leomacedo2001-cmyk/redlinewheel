@@ -133,7 +133,7 @@ export function BrandShowcase() {
   const buttonWrapRefs = useRef<(HTMLDivElement | null)[]>([]);
   const barFillRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const backdropRef = useRef<HTMLDivElement>(null);
-  const bottomPreviewRef = useRef<HTMLDivElement>(null);
+  const topPreviewRef = useRef<HTMLDivElement>(null);
   const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
   const activeIndexRef = useRef(0);
   const autoplayRafRef = useRef<number | null>(null);
