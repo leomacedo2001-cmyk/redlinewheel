@@ -520,12 +520,10 @@ export function BrandShowcase() {
         </div>
         <AmbientGlow edge="bottom" />
 
-        {/* Identidade própria da secção das Marcas. Este bloco mostrava o
-            mesmo eyebrow e título da secção seguinte (FeedbackShowcase),
-            como antevisão do que vinha a seguir — mas o resultado era o mesmo
-            título repetido duas vezes na homepage. Passa a apresentar a
-            própria secção; os cartões, imagens e links das marcas não mudam. */}
-        <div ref={bottomPreviewRef} className="absolute inset-x-0 bottom-0 px-4 pb-8 text-center opacity-0 sm:px-6 sm:pb-10 lg:px-8">
+        {/* Identidade própria da secção das Marcas. Movido para o topo para
+            ser visível logo no início do scroll, sem competir com os cartões
+            e barras de progresso na base da caixa pinada. */}
+        <div ref={topPreviewRef} className="absolute inset-x-0 top-0 px-4 pt-24 text-center opacity-0 sm:px-6 sm:pt-28 lg:px-8 lg:pt-32">
           <SectionEyebrow align="center">Marcas</SectionEyebrow>
           <h2 className="mt-3 text-2xl font-bold md:text-3xl">Construído para máquinas diferentes.</h2>
         </div>
