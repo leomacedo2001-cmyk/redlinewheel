@@ -272,7 +272,7 @@ export function BrandShowcase() {
       const fadeBackdrop = (visible: boolean) => {
         const el = backdropRef.current;
         if (el) gsap.to(el, { opacity: visible ? BACKDROP_MAX_OPACITY : 0, duration: reduced ? 0 : 0.4, overwrite: true });
-        const preview = bottomPreviewRef.current;
+        const preview = topPreviewRef.current;
         if (preview) gsap.to(preview, { opacity: visible ? BOTTOM_PREVIEW_MAX_OPACITY : 0, duration: reduced ? 0 : 0.4, overwrite: true });
       };
 
