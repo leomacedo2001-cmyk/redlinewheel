@@ -525,7 +525,9 @@ export function BrandShowcase() {
             e barras de progresso na base da caixa pinada. */}
         <div ref={topPreviewRef} className="absolute inset-x-0 top-0 px-4 pt-24 text-center opacity-0 sm:px-6 sm:pt-28 lg:px-8 lg:pt-32">
           <SectionEyebrow align="center">Marcas</SectionEyebrow>
-          <h2 className="mt-3 text-2xl font-bold md:text-3xl">Construído para máquinas diferentes.</h2>
+          <h2 className="mt-4 text-4xl font-bold tracking-tight md:text-5xl [text-shadow:0_2px_24px_rgba(0,0,0,0.55)]">
+            Construído para máquinas diferentes.
+          </h2>
         </div>
       </div>
 
