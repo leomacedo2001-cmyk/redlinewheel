@@ -524,8 +524,10 @@ export function BrandShowcase() {
             ser visível logo no início do scroll, sem competir com os cartões
             e barras de progresso na base da caixa pinada. */}
         <div ref={topPreviewRef} className="absolute inset-x-0 top-0 px-4 pt-24 text-center opacity-0 sm:px-6 sm:pt-28 lg:px-8 lg:pt-32">
-          <SectionEyebrow align="center">Marcas</SectionEyebrow>
-          <h2 className="mt-4 text-4xl font-bold tracking-tight md:text-5xl [text-shadow:0_2px_24px_rgba(0,0,0,0.55)]">
+          <SectionEyebrow align="center" className="[text-shadow:0_0_14px_oklch(0.58_0.22_25/0.9)]">
+            Marcas
+          </SectionEyebrow>
+          <h2 className="mt-4 text-3xl font-bold tracking-tight text-primary md:text-4xl [text-shadow:0_0_24px_oklch(0.58_0.22_25/0.55)]">
             Construído para máquinas diferentes.
           </h2>
         </div>
